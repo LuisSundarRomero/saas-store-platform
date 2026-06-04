@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand */
+  --color-brand:          #EC4899;
+  --color-brand-light:    #FCE7F3;
+  --color-brand-dark:     #DB2777;
+
+  /* Superficies */
+  --color-surface:        #F8F8F7;
+  --color-border:         #E5E5E3;
+
+  /* Texto secundario */
+  --color-muted:          #6B6B6B;
+
+  /* Semanticos */
+  --color-warning:        #F59E0B;
+  --color-warning-bg:     #FEF3C7;
+  --color-ok:             #10B981;
+  --color-ok-bg:          #D1FAE5;
+  --color-info:           #3B82F6;
+  --color-info-bg:        #DBEAFE;
+  --color-danger:         #EF4444;
+  --color-danger-bg:      #FEE2E2;
+
+  /* Fuentes */
+  --font-sans:  var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background-color: #ffffff;
+  color: #1A1A1A;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+/* Solo el serif en títulos explícitos — no en todo el cuerpo */
+.font-serif {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+.btn-brand {
+  background-color: #EC4899;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: background-color 0.15s;
+}
+.btn-brand:hover { background-color: #DB2777; }
+.btn-brand:disabled { opacity: 0.6; }
