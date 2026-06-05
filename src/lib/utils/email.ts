@@ -101,10 +101,17 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
 </body>
 </html>`
 
-  await resend.emails.send({
-    from: 'Kuutsu.pe <pedidos@kuutsu.pe>',
+  const { data, error } = await resend.emails.send({
+    from: 'Kuutsu.pe <onboarding@resend.dev>',
     to,
     subject: `🎀 Nuevo pedido #${orderId} — ${formatPrice(total)}`,
     html,
   })
+
+  if (error) {
+    console.error('[email] Resend error:', JSON.stringify(error))
+    throw new Error(error.message)
+  }
+
+  console.log('[email] Enviado OK — id:', data?.id, '→', to)
 }

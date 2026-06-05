@@ -1,11 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { EstadoPedido } from '@/types'
 import { formatPrice, formatDate } from '@/lib/utils/format'
 import { updateEstadoPedido } from '@/lib/actions/admin'
 import { useRouter } from 'next/navigation'
+import { IconBrandWhatsapp, IconCheck, IconX } from '@tabler/icons-react'
 
 const BADGE: Record<EstadoPedido, { bg: string; color: string }> = {
   pendiente:   { bg: '#FEF3C7', color: '#92400E' },
@@ -16,17 +17,54 @@ const BADGE: Record<EstadoPedido, { bg: string; color: string }> = {
 
 const ESTADOS: EstadoPedido[] = ['pendiente', 'empaquetado', 'en_camino', 'entregado']
 
+const ESTADO_LABEL: Record<EstadoPedido, string> = {
+  pendiente:   'Pendiente',
+  empaquetado: 'Empaquetado',
+  en_camino:   'En camino',
+  entregado:   'Entregado',
+}
+
+const ESTADO_EMOJI: Record<EstadoPedido, string> = {
+  pendiente:   '⏳',
+  empaquetado: '📦',
+  en_camino:   '🚚',
+  entregado:   '✅',
+}
+
+const ESTADO_MSG: Record<EstadoPedido, string> = {
+  pendiente:   'Tu pedido está siendo revisado.',
+  empaquetado: 'Tu pedido ya está empaquetado y listo para salir.',
+  en_camino:   '¡Tu pedido está en camino! Pronto llegará a ti.',
+  entregado:   '¡Tu pedido fue entregado! Esperamos que lo disfrutes. 🎀',
+}
+
+interface ModalInfo {
+  orderId: string
+  clienteTelefono: string
+  nuevoEstado: EstadoPedido
+}
+
 interface Props { pedidos: any[] }
 
 export function PedidosTable({ pedidos }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const [modal, setModal] = useState<ModalInfo | null>(null)
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
 
-  function handleEstado(pedidoId: string, estado: EstadoPedido) {
+  function handleEstado(pedidoId: string, nuevoEstado: EstadoPedido, orderId: string, clienteTelefono: string) {
     startTransition(async () => {
-      await updateEstadoPedido(pedidoId, estado)
+      await updateEstadoPedido(pedidoId, nuevoEstado)
       router.refresh()
+      setModal({ orderId, clienteTelefono, nuevoEstado })
     })
+  }
+
+  function buildWhatsAppUrl(info: ModalInfo) {
+    const telefono = info.clienteTelefono.replace(/\s/g, '')
+    const trackingUrl = appUrl ? `${appUrl}/pedido/${info.orderId}` : `kuutsu.pe/pedido/${info.orderId}`
+    const mensaje = `Hola! Te escribimos de Kuutsu.pe 🎀\n\nTu pedido *#${info.orderId}* ha sido actualizado:\n\n${ESTADO_EMOJI[info.nuevoEstado]} *${ESTADO_LABEL[info.nuevoEstado]}*\n${ESTADO_MSG[info.nuevoEstado]}\n\nRastrear tu pedido: ${trackingUrl}`
+    return `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
   }
 
   if (pedidos.length === 0) {
@@ -62,7 +100,7 @@ export function PedidosTable({ pedidos }: Props) {
                 <span className="font-bold" style={{ color: '#EC4899' }}>{formatPrice(p.total)}</span>
                 <select
                   value={p.estado}
-                  onChange={(e) => handleEstado(p.id, e.target.value as EstadoPedido)}
+                  onChange={(e) => handleEstado(p.id, e.target.value as EstadoPedido, p.order_id, p.cliente_telefono)}
                   disabled={isPending}
                   className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 outline-none bg-white cursor-pointer"
                 >
@@ -117,7 +155,7 @@ export function PedidosTable({ pedidos }: Props) {
                     <td className="px-4 py-3">
                       <select
                         value={p.estado}
-                        onChange={(e) => handleEstado(p.id, e.target.value as EstadoPedido)}
+                        onChange={(e) => handleEstado(p.id, e.target.value as EstadoPedido, p.order_id, p.cliente_telefono)}
                         disabled={isPending}
                         className="text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none bg-white cursor-pointer"
                       >
@@ -135,6 +173,65 @@ export function PedidosTable({ pedidos }: Props) {
           </table>
         </div>
       </div>
+
+      {/* ── Modal WhatsApp ── */}
+      {modal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setModal(null)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+
+            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center text-lg"
+                  style={{ backgroundColor: '#DCF8C6' }}>
+                  {ESTADO_EMOJI[modal.nuevoEstado]}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Estado actualizado</p>
+                  <p className="text-xs text-gray-400">#{modal.orderId} · {ESTADO_LABEL[modal.nuevoEstado]}</p>
+                </div>
+              </div>
+              <button onClick={() => setModal(null)}
+                className="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors">
+                <IconX size={16} />
+              </button>
+            </div>
+
+            <div className="p-5">
+              <p className="text-xs font-semibold text-gray-500 mb-2">Mensaje que recibirá el cliente:</p>
+              <div className="rounded-xl p-3" style={{ backgroundColor: '#ECE5DD' }}>
+                <div className="bg-white rounded-xl px-4 py-3 shadow-sm">
+                  <p className="text-xs text-gray-800 whitespace-pre-wrap leading-relaxed">
+                    {`Hola! Te escribimos de Kuutsu.pe 🎀\n\nTu pedido #${modal.orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[modal.nuevoEstado]} ${ESTADO_LABEL[modal.nuevoEstado]}\n${ESTADO_MSG[modal.nuevoEstado]}\n\nRastrear: ${appUrl || 'kuutsu.pe'}/pedido/${modal.orderId}`}
+                  </p>
+                  <p className="text-[10px] text-gray-400 text-right mt-1">✓✓</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="px-5 pb-5 flex flex-col gap-2">
+              <a
+                href={buildWhatsAppUrl(modal)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setModal(null)}
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-semibold text-sm text-white transition-opacity hover:opacity-90"
+                style={{ backgroundColor: '#25D366' }}
+              >
+                <IconBrandWhatsapp size={18} />
+                Enviar notificación al cliente
+              </a>
+              <button
+                onClick={() => setModal(null)}
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-100 transition-colors"
+              >
+                <IconCheck size={14} />
+                Solo guardar, no notificar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

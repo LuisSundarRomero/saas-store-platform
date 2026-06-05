@@ -10,6 +10,10 @@ export async function createClient() {
       cookies: {
         getAll: () => cookieStore.getAll(),
       },
+      global: {
+        fetch: (url, options) =>
+          fetch(url, { ...options, cache: 'no-store' }),
+      },
     }
   )
 }

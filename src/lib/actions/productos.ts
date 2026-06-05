@@ -1,7 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { Categoria, Producto } from '@/types'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function getCategorias(): Promise<Categoria[]> {
+  noStore()
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('categorias')
@@ -18,6 +20,7 @@ export async function getProductos(params?: {
   limit?: number
   sort?: string
 }): Promise<Producto[]> {
+  noStore()
   const supabase = await createClient()
 
   // Usa !inner para filtrar por slug en una sola query
@@ -32,6 +35,8 @@ export async function getProductos(params?: {
     .from('productos')
     .select(select)
     .eq('visible', true)
+    .order('destacado', { ascending: false })
+    .order('es_nuevo', { ascending: false })
     .order(orderCol, { ascending })
 
   if (params?.categoriaSlug) {
@@ -52,6 +57,7 @@ export async function getProductos(params?: {
 }
 
 export async function getProductosDestacados(): Promise<Producto[]> {
+  noStore()
   const supabase = await createClient()
   const { data } = await supabase
     .from('productos')

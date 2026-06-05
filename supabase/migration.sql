@@ -254,6 +254,9 @@ INSERT INTO config (tienda_nombre, whatsapp_numero)
 VALUES ('SaaS Ropa', '51987654321')
 ON CONFLICT DO NOTHING;
 
+-- ─── ALTER: columnas config agregadas después del schema inicial ─
+ALTER TABLE config ADD COLUMN IF NOT EXISTS hero_imagenes_visible BOOLEAN DEFAULT true;
+
 -- ─── FIN ────────────────────────────────────────────────────────
 -- Verificar con:
 -- SELECT tablename FROM pg_tables WHERE schemaname = 'public';

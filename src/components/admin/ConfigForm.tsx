@@ -34,12 +34,12 @@ export function ConfigForm({ config }: Props) {
   const [emailNotif,        setEmailNotif]        = useState(config?.email_notificaciones ?? '')
 
   // Banner
-  const [heroBadge,     setHeroBadge]     = useState(config?.hero_badge     ?? '🎀 Nueva colección disponible')
-  const [heroTitulo,    setHeroTitulo]    = useState(config?.hero_titulo    ?? 'Zapatos que te hacen brillar')
-  const [heroSubtitulo, setHeroSubtitulo] = useState(config?.hero_subtitulo ?? 'Modelos coquette únicos y originales.')
-  const [heroBoton,     setHeroBoton]     = useState(config?.hero_boton     ?? 'Ver colección →')
-  const [heroVisible,   setHeroVisible]   = useState(config?.hero_visible   ?? true)
-  const [nuevoDias,     setNuevoDias]     = useState(config?.nuevo_dias     ?? 14)
+  const [heroBadge,           setHeroBadge]           = useState(config?.hero_badge             ?? '🎀 Nueva colección disponible')
+  const [heroTitulo,          setHeroTitulo]          = useState(config?.hero_titulo            ?? 'Zapatos que te hacen brillar')
+  const [heroSubtitulo,       setHeroSubtitulo]       = useState(config?.hero_subtitulo         ?? 'Modelos coquette únicos y originales.')
+  const [heroBoton,           setHeroBoton]           = useState(config?.hero_boton             ?? 'Ver colección →')
+  const [heroVisible,         setHeroVisible]         = useState(config?.hero_visible           ?? true)
+  const [heroImagenesVisible, setHeroImagenesVisible] = useState(config?.hero_imagenes_visible  ?? true)
 
   // Textos
   const [ctaTitulo,       setCtaTitulo]       = useState(config?.cta_titulo        ?? '¿Tienes alguna consulta?')
@@ -89,7 +89,7 @@ export function ConfigForm({ config }: Props) {
         hero_subtitulo: heroSubtitulo,
         hero_boton: heroBoton,
         hero_visible: heroVisible,
-        nuevo_dias: Number(nuevoDias),
+        hero_imagenes_visible: heroImagenesVisible,
         cta_titulo: ctaTitulo,
         cta_subtitulo: ctaSubtitulo,
         cta_visible: ctaVisible,
@@ -332,57 +332,153 @@ export function ConfigForm({ config }: Props) {
       {tab === 'banner' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="flex flex-col gap-4">
-            {/* Toggle visibilidad */}
+
+            {/* Toggle banner completo */}
             <VisibilityToggle
               label="Mostrar banner"
               description={heroVisible ? 'El banner es visible en la página de inicio' : 'El banner está oculto'}
               checked={heroVisible}
               onChange={setHeroVisible}
             />
-            <div className={heroVisible ? '' : 'opacity-40 pointer-events-none'}>
-            <Field label="Badge (etiqueta pequeña)" value={heroBadge} onChange={setHeroBadge}
-              placeholder="🎀 Nueva colección disponible" hint="Texto rosa pequeño arriba del título" inputCls={inputCls} />
-            <Field label="Título principal" value={heroTitulo} onChange={setHeroTitulo}
-              placeholder="Zapatos que te hacen brillar" hint="Título grande del banner" inputCls={inputCls} />
-            <FieldArea label="Subtítulo" value={heroSubtitulo} onChange={setHeroSubtitulo}
-              placeholder="Modelos coquette únicos y originales..." inputCls={inputCls} />
-            <Field label="Texto del botón" value={heroBoton} onChange={setHeroBoton}
-              placeholder="Ver colección →" inputCls={inputCls} />
 
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm font-semibold text-gray-800">Badge "NUEVO"</p>
-                <p className="text-xs text-gray-400 mt-0.5">Días desde la creación para mostrar la etiqueta</p>
+            {!heroVisible && (
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 flex items-center gap-2.5">
+                <span className="text-amber-500 text-base shrink-0">⚠️</span>
+                <p className="text-xs text-amber-700 font-medium">El banner está oculto en el sitio. Actívalo para que los clientes lo vean.</p>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <input type="number" min={1} max={90} value={nuevoDias}
-                  onChange={(e) => setNuevoDias(Number(e.target.value))}
-                  className="w-16 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-pink-400 text-center"
-                />
-                <span className="text-xs text-gray-400">días</span>
+            )}
+
+            <div style={{ opacity: heroVisible ? 1 : 0.4, pointerEvents: heroVisible ? 'auto' : 'none' }} className="flex flex-col gap-4">
+
+              {/* Info imágenes destacados */}
+              <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex gap-3">
+                <span className="text-lg shrink-0">🖼️</span>
+                <div className="flex flex-col gap-0.5">
+                  <p className="text-sm font-semibold text-amber-800">Imágenes del banner</p>
+                  <p className="text-xs text-amber-700 leading-relaxed">
+                    Las fotos que aparecen son los <strong>productos marcados como Destacados</strong> en el Catálogo.
+                    Se muestran un máximo de <strong>4</strong>. Para cambiarlas, ve a Catálogo y cambia los destacados.
+                  </p>
+                </div>
               </div>
-            </div>
+
+              {/* Toggle imágenes */}
+              <VisibilityToggle
+                label="Mostrar imágenes de productos"
+                description={heroImagenesVisible ? 'Se muestran las fotos de los productos destacados' : 'El banner aparece solo con texto, sin imágenes'}
+                checked={heroImagenesVisible}
+                onChange={setHeroImagenesVisible}
+              />
+
+              {/* Barra de características */}
+              <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">Barra de características</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Aparece debajo del banner principal</p>
+                  </div>
+                  <Switch checked={stripVisible} onChange={setStripVisible} size="sm" />
+                </div>
+                {!stripVisible && <p className="text-xs text-amber-500 bg-amber-50 px-3 py-2 rounded-lg">⚠️ La barra está oculta</p>}
+                <div className={`grid grid-cols-1 sm:grid-cols-2 gap-2 ${!stripVisible ? 'opacity-40 pointer-events-none' : ''}`}>
+                  {[
+                    [stripItem1, setStripItem1],
+                    [stripItem2, setStripItem2],
+                    [stripItem3, setStripItem3],
+                    [stripItem4, setStripItem4],
+                  ].map(([val, setter]: any, i) => (
+                    <input key={i} value={val} onChange={(e) => setter(e.target.value)}
+                      className={inputCls} placeholder={`Item ${i + 1}`} />
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400">Incluye el emoji al inicio. Ej: 🎀 Texto aquí</p>
+              </div>
+
+              {/* Campos de texto */}
+              <Field label="Badge (etiqueta pequeña)" value={heroBadge} onChange={setHeroBadge}
+                placeholder="🎀 Nueva colección disponible" hint="Texto rosa pequeño arriba del título" inputCls={inputCls} />
+              <Field label="Título principal" value={heroTitulo} onChange={setHeroTitulo}
+                placeholder="Zapatos que te hacen brillar" hint="Título grande del banner" inputCls={inputCls} />
+              <FieldArea label="Subtítulo" value={heroSubtitulo} onChange={setHeroSubtitulo}
+                placeholder="Modelos coquette únicos y originales..." inputCls={inputCls} />
+              <Field label="Texto del botón" value={heroBoton} onChange={setHeroBoton}
+                placeholder="Ver colección →" inputCls={inputCls} />
             </div>
           </div>
 
           {/* Preview */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Vista previa</p>
-            <div className="rounded-2xl p-8 text-center relative overflow-hidden"
-              style={{ background: 'linear-gradient(180deg, #fdf0f6 0%, #fff8fb 100%)' }}>
-              <span className="inline-block text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full mb-3"
-                style={{ backgroundColor: '#FCE7F3', color: '#BE185D' }}>
-                {heroBadge || '🎀 Badge'}
-              </span>
-              <h2 className="font-serif text-2xl font-bold mb-2 leading-tight" style={{ color: '#EC4899' }}>
-                {heroTitulo || 'Título'}
-              </h2>
-              <p className="text-xs text-gray-500 mb-4 max-w-[200px] mx-auto">{heroSubtitulo}</p>
-              <span className="inline-block text-xs font-semibold text-white px-5 py-2 rounded-full"
-                style={{ backgroundColor: '#EC4899' }}>
-                {heroBoton || 'Botón'}
-              </span>
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Vista previa</p>
+
+            {/* Banner completo: texto + imágenes */}
+            <div className="rounded-2xl overflow-hidden relative" style={{ background: 'linear-gradient(180deg, #fdf0f6 0%, #fff8fb 100%)' }}>
+              {!heroVisible && (
+                <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-2xl">
+                  <div className="text-center">
+                    <p className="text-2xl mb-1">🙈</p>
+                    <p className="text-sm font-semibold text-gray-500">Banner oculto</p>
+                    <p className="text-xs text-gray-400">No se muestra en el sitio</p>
+                  </div>
+                </div>
+              )}
+              <div className={`flex gap-3 p-5 ${heroImagenesVisible ? '' : 'justify-center'}`}>
+
+                {/* Texto */}
+                <div className={`flex flex-col justify-center gap-2 ${heroImagenesVisible ? 'flex-1 min-w-0' : 'text-center max-w-[220px]'}`}>
+                  <span className="inline-block self-start text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-full"
+                    style={{ backgroundColor: '#FCE7F3', color: '#BE185D' }}>
+                    {heroBadge || '🎀 Badge'}
+                  </span>
+                  <p className="font-serif text-base font-bold leading-tight" style={{ color: '#EC4899' }}>
+                    {heroTitulo || 'Título'}
+                  </p>
+                  <p className="text-[10px] text-gray-400 leading-relaxed line-clamp-2">{heroSubtitulo}</p>
+                  <span className="self-start inline-block text-[10px] font-semibold text-white px-3 py-1.5 rounded-full"
+                    style={{ backgroundColor: '#EC4899' }}>
+                    {heroBoton || 'Botón'}
+                  </span>
+                </div>
+
+                {/* Imágenes — placeholder tipo mosaico */}
+                {heroImagenesVisible && (
+                  <div className="grid grid-cols-2 gap-1.5 shrink-0" style={{ width: '55%' }}>
+                    <div className="row-span-2 rounded-xl bg-gray-200 flex items-center justify-center text-gray-300 text-xs" style={{ minHeight: 100 }}>
+                      📸
+                    </div>
+                    <div className="rounded-xl bg-gray-200 flex items-center justify-center text-gray-300 text-[10px]">
+                      📸
+                    </div>
+                    <div className="rounded-xl bg-gray-200 flex items-center justify-center text-gray-300 text-[10px]">
+                      📸
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {heroImagenesVisible && (
+                <p className="text-[9px] text-gray-400 text-center pb-2">
+                  Las fotos son los productos destacados del catálogo
+                </p>
+              )}
             </div>
+
+            {/* Strip preview */}
+            {stripVisible ? (
+              <div className="border border-gray-100 rounded-xl py-2.5 px-3" style={{ backgroundColor: '#FAFAFA' }}>
+                <div className="flex items-center justify-center gap-3 flex-wrap">
+                  {[stripItem1, stripItem2, stripItem3, stripItem4].filter(Boolean).map((item, i, arr) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="text-[10px] text-gray-500 font-medium">{item}</span>
+                      {i < arr.length - 1 && <span className="text-gray-200 text-xs">|</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="border border-dashed border-gray-200 rounded-xl py-2 text-center">
+                <p className="text-[10px] text-gray-300">Barra de características oculta</p>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -403,26 +499,6 @@ export function ConfigForm({ config }: Props) {
               <FieldArea label="Subtítulo" value={ctaSubtitulo} onChange={setCtaSubtitulo}
                 placeholder="Te asesoramos personalmente..." inputCls={inputCls} />
               </div>
-            </div>
-            {/* Strip */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-gray-800">Barra de características</p>
-                <Switch checked={stripVisible} onChange={setStripVisible} size="sm" />
-              </div>
-              {!stripVisible && <p className="text-xs text-amber-500 bg-amber-50 px-3 py-2 rounded-lg">⚠️ La barra está oculta</p>}
-              <div className={`grid grid-cols-1 sm:grid-cols-2 gap-2 ${!stripVisible ? 'opacity-40 pointer-events-none' : ''}`}>
-                {[
-                  [stripItem1, setStripItem1],
-                  [stripItem2, setStripItem2],
-                  [stripItem3, setStripItem3],
-                  [stripItem4, setStripItem4],
-                ].map(([val, setter]: any, i) => (
-                  <input key={i} value={val} onChange={(e) => setter(e.target.value)}
-                    className={inputCls} placeholder={`Item ${i + 1}`} />
-                ))}
-              </div>
-              <p className="text-xs text-gray-400">Incluye el emoji al inicio de cada item. Ej: 🎀 Texto aquí</p>
             </div>
 
             <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
@@ -457,25 +533,6 @@ export function ConfigForm({ config }: Props) {
           {/* Preview completo */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Vista previa</p>
-
-            {/* Strip preview */}
-            {stripVisible && (
-              <div className="border border-gray-100 rounded-xl py-2.5 px-3">
-                <div className="flex items-center justify-center gap-3 flex-wrap">
-                  {[stripItem1, stripItem2, stripItem3, stripItem4].filter(Boolean).map((item, i, arr) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <span className="text-[10px] text-gray-500 font-medium">{item}</span>
-                      {i < arr.length - 1 && <span className="text-gray-200 text-xs">|</span>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {!stripVisible && (
-              <div className="border border-dashed border-gray-200 rounded-xl py-2.5 px-3 text-center">
-                <p className="text-[10px] text-gray-300">Barra oculta</p>
-              </div>
-            )}
 
             {/* CTA preview */}
             {ctaVisible ? (

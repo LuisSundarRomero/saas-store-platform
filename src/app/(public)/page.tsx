@@ -2,10 +2,29 @@ import Link from 'next/link'
 import { IconBrandWhatsapp } from '@tabler/icons-react'
 import { getCategorias, getProductos, getProductosDestacados } from '@/lib/actions/productos'
 import { ProductCard } from '@/components/catalogo/ProductCard'
+import { unstable_noStore as noStore } from 'next/cache'
+import type { Metadata } from 'next'
 
-export const revalidate = 30
+export const revalidate = 0
+
+export const metadata: Metadata = {
+  title: 'Kuutsu.pe — Zapatos coquette exclusivos',
+  description: 'Zapatos coquette exclusivos en Lima. Bota peluche, Mary Jane, doble capa y más. Envíos a todo Lima · Pide por WhatsApp.',
+  openGraph: {
+    title: 'Kuutsu.pe — Zapatos coquette exclusivos',
+    description: 'Zapatos coquette exclusivos en Lima. Bota peluche, Mary Jane, doble capa y más.',
+    url: '/',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kuutsu.pe — Zapatos coquette exclusivos',
+    description: 'Zapatos coquette exclusivos en Lima. Bota peluche, Mary Jane, doble capa y más.',
+  },
+}
 
 export default async function HomePage() {
+  noStore()
   const { createClient } = await import('@/lib/supabase/server')
   const supabase = await createClient()
   const { data: config } = await supabase.from('config').select('*').single()
@@ -16,7 +35,8 @@ export default async function HomePage() {
   const heroBoton     = config?.hero_boton      ?? 'Ver colección'
   const ctaTitulo     = config?.cta_titulo      ?? '¿Tienes alguna consulta?'
   const ctaSubtitulo  = config?.cta_subtitulo   ?? 'Te asesoramos personalmente para encontrar el modelo perfecto.'
-  const heroVisible   = config?.hero_visible    ?? true
+  const heroVisible          = config?.hero_visible           ?? true
+  const heroImagenesVisible  = config?.hero_imagenes_visible  ?? true
   const ctaVisible    = config?.cta_visible     ?? true
   const stripVisible  = config?.strip_visible   ?? true
   const stripItems    = [
@@ -33,8 +53,7 @@ export default async function HomePage() {
     getProductosDestacados(),
   ])
 
-  // Si hay destacados úsalos en el banner, si no usa los primeros novedades
-  const bannerProductos = destacados.length >= 2 ? destacados : novedades.slice(0, 4)
+  const bannerProductos = destacados
 
   return (
     <main className="min-h-screen bg-white">
@@ -42,21 +61,21 @@ export default async function HomePage() {
       {/* ── HERO ── */}
       {heroVisible && (
         <section className="relative overflow-hidden bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-[0.65fr_1.35fr] gap-6 lg:gap-8 items-center py-8 lg:py-10">
+          <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-[0.65fr_1.35fr] gap-6 lg:gap-8 items-center py-6 sm:py-8 lg:py-10">
 
               {/* ── Texto ── */}
-              <div className="order-2 lg:order-1 lg:pr-4">
+              <div className="order-2 lg:order-1 lg:pr-4 flex flex-col items-center text-center lg:items-start lg:text-left">
                 {/* Badge */}
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase mb-5"
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase mb-4"
                   style={{ backgroundColor: '#FCE7F3', color: '#BE185D' }}>
                   <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: '#EC4899' }} />
                   {heroBadge}
                 </span>
 
-                {/* Título — Cormorant Garamond: ligero + italic = máxima elegancia coquette */}
-                <h1 className="font-serif leading-[1.08] mb-5"
-                  style={{ fontSize: 'clamp(2.2rem, 4vw, 3.8rem)', letterSpacing: '0.01em' }}>
+                {/* Título */}
+                <h1 className="font-serif leading-[1.08] mb-4"
+                  style={{ fontSize: 'clamp(2rem, 8vw, 3.8rem)', letterSpacing: '0.01em' }}>
                   {heroTitulo.split(' ').map((word: string, i: number, arr: string[]) => (
                     <span key={i}>
                       <span style={{
@@ -71,14 +90,11 @@ export default async function HomePage() {
                   ))}
                 </h1>
 
-                {/* Línea decorativa */}
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="h-px flex-1 max-w-[60px]" style={{ backgroundColor: '#EC4899' }} />
-                  <p className="text-gray-400 text-sm leading-relaxed flex-1">{heroSubtitulo}</p>
-                </div>
+                {/* Subtítulo */}
+                <p className="text-gray-400 text-sm leading-relaxed mb-5 max-w-xs lg:max-w-none">{heroSubtitulo}</p>
 
                 {/* CTAs */}
-                <div className="flex flex-wrap gap-3 mb-8">
+                <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-4 lg:mb-8">
                   <Link href="/catalogo"
                     className="inline-flex items-center gap-2 text-white font-semibold px-6 py-3 rounded-full text-sm transition-all hover:opacity-90"
                     style={{ backgroundColor: '#EC4899', boxShadow: '0 4px 20px rgba(236,72,153,0.3)' }}>
@@ -96,47 +112,68 @@ export default async function HomePage() {
               </div>
 
               {/* ── Productos — solo desktop ── */}
-              {novedades.length > 0 && (
+              {heroImagenesVisible && bannerProductos.length > 0 && (
                 <div className="order-1 lg:order-2 hidden lg:block">
-                  {/* Layout asimétrico: 1 grande + 2 pequeños + 1 mediano */}
-                  <div className="grid grid-cols-3 grid-rows-2 gap-2.5" style={{ height: 'min(640px, 75vh)' }}>
+                  <div className="gap-2.5" style={{ height: 'min(640px, 75vh)', display: 'grid', gridTemplateColumns: bannerProductos.length === 1 ? '1fr' : '1fr 1.6fr', gridTemplateRows: bannerProductos.length === 1 ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr)' }}>
 
-                    {/* Grande izquierda — span 2 rows */}
-                    {novedades[0] && (
-                      <Link href={`/catalogo/${novedades[0].slug}`}
-                        className="col-span-1 row-span-2 group relative rounded-2xl overflow-hidden bg-gray-100"
-                        style={{ minHeight: 0 }}>
-                        {novedades[0].imagenes?.[0]
-                          ? <img src={novedades[0].imagenes[0]} alt={novedades[0].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    {/* 1 producto: ocupa todo */}
+                    {bannerProductos.length === 1 && bannerProductos[0] && (
+                      <Link href={`/catalogo/${bannerProductos[0].slug}`}
+                        className="group relative rounded-2xl overflow-hidden bg-gray-100">
+                        {bannerProductos[0].imagenes?.[0]
+                          ? <img src={bannerProductos[0].imagenes[0]} alt={bannerProductos[0].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           : <div className="w-full h-full flex items-center justify-center text-4xl">👟</div>}
                       </Link>
                     )}
 
-                    {/* Superior derecha */}
-                    {novedades[1] && (
-                      <Link href={`/catalogo/${novedades[1].slug}`}
-                        className="col-span-2 row-span-1 group relative rounded-2xl overflow-hidden bg-gray-100">
-                        {novedades[1].imagenes?.[0]
-                          ? <img src={novedades[1].imagenes[0]} alt={novedades[1].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    {/* 2 productos: dos columnas iguales */}
+                    {bannerProductos.length === 2 && bannerProductos.map((p) => (
+                      <Link key={p.id} href={`/catalogo/${p.slug}`}
+                        className="group relative rounded-2xl overflow-hidden bg-gray-100"
+                        style={{ gridRow: '1 / 3', minHeight: 0 }}>
+                        {p.imagenes?.[0]
+                          ? <img src={p.imagenes[0]} alt={p.nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           : <div className="w-full h-full flex items-center justify-center text-4xl">👟</div>}
                       </Link>
-                    )}
+                    ))}
 
-                    {/* Inferior derecha: 2 pequeños */}
-                    <div className="col-span-2 row-span-1 grid grid-cols-2 gap-2.5">
-                      {novedades.slice(2, 4).map((p) => (
-                        <Link key={p.id} href={`/catalogo/${p.slug}`}
-                          className="group relative rounded-2xl overflow-hidden bg-gray-100">
-                          {p.imagenes?.[0]
-                            ? <img src={p.imagenes[0]} alt={p.nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                            : <div className="w-full h-full flex items-center justify-center text-2xl">👟</div>}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {/* 3-4 productos: grande izquierda + derecha en columna */}
+                    {bannerProductos.length >= 3 && (
+                      <>
+                        {/* Grande izquierda — span 2 rows */}
+                        <Link href={`/catalogo/${bannerProductos[0].slug}`}
+                          className="group relative rounded-2xl overflow-hidden bg-gray-100"
+                          style={{ gridRow: '1 / 3', minHeight: 0 }}>
+                          {bannerProductos[0].imagenes?.[0]
+                            ? <img src={bannerProductos[0].imagenes[0]} alt={bannerProductos[0].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            : <div className="w-full h-full flex items-center justify-center text-4xl">👟</div>}
                         </Link>
-                      ))}
-                    </div>
+
+                        {/* Superior derecha */}
+                        <Link href={`/catalogo/${bannerProductos[1].slug}`}
+                          className="group relative rounded-2xl overflow-hidden bg-gray-100"
+                          style={{ minHeight: 0 }}>
+                          {bannerProductos[1].imagenes?.[0]
+                            ? <img src={bannerProductos[1].imagenes[0]} alt={bannerProductos[1].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" style={{ objectPosition: 'center 65%' }} />
+                            : <div className="w-full h-full flex items-center justify-center text-4xl">👟</div>}
+                        </Link>
+
+                        {/* Inferior derecha: 1 o 2 pequeños */}
+                        <div className="grid gap-2.5" style={{ gridTemplateColumns: bannerProductos.length === 4 ? '1fr 1fr' : '1fr', minHeight: 0 }}>
+                          {bannerProductos.slice(2, 4).map((p) => (
+                            <Link key={p.id} href={`/catalogo/${p.slug}`}
+                              className="group relative rounded-2xl overflow-hidden bg-gray-100">
+                              {p.imagenes?.[0]
+                                ? <img src={p.imagenes[0]} alt={p.nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                : <div className="w-full h-full flex items-center justify-center text-2xl">👟</div>}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </Link>
+                          ))}
+                        </div>
+                      </>
+                    )}
 
                   </div>
-
                 </div>
               )}
 
@@ -146,7 +183,7 @@ export default async function HomePage() {
       )}
 
       {/* ── STRIP ── */}
-      {stripVisible && stripItems.length > 0 && (
+      {heroVisible && stripVisible && stripItems.length > 0 && (
         <section className="border-y border-gray-100 py-3.5" style={{ backgroundColor: '#FAFAFA' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-center gap-6 sm:gap-12 flex-wrap text-xs sm:text-sm text-gray-500 font-medium">

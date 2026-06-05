@@ -3,15 +3,16 @@ import { IconPlus } from '@tabler/icons-react'
 import { getProductosAdmin, getCategorias } from '@/lib/actions/admin'
 import { CatalogoAdminTable } from '@/components/admin/CatalogoAdminTable'
 import { CatalogoBuscador } from '@/components/admin/CatalogoBuscador'
-
-const POR_PAGINA = 12
+import { AutoPageSize } from '@/components/admin/AutoPageSize'
+import { Suspense } from 'react'
 
 interface Props {
-  searchParams: Promise<{ q?: string; cat?: string; filtro?: string; page?: string }>
+  searchParams: Promise<{ q?: string; cat?: string; filtro?: string; page?: string; size?: string }>
 }
 
 export default async function CatalogoAdminPage({ searchParams }: Props) {
-  const { q, cat, filtro, page: pageStr } = await searchParams
+  const { q, cat, filtro, page: pageStr, size: sizeStr } = await searchParams
+  const POR_PAGINA = Math.min(Math.max(parseInt(sizeStr ?? '12'), 4), 50)
   const page = Math.max(1, parseInt(pageStr ?? '1'))
 
   const [todosLosProductos, productosPagina, categorias] = await Promise.all([
@@ -31,6 +32,7 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
     if (q) p.set('q', q)
     if (cat) p.set('cat', cat)
     if (filtro) p.set('filtro', filtro)
+    if (sizeStr) p.set('size', sizeStr)
     Object.entries(params).forEach(([k, v]) => v ? p.set(k, v) : p.delete(k))
     return `/admin/catalogo?${p.toString()}`
   }
@@ -75,12 +77,15 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
 
       <CatalogoAdminTable productos={productosPagina} />
 
-      {/* Paginación */}
-      {totalPaginas > 1 && (
-        <div className="mt-6 flex items-center justify-between">
-          <p className="text-sm text-gray-400">
-            Mostrando {(page - 1) * POR_PAGINA + 1}–{Math.min(page * POR_PAGINA, total)} de {total} productos
-          </p>
+      {/* Paginación — siempre visible */}
+      <div className="mt-6 flex items-center justify-between gap-4 flex-wrap">
+        <p className="text-sm text-gray-400">
+          {total === 0 ? 'Sin productos' : (
+            <>Mostrando {(page - 1) * POR_PAGINA + 1}–{Math.min(page * POR_PAGINA, total)} de {total} · <span className="font-medium">{POR_PAGINA}/pág</span></>
+          )}
+        </p>
+
+        {totalPaginas > 1 && (
           <div className="flex gap-2 flex-wrap">
             {page > 1 && (
               <Link href={buildUrl({ page: String(page - 1) })}
@@ -109,8 +114,12 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
               </Link>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
+      <Suspense>
+        <AutoPageSize />
+      </Suspense>
     </div>
   )
 }

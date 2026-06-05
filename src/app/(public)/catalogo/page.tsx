@@ -3,8 +3,25 @@ import { getCategorias, getProductos } from '@/lib/actions/productos'
 import { ProductCard } from '@/components/catalogo/ProductCard'
 import { CategoryChips } from '@/components/catalogo/CategoryChips'
 import { SortSelect } from '@/components/catalogo/SortSelect'
+import type { Metadata } from 'next'
 
 export const revalidate = 30
+
+export const metadata: Metadata = {
+  title: 'Catálogo de zapatos',
+  description: 'Explora toda la colección de zapatos coquette: bota peluche, Mary Jane, doble capa y más. Envíos a todo Lima.',
+  openGraph: {
+    title: 'Catálogo — Kuutsu.pe',
+    description: 'Explora toda la colección de zapatos coquette. Envíos a todo Lima.',
+    url: '/catalogo',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Catálogo — Kuutsu.pe',
+    description: 'Explora toda la colección de zapatos coquette. Envíos a todo Lima.',
+  },
+}
 
 interface Props {
   searchParams: Promise<{ cat?: string; q?: string; sort?: string }>

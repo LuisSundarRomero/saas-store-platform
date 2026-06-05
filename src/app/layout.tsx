@@ -20,13 +20,36 @@ const josefin = Josefin_Sans({
   weight: ['300', '400', '600', '700'],
 })
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://kuutsu.pe'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(APP_URL),
   title: {
-    default: 'Kuutsu.pe — Moda que te define',
+    default: 'Kuutsu.pe — Zapatos coquette exclusivos',
     template: '%s | Kuutsu.pe',
   },
-  description: 'Zapatos coquette exclusivos en Miraflores, Lima. Modelos originales de la tienda. Pide por WhatsApp · Calle Cantuarias 140 tienda #141.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
+  description: 'Zapatos coquette exclusivos en Lima. Modelos originales de bota peluche, Mary Jane y más. Pide por WhatsApp con envío a todo Lima.',
+  keywords: ['zapatos coquette', 'botas Lima', 'zapatos Lima', 'bota peluche', 'mary jane', 'kuutsu', 'moda femenina Peru'],
+  authors: [{ name: 'Kuutsu.pe' }],
+  creator: 'Kuutsu.pe',
+  openGraph: {
+    type: 'website',
+    locale: 'es_PE',
+    url: APP_URL,
+    siteName: 'Kuutsu.pe',
+    title: 'Kuutsu.pe — Zapatos coquette exclusivos',
+    description: 'Zapatos coquette exclusivos en Lima. Modelos originales de bota peluche, Mary Jane y más. Pide por WhatsApp.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kuutsu.pe — Zapatos coquette exclusivos',
+    description: 'Zapatos coquette exclusivos en Lima. Modelos originales de bota peluche, Mary Jane y más.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
 }
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID

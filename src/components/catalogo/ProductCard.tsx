@@ -3,16 +3,11 @@ import Link from 'next/link'
 import { Producto } from '@/types'
 import { formatPrice } from '@/lib/utils/format'
 
-function isNuevo(createdAt: string, dias = 14) {
-  return (Date.now() - new Date(createdAt).getTime()) < 1000 * 60 * 60 * 24 * dias
-}
-
 interface ProductCardProps {
   producto: Producto
-  nuevoDias?: number
 }
 
-export function ProductCard({ producto, nuevoDias = 14 }: ProductCardProps) {
+export function ProductCard({ producto }: ProductCardProps) {
   const agotado  = producto.stock !== null && producto.stock === 0
   const stockBajo = producto.stock !== null && producto.stock > 0 && producto.stock <= 5
   const imagen   = producto.imagenes?.[0]
@@ -20,7 +15,7 @@ export function ProductCard({ producto, nuevoDias = 14 }: ProductCardProps) {
   const descuento = producto.precio_antes
     ? Math.round((1 - producto.precio / producto.precio_antes) * 100)
     : null
-  const nuevo = producto.es_nuevo || isNuevo(producto.created_at, nuevoDias)
+  const nuevo = producto.es_nuevo
 
   return (
     <Link href={`/catalogo/${producto.slug}`} className="group flex flex-col">
@@ -50,13 +45,8 @@ export function ProductCard({ producto, nuevoDias = 14 }: ProductCardProps) {
           <div className="absolute inset-0 flex items-center justify-center text-gray-200 text-4xl">👟</div>
         )}
 
-        {/* Badges */}
+        {/* Badge descuento — izquierda */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
-          {nuevo && !descuento && (
-            <span className="bg-gray-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-              NUEVO
-            </span>
-          )}
           {descuento && (
             <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
               -{descuento}%
@@ -69,6 +59,15 @@ export function ProductCard({ producto, nuevoDias = 14 }: ProductCardProps) {
             </span>
           )}
         </div>
+
+        {/* Badge NUEVO — derecha */}
+        {nuevo && (
+          <div className="absolute top-2.5 right-2.5">
+            <span className="bg-gray-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+              NUEVO
+            </span>
+          </div>
+        )}
 
         {agotado && (
           <div className="absolute inset-0 bg-black/20 flex items-end justify-center pb-4">
