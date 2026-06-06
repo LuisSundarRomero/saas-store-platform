@@ -9,33 +9,37 @@ import { useRouter } from 'next/navigation'
 import { IconBrandWhatsapp, IconCheck, IconX } from '@tabler/icons-react'
 
 const BADGE: Record<EstadoPedido, { bg: string; color: string }> = {
-  pendiente:   { bg: '#FEF3C7', color: '#92400E' },
-  empaquetado: { bg: '#DBEAFE', color: '#1D4ED8' },
-  en_camino:   { bg: '#EDE9FE', color: '#5B21B6' },
-  entregado:   { bg: '#D1FAE5', color: '#065F46' },
+  pendiente:        { bg: '#FEF3C7', color: '#92400E' },
+  pago_confirmado:  { bg: '#FCE7F3', color: '#BE185D' },
+  empaquetado:      { bg: '#DBEAFE', color: '#1D4ED8' },
+  en_camino:        { bg: '#EDE9FE', color: '#5B21B6' },
+  entregado:        { bg: '#D1FAE5', color: '#065F46' },
 }
 
-const ESTADOS: EstadoPedido[] = ['pendiente', 'empaquetado', 'en_camino', 'entregado']
+const ESTADOS: EstadoPedido[] = ['pendiente', 'pago_confirmado', 'empaquetado', 'en_camino', 'entregado']
 
 const ESTADO_LABEL: Record<EstadoPedido, string> = {
-  pendiente:   'Pendiente',
-  empaquetado: 'Empaquetado',
-  en_camino:   'En camino',
-  entregado:   'Entregado',
+  pendiente:        'Pendiente',
+  pago_confirmado:  'Pago confirmado',
+  empaquetado:      'Empaquetado',
+  en_camino:        'En camino',
+  entregado:        'Entregado',
 }
 
 const ESTADO_EMOJI: Record<EstadoPedido, string> = {
-  pendiente:   '⏳',
-  empaquetado: '📦',
-  en_camino:   '🚚',
-  entregado:   '✅',
+  pendiente:        '⏳',
+  pago_confirmado:  '💳',
+  empaquetado:      '📦',
+  en_camino:        '🚚',
+  entregado:        '✅',
 }
 
 const ESTADO_MSG: Record<EstadoPedido, string> = {
-  pendiente:   'Tu pedido está siendo revisado.',
-  empaquetado: 'Tu pedido ya está empaquetado y listo para salir.',
-  en_camino:   '¡Tu pedido está en camino! Pronto llegará a ti.',
-  entregado:   '¡Tu pedido fue entregado! Esperamos que lo disfrutes. 🎀',
+  pendiente:        'Tu pedido está siendo revisado.',
+  pago_confirmado:  'Hemos recibido tu pago. ¡Gracias!',
+  empaquetado:      'Tu pedido ya está empaquetado y listo para salir.',
+  en_camino:        '¡Tu pedido está en camino! Pronto llegará a ti.',
+  entregado:        '¡Tu pedido fue entregado! Esperamos que lo disfrutes. 🎀',
 }
 
 interface ModalInfo {
@@ -56,7 +60,10 @@ export function PedidosTable({ pedidos }: Props) {
     startTransition(async () => {
       await updateEstadoPedido(pedidoId, nuevoEstado)
       router.refresh()
-      setModal({ orderId, clienteTelefono, nuevoEstado })
+      // Pago confirmado: solo guardar, sin notificar por WhatsApp
+      if (nuevoEstado !== 'pago_confirmado') {
+        setModal({ orderId, clienteTelefono, nuevoEstado })
+      }
     })
   }
 

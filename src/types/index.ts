@@ -1,4 +1,4 @@
-export type EstadoPedido = 'pendiente' | 'empaquetado' | 'en_camino' | 'entregado'
+export type EstadoPedido = 'pendiente' | 'pago_confirmado' | 'empaquetado' | 'en_camino' | 'entregado'
 
 export interface Categoria {
   id: string

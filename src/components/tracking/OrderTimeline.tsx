@@ -1,16 +1,17 @@
 'use client'
 
-import { IconClock, IconPackage, IconTruck, IconCircleCheck } from '@tabler/icons-react'
+import { IconClock, IconPackage, IconTruck, IconCircleCheck, IconCreditCard } from '@tabler/icons-react'
 import { EstadoPedido } from '@/types'
 
 const ESTADOS: { key: EstadoPedido; label: string; icon: React.ReactNode }[] = [
-  { key: 'pendiente',    label: 'Pendiente',    icon: <IconClock size={18} /> },
-  { key: 'empaquetado',  label: 'Empaquetado',  icon: <IconPackage size={18} /> },
-  { key: 'en_camino',    label: 'En camino',    icon: <IconTruck size={18} /> },
-  { key: 'entregado',    label: 'Entregado',    icon: <IconCircleCheck size={18} /> },
+  { key: 'pendiente',       label: 'Pendiente',        icon: <IconClock size={18} /> },
+  { key: 'pago_confirmado', label: 'Pago confirmado',  icon: <IconCreditCard size={18} /> },
+  { key: 'empaquetado',     label: 'Empaquetado',      icon: <IconPackage size={18} /> },
+  { key: 'en_camino',       label: 'En camino',        icon: <IconTruck size={18} /> },
+  { key: 'entregado',       label: 'Entregado',        icon: <IconCircleCheck size={18} /> },
 ]
 
-const ORDER: EstadoPedido[] = ['pendiente', 'empaquetado', 'en_camino', 'entregado']
+const ORDER: EstadoPedido[] = ['pendiente', 'pago_confirmado', 'empaquetado', 'en_camino', 'entregado']
 
 interface Props {
   estadoActual: EstadoPedido

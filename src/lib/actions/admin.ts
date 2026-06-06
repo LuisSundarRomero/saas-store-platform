@@ -46,11 +46,13 @@ export async function getPedidoAdmin(orderId: string) {
   return data
 }
 
-export async function updateEstadoPedido(pedidoId: string, estado: EstadoPedido) {
+export async function updateEstadoPedido(pedidoId: string, estado: EstadoPedido, comprobanteUrl?: string) {
   const supabase = await createClient()
+  const updates: Record<string, unknown> = { estado }
+  if (comprobanteUrl) updates.comprobante_url = comprobanteUrl
   const { error } = await supabase
     .from('pedidos')
-    .update({ estado })
+    .update(updates)
     .eq('id', pedidoId)
   if (error) throw new Error(error.message)
 }

@@ -257,6 +257,25 @@ ON CONFLICT DO NOTHING;
 -- ─── ALTER: columnas config agregadas después del schema inicial ─
 ALTER TABLE config ADD COLUMN IF NOT EXISTS hero_imagenes_visible BOOLEAN DEFAULT true;
 
+-- ─── ALTER: estado pago_confirmado + comprobante (2026-06-06) ────
+-- 1. Ampliar el CHECK constraint de pedidos.estado
+ALTER TABLE pedidos DROP CONSTRAINT IF EXISTS pedidos_estado_check;
+ALTER TABLE pedidos ADD CONSTRAINT pedidos_estado_check
+  CHECK (estado IN ('pendiente','pago_confirmado','empaquetado','en_camino','entregado'));
+
+-- 2. Columna para guardar URL de la captura de pago
+ALTER TABLE pedidos ADD COLUMN IF NOT EXISTS comprobante_url TEXT;
+
+-- 3. Bucket de storage para comprobantes (ejecutar una sola vez)
+-- INSERT INTO storage.buckets (id, name, public) VALUES ('comprobantes', 'comprobantes', true) ON CONFLICT DO NOTHING;
+
+-- 4. Políticas de storage para comprobantes
+CREATE POLICY IF NOT EXISTS "comprobantes_admin_upload" ON storage.objects
+  FOR INSERT TO authenticated WITH CHECK (bucket_id = 'comprobantes');
+
+CREATE POLICY IF NOT EXISTS "comprobantes_admin_read" ON storage.objects
+  FOR SELECT TO authenticated USING (bucket_id = 'comprobantes');
+
 -- ─── FIN ────────────────────────────────────────────────────────
 -- Verificar con:
 -- SELECT tablename FROM pg_tables WHERE schemaname = 'public';
