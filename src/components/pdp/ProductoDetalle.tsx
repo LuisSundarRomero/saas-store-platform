@@ -88,7 +88,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
 
   function buildWhatsAppDirectUrl() {
     const numero = whatsappNumero
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://kuutsu-pe.vercel.app'
     const talla = tallaSeleccionada ? `Talla: ${tallaSeleccionada}` : ''
     const color = colorSeleccionado ? `Color: ${colorSeleccionado}` : ''
     const variante = [talla, color].filter(Boolean).join(' · ')

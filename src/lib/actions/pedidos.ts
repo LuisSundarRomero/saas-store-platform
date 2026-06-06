@@ -82,7 +82,7 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     .select('whatsapp_numero, whatsapp_template, email_notificaciones')
     .single()
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://kuutsu-pe.vercel.app'
   const trackingUrl = `${appUrl}/pedido/${orderId}`
 
   const numero = (config?.whatsapp_numero ?? process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '').replace(/\s/g, '')
