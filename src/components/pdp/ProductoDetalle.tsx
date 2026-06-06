@@ -24,6 +24,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
     producto.colores.length === 1 ? producto.colores[0] : null
   )
   const [agregado, setAgregado] = useState(false)
+  const [shakeField, setShakeField] = useState<'talla' | 'color' | null>(null)
   const addItem = useCarrito((s) => s.addItem)
 
   const agotado = producto.stock !== null && producto.stock === 0
@@ -50,7 +51,19 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
   }, [producto])
 
   function handleAgregar() {
-    if (!puedeAgregar) return
+    if (agotado) return
+    if (necesitaTalla && !tallaSeleccionada) {
+      setShakeField('talla')
+      setTimeout(() => setShakeField(null), 600)
+      document.getElementById('selector-talla')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
+    if (necesitaColor && !colorSeleccionado) {
+      setShakeField('color')
+      setTimeout(() => setShakeField(null), 600)
+      document.getElementById('selector-color')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
     addItem({
       productoId: producto.id,
       nombre: producto.nombre,
@@ -176,17 +189,20 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
 
             {/* Tallas — ANTES de la descripción para que estén visible en mobile */}
             {necesitaTalla && (
-              <div className="mb-5">
+              <div id="selector-talla" className="mb-5">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-semibold text-gray-800">
                     Talla {tallaSeleccionada
                       ? <span className="font-normal text-gray-500">— {tallaSeleccionada}</span>
-                      : <span className="font-normal text-red-400 text-xs ml-1">Selecciona una</span>
+                      : shakeField === 'talla'
+                        ? <span className="font-normal text-red-500 text-xs ml-1 animate-pulse">← Selecciona una talla</span>
+                        : <span className="font-normal text-gray-400 text-xs ml-1">Selecciona una</span>
                     }
                   </p>
                   <SizeGuide />
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className={`flex flex-wrap gap-2 ${shakeField === 'talla' ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}
+                  style={shakeField === 'talla' ? { outline: '2px solid #FCA5A5', borderRadius: 12, padding: '8px' } : {}}>
                   {producto.tallas.map((t) => {
                     const sel = tallaSeleccionada === t
                     return (
@@ -213,14 +229,17 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
 
             {/* Colores */}
             {necesitaColor && (
-              <div className="mb-5">
+              <div id="selector-color" className="mb-5">
                 <p className="text-sm font-semibold text-gray-800 mb-3">
                   Color {colorSeleccionado
                     ? <span className="font-normal text-gray-500 capitalize">— {colorSeleccionado}</span>
-                    : <span className="font-normal text-red-400 text-xs ml-1">Selecciona uno</span>
+                    : shakeField === 'color'
+                      ? <span className="font-normal text-red-500 text-xs ml-1 animate-pulse">← Selecciona un color</span>
+                      : <span className="font-normal text-gray-400 text-xs ml-1">Selecciona uno</span>
                   }
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className={`flex flex-wrap gap-2 ${shakeField === 'color' ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}
+                  style={shakeField === 'color' ? { outline: '2px solid #FCA5A5', borderRadius: 12, padding: '8px' } : {}}>
                   {producto.colores.map((c) => {
                     const sel = colorSeleccionado === c
                     return (
@@ -257,12 +276,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
             <div className="flex flex-col gap-3 mt-4 pb-10">
               <BtnAgregar
                 agotado={agotado}
-                puedeAgregar={puedeAgregar}
                 agregado={agregado}
-                necesitaTalla={necesitaTalla}
-                necesitaColor={necesitaColor}
-                tallaSeleccionada={tallaSeleccionada}
-                colorSeleccionado={colorSeleccionado}
                 onClick={handleAgregar}
               />
               <a
@@ -285,20 +299,11 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
 
 interface BtnProps {
   agotado: boolean
-  puedeAgregar: boolean
   agregado: boolean
-  necesitaTalla: boolean
-  necesitaColor: boolean
-  tallaSeleccionada: string | null
-  colorSeleccionado: string | null
   onClick: () => void
 }
 
-
-function BtnAgregar({ agotado, puedeAgregar, agregado, necesitaTalla, necesitaColor, tallaSeleccionada, colorSeleccionado, onClick }: BtnProps) {
-  const faltaTalla = necesitaTalla && tallaSeleccionada === null
-  const faltaColor = necesitaColor && colorSeleccionado === null
-
+function BtnAgregar({ agotado, agregado, onClick }: BtnProps) {
   if (agotado) {
     return (
       <button disabled className="w-full py-3.5 rounded-full bg-gray-100 text-gray-400 font-semibold cursor-not-allowed text-sm">
@@ -311,24 +316,18 @@ function BtnAgregar({ agotado, puedeAgregar, agregado, necesitaTalla, necesitaCo
     <button
       type="button"
       onClick={onClick}
-      disabled={!puedeAgregar}
       className="w-full py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 transition-all text-sm"
       style={{
-        backgroundColor: agregado ? '#10B981' : puedeAgregar ? '#EC4899' : '#F3F4F6',
-        color: puedeAgregar || agregado ? '#fff' : '#9CA3AF',
-        cursor: puedeAgregar ? 'pointer' : 'not-allowed',
+        backgroundColor: agregado ? '#10B981' : '#EC4899',
+        color: '#fff',
+        boxShadow: agregado ? '0 4px 20px rgba(16,185,129,0.3)' : '0 4px 20px rgba(236,72,153,0.3)',
         touchAction: 'manipulation',
       }}
     >
-      {agregado ? (
-        <><IconCheck size={18} /> Agregado al carrito</>
-      ) : faltaTalla ? (
-        <><IconShoppingBag size={18} /> Selecciona una talla</>
-      ) : faltaColor ? (
-        <><IconShoppingBag size={18} /> Selecciona un color</>
-      ) : (
-        <><IconShoppingBag size={18} /> Agregar al carrito</>
-      )}
+      {agregado
+        ? <><IconCheck size={18} /> Agregado al carrito</>
+        : <><IconShoppingBag size={18} /> Agregar al carrito</>
+      }
     </button>
   )
 }

@@ -3,6 +3,7 @@ import { getCategorias, getProductos } from '@/lib/actions/productos'
 import { ProductCard } from '@/components/catalogo/ProductCard'
 import { CategoryChips } from '@/components/catalogo/CategoryChips'
 import { SortSelect } from '@/components/catalogo/SortSelect'
+import { SearchBar } from '@/components/catalogo/SearchBar'
 import type { Metadata } from 'next'
 
 export const revalidate = 30
@@ -48,7 +49,7 @@ export default async function CatalogoPage({ searchParams }: Props) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
             <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
               {q ? `"${q}"` : categoriaActual ? categoriaActual.nombre : 'Todos los productos'}
@@ -57,9 +58,14 @@ export default async function CatalogoPage({ searchParams }: Props) {
               {productos.length} {productos.length === 1 ? 'producto' : 'productos'}
             </p>
           </div>
-          <Suspense>
-            <SortSelect />
-          </Suspense>
+          <div className="flex items-center gap-2">
+            <Suspense>
+              <SearchBar />
+            </Suspense>
+            <Suspense>
+              <SortSelect />
+            </Suspense>
+          </div>
         </div>
 
         {productos.length === 0 ? (
