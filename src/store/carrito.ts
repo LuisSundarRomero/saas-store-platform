@@ -6,6 +6,9 @@ import { CartItem } from '@/types'
 
 interface CartStore {
   items: CartItem[]
+  isOpen: boolean
+  openCart: () => void
+  closeCart: () => void
   addItem: (item: CartItem) => void
   removeItem: (productoId: string, talla: string, color: string) => void
   updateQty: (productoId: string, talla: string, color: string, qty: number) => void
@@ -18,6 +21,10 @@ export const useCarrito = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      isOpen: false,
+
+      openCart: () => set({ isOpen: true }),
+      closeCart: () => set({ isOpen: false }),
 
       addItem: (item) => {
         set((state) => {
@@ -75,6 +82,8 @@ export const useCarrito = create<CartStore>()(
     }),
     {
       name: 'saas-ropa-cart',
+      // isOpen nunca se persiste — siempre empieza cerrado
+      partialize: (state) => ({ items: state.items }),
     }
   )
 )

@@ -11,9 +11,11 @@ interface NavbarProps {
 }
 
 export function Navbar({ tiendaNombre = 'Kuutsu.pe' }: NavbarProps) {
-  const [cartOpen, setCartOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const itemCount = useCarrito((s) => s.itemCount)
+  const isOpen   = useCarrito((s) => s.isOpen)
+  const openCart  = useCarrito((s) => s.openCart)
+  const closeCart = useCarrito((s) => s.closeCart)
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -37,7 +39,7 @@ export function Navbar({ tiendaNombre = 'Kuutsu.pe' }: NavbarProps) {
 
             <button
               type="button"
-              onClick={() => setCartOpen(true)}
+              onClick={openCart}
               className="relative p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-800"
             >
               <IconShoppingBag size={22} />
@@ -54,7 +56,7 @@ export function Navbar({ tiendaNombre = 'Kuutsu.pe' }: NavbarProps) {
         </div>
       </header>
 
-      {mounted && <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />}
+      {mounted && <CartDrawer open={isOpen} onClose={closeCart} />}
     </>
   )
 }

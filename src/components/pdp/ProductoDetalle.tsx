@@ -25,7 +25,8 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
   )
   const [agregado, setAgregado] = useState(false)
   const [shakeField, setShakeField] = useState<'talla' | 'color' | null>(null)
-  const addItem = useCarrito((s) => s.addItem)
+  const addItem  = useCarrito((s) => s.addItem)
+  const openCart = useCarrito((s) => s.openCart)
 
   const agotado = producto.stock !== null && producto.stock === 0
   const stockBajo = producto.stock !== null && producto.stock > 0 && producto.stock <= 5
@@ -80,6 +81,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
       talla: tallaSeleccionada,
       color: colorSeleccionado,
     })
+    openCart()
     setAgregado(true)
     setTimeout(() => setAgregado(false), 2000)
   }
