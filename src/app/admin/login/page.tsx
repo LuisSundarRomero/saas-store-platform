@@ -1,6 +1,11 @@
 import { LoginForm } from '@/components/admin/LoginForm'
+import { createClient } from '@/lib/supabase/server'
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const supabase = await createClient()
+  const { data: config } = await supabase.from('config').select('tienda_nombre').single()
+  const tiendaNombre = config?.tienda_nombre ?? 'Panel admin'
+
   return (
     <main
       className="min-h-screen flex flex-col items-center justify-center px-5 py-10"
@@ -17,7 +22,7 @@ export default function LoginPage() {
             <span className="text-2xl">🎀</span>
           </div>
           <h1 className="font-serif text-3xl font-semibold" style={{ color: '#EC4899' }}>
-            Kuutsu.pe
+            {tiendaNombre}
           </h1>
           <p className="text-xs text-gray-400 mt-1">Panel de administración</p>
         </div>
