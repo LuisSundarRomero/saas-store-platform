@@ -113,14 +113,22 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
   return { orderId, whatsappUrl }
 }
 
+function normalizarTelefono(tel: string): string {
+  const limpio = tel.replace(/[\s\-\+\(\)]/g, '')
+  // Si tiene 9 dígitos es número peruano sin código de país → agregar 51
+  if (limpio.length === 9 && /^\d+$/.test(limpio)) return `51${limpio}`
+  return limpio
+}
+
 export async function verificarPedido(orderId: string, telefono: string) {
   const admin = getAdminClient()
+  const telefonoNormalizado = normalizarTelefono(telefono)
 
   const { data } = await admin
     .from('pedidos')
     .select('*, pedido_items(*), estado_historial(estado, changed_at)')
     .eq('order_id', orderId)
-    .eq('cliente_telefono', telefono.replace(/\s/g, ''))
+    .eq('cliente_telefono', telefonoNormalizado)
     .single()
 
   return data
