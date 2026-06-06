@@ -6,25 +6,25 @@ export default function LoginPage() {
 
       {/* Top — fondo rosa con branding */}
       <div
-        className="flex flex-col items-center justify-end pb-10 pt-16 px-6 flex-none"
+        className="flex flex-col items-center justify-end pb-8 pt-10 px-6 flex-none"
         style={{ background: 'linear-gradient(160deg, #FBCFE8 0%, #F9A8D4 40%, #EC4899 100%)' }}
       >
         {/* Anillo decorativo */}
         <div
-          className="flex items-center justify-center rounded-full mb-5"
+          className="flex items-center justify-center rounded-full mb-3"
           style={{
-            width: 72, height: 72,
+            width: 52, height: 52,
             background: 'rgba(255,255,255,0.25)',
-            boxShadow: '0 0 0 12px rgba(255,255,255,0.12)',
+            boxShadow: '0 0 0 8px rgba(255,255,255,0.12)',
           }}
         >
-          <span className="text-3xl">🎀</span>
+          <span className="text-2xl">🎀</span>
         </div>
 
-        <h1 className="font-serif text-4xl font-semibold text-white" style={{ letterSpacing: '-0.01em' }}>
+        <h1 className="font-serif text-3xl font-semibold text-white" style={{ letterSpacing: '-0.01em' }}>
           Kuutsu.pe
         </h1>
-        <p className="text-pink-100 text-sm mt-1.5 font-medium">Panel de administración</p>
+        <p className="text-pink-100 text-xs mt-1 font-medium">Panel de administración</p>
       </div>
 
       {/* Bottom — card blanca con forma de "sheet" */}
