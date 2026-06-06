@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
-import { createClient } from '@/lib/supabase/server'
 import { CartItem } from '@/types'
 import { buildWhatsAppURL } from '@/lib/utils/whatsapp'
 import { enviarEmailNuevoPedido } from '@/lib/utils/email'
@@ -113,23 +112,16 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
   return { orderId, whatsappUrl }
 }
 
-function normalizarTelefono(tel: string): string {
-  const limpio = tel.replace(/[\s\-\+\(\)]/g, '')
-  // Si tiene 9 dígitos es número peruano sin código de país → agregar 51
-  if (limpio.length === 9 && /^\d+$/.test(limpio)) return `51${limpio}`
-  return limpio
-}
-
 export async function verificarPedido(orderId: string, telefono: string) {
-  const admin = getAdminClient()
-  const telefonoNormalizado = normalizarTelefono(telefono)
-
-  const { data } = await admin
-    .from('pedidos')
-    .select('*, pedido_items(*), estado_historial(estado, changed_at)')
-    .eq('order_id', orderId)
-    .eq('cliente_telefono', telefonoNormalizado)
-    .single()
-
-  return data
+  // Cliente público sin manejo de sesión — la función SQL usa SECURITY DEFINER
+  const supabase = createSupabaseAdmin(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+  const { data, error } = await supabase.rpc('verificar_pedido', {
+    p_order_id: orderId,
+    p_tel: telefono,
+  })
+  if (error) console.error('[verificarPedido]', error.message)
+  return data ?? null
 }

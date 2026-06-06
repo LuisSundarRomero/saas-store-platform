@@ -1,12 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useRef } from 'react'
 import { EstadoPedido } from '@/types'
 import { formatPrice, formatDate } from '@/lib/utils/format'
 import { updateEstadoPedido } from '@/lib/actions/admin'
 import { useRouter } from 'next/navigation'
-import { IconBrandWhatsapp, IconCheck, IconX } from '@tabler/icons-react'
+import { IconBrandWhatsapp, IconCheck, IconX, IconUpload } from '@tabler/icons-react'
+import { createClient } from '@/lib/supabase/client'
 
 const BADGE: Record<EstadoPedido, { bg: string; color: string }> = {
   pendiente:        { bg: '#FEF3C7', color: '#92400E' },
@@ -48,22 +49,70 @@ interface ModalInfo {
   nuevoEstado: EstadoPedido
 }
 
+interface ComprobanteModalInfo {
+  pedidoId: string
+  orderId: string
+}
+
 interface Props { pedidos: any[] }
 
 export function PedidosTable({ pedidos }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [modal, setModal] = useState<ModalInfo | null>(null)
+  const [comprobanteModal, setComprobanteModal] = useState<ComprobanteModalInfo | null>(null)
+  const [comprobanteFile, setComprobanteFile] = useState<File | null>(null)
+  const [comprobantePreview, setComprobantePreview] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
 
   function handleEstado(pedidoId: string, nuevoEstado: EstadoPedido, orderId: string, clienteTelefono: string) {
+    if (nuevoEstado === 'pago_confirmado') {
+      setComprobanteModal({ pedidoId, orderId })
+      setComprobanteFile(null)
+      setComprobantePreview(null)
+      setUploadError('')
+      return
+    }
     startTransition(async () => {
       await updateEstadoPedido(pedidoId, nuevoEstado)
       router.refresh()
-      // Pago confirmado: solo guardar, sin notificar por WhatsApp
-      if (nuevoEstado !== 'pago_confirmado') {
-        setModal({ orderId, clienteTelefono, nuevoEstado })
+      setModal({ orderId, clienteTelefono, nuevoEstado })
+    })
+  }
+
+  function handleComprobanteFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]
+    if (!f) return
+    setComprobanteFile(f)
+    setComprobantePreview(URL.createObjectURL(f))
+    setUploadError('')
+  }
+
+  function handleGuardarComprobante(omitir = false) {
+    if (!comprobanteModal) return
+    startTransition(async () => {
+      let comprobanteUrl: string | undefined
+      if (!omitir && comprobanteFile) {
+        const supabase = createClient()
+        const ext = comprobanteFile.name.split('.').pop()
+        const path = `comprobantes/${comprobanteModal.orderId}-${Date.now()}.${ext}`
+        const { data, error } = await supabase.storage
+          .from('comprobantes')
+          .upload(path, comprobanteFile, { upsert: true })
+        if (error) {
+          setUploadError('Error al subir imagen: ' + error.message)
+          return
+        }
+        const { data: urlData } = supabase.storage.from('comprobantes').getPublicUrl(data.path)
+        comprobanteUrl = urlData.publicUrl
       }
+      await updateEstadoPedido(comprobanteModal.pedidoId, 'pago_confirmado', comprobanteUrl)
+      router.refresh()
+      setComprobanteModal(null)
+      setComprobanteFile(null)
+      setComprobantePreview(null)
     })
   }
 
@@ -180,6 +229,90 @@ export function PedidosTable({ pedidos }: Props) {
           </table>
         </div>
       </div>
+
+      {/* ── Modal Comprobante (pago_confirmado) ── */}
+      {comprobanteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setComprobanteModal(null)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+
+            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center text-lg"
+                  style={{ backgroundColor: '#FCE7F3' }}>
+                  💳
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Pago confirmado</p>
+                  <p className="text-xs text-gray-400">#{comprobanteModal.orderId}</p>
+                </div>
+              </div>
+              <button onClick={() => setComprobanteModal(null)}
+                className="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors">
+                <IconX size={16} />
+              </button>
+            </div>
+
+            <div className="p-5">
+              <p className="text-xs font-semibold text-gray-500 mb-3">
+                Sube la captura del Yape / Plin / transferencia (opcional)
+              </p>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleComprobanteFileChange}
+              />
+
+              {comprobantePreview ? (
+                <div className="relative inline-block mb-3">
+                  <img src={comprobantePreview} alt="Comprobante"
+                    className="h-40 w-full object-cover rounded-xl border border-gray-200" />
+                  <button
+                    type="button"
+                    onClick={() => { setComprobanteFile(null); setComprobantePreview(null) }}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow">
+                    <IconX size={12} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full border-2 border-dashed border-gray-200 rounded-xl py-6 flex flex-col items-center gap-2 text-gray-400 hover:border-pink-300 hover:text-pink-500 transition-colors mb-3"
+                >
+                  <IconUpload size={22} />
+                  <span className="text-sm font-medium">Subir captura de pago</span>
+                  <span className="text-xs">JPG, PNG o WEBP</span>
+                </button>
+              )}
+
+              {uploadError && <p className="text-xs text-red-500 mb-2">{uploadError}</p>}
+            </div>
+
+            <div className="px-5 pb-5 flex flex-col gap-2">
+              <button
+                onClick={() => handleGuardarComprobante(false)}
+                disabled={isPending}
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-semibold text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                style={{ backgroundColor: '#EC4899' }}
+              >
+                <IconCheck size={16} />
+                {isPending ? 'Guardando...' : 'Guardar estado'}
+              </button>
+              <button
+                onClick={() => handleGuardarComprobante(true)}
+                disabled={isPending}
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-100 transition-colors disabled:opacity-50"
+              >
+                Omitir imagen y guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Modal WhatsApp ── */}
       {modal && (

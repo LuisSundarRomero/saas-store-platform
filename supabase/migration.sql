@@ -276,6 +276,58 @@ CREATE POLICY IF NOT EXISTS "comprobantes_admin_upload" ON storage.objects
 CREATE POLICY IF NOT EXISTS "comprobantes_admin_read" ON storage.objects
   FOR SELECT TO authenticated USING (bucket_id = 'comprobantes');
 
+-- ─── FUNCIÓN: verificar_pedido (2026-06-06) ──────────────────────
+-- Permite que el cliente (anon) verifique su pedido sin service_role.
+-- SECURITY DEFINER bypasea RLS. Normaliza teléfono con/sin prefijo 51.
+CREATE OR REPLACE FUNCTION verificar_pedido(p_order_id TEXT, p_tel TEXT)
+RETURNS JSON LANGUAGE plpgsql SECURITY DEFINER AS $$
+DECLARE
+  v_limpio TEXT;
+  tel_a    TEXT;
+  tel_b    TEXT;
+  result   JSON;
+BEGIN
+  v_limpio := regexp_replace(p_tel, '[\s\-\+\(\)]', '', 'g');
+
+  IF length(v_limpio) = 9 THEN
+    tel_a := '51' || v_limpio;
+    tel_b := v_limpio;
+  ELSIF v_limpio LIKE '51%' AND length(v_limpio) = 11 THEN
+    tel_a := v_limpio;
+    tel_b := substring(v_limpio FROM 3);
+  ELSE
+    tel_a := v_limpio;
+    tel_b := v_limpio;
+  END IF;
+
+  SELECT row_to_json(sub) INTO result
+  FROM (
+    SELECT
+      p.*,
+      (
+        SELECT json_agg(pi ORDER BY pi.id)
+        FROM pedido_items pi
+        WHERE pi.pedido_id = p.id
+      ) AS pedido_items,
+      (
+        SELECT json_agg(json_build_object('estado', eh.estado, 'changed_at', eh.changed_at)
+                        ORDER BY eh.changed_at)
+        FROM estado_historial eh
+        WHERE eh.pedido_id = p.id
+      ) AS estado_historial
+    FROM pedidos p
+    WHERE p.order_id = p_order_id
+      AND (p.cliente_telefono = tel_a OR p.cliente_telefono = tel_b)
+    LIMIT 1
+  ) sub;
+
+  RETURN result;
+END;
+$$;
+
+-- Permitir que el anon llame a esta función
+GRANT EXECUTE ON FUNCTION verificar_pedido(TEXT, TEXT) TO anon;
+
 -- ─── FIN ────────────────────────────────────────────────────────
 -- Verificar con:
 -- SELECT tablename FROM pg_tables WHERE schemaname = 'public';

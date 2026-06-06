@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { TrackingClient } from '@/components/tracking/TrackingClient'
@@ -14,23 +13,15 @@ interface Props {
 export default async function PedidoPage({ params }: Props) {
   const { orderId } = await params
 
+  // config tiene RLS pública — no necesita admin client
   const supabase = await createClient()
-
-  // Verificar que el pedido existe
-  const { data: pedido } = await supabase
-    .from('pedidos')
-    .select('order_id')
-    .eq('order_id', orderId)
-    .single()
-
-  if (!pedido) notFound()
-
-  // Obtener número de WhatsApp de config
   const { data: config } = await supabase
     .from('config')
     .select('whatsapp_numero')
     .single()
 
+  // No hacemos notFound() aquí: si el orderId no existe,
+  // verificarPedido() devolverá null y el cliente mostrará el error.
   return (
     <TrackingClient
       orderId={orderId}

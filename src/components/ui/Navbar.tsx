@@ -35,6 +35,9 @@ export function Navbar({ tiendaNombre = 'Kuutsu.pe' }: NavbarProps) {
               <Link href="/catalogo" className="text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors">
                 Catálogo
               </Link>
+              <Link href="/rastrear" className="text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors">
+                Rastrear pedido
+              </Link>
             </div>
 
             <button

@@ -94,7 +94,10 @@ export default async function PedidoDetalleAdmin({ params }: Props) {
           {/* Timeline */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5">
             <h2 className="font-semibold text-gray-800 mb-4">Estado del pedido</h2>
-            <OrderTimeline estadoActual={pedido.estado as EstadoPedido} />
+            <OrderTimeline
+              estadoActual={pedido.estado as EstadoPedido}
+              historial={pedido.estado_historial}
+            />
           </div>
         </div>
       </div>

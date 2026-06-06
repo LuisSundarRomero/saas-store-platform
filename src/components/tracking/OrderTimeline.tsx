@@ -4,64 +4,106 @@ import { IconClock, IconPackage, IconTruck, IconCircleCheck, IconCreditCard } fr
 import { EstadoPedido } from '@/types'
 
 const ESTADOS: { key: EstadoPedido; label: string; icon: React.ReactNode }[] = [
-  { key: 'pendiente',       label: 'Pendiente',        icon: <IconClock size={18} /> },
-  { key: 'pago_confirmado', label: 'Pago confirmado',  icon: <IconCreditCard size={18} /> },
-  { key: 'empaquetado',     label: 'Empaquetado',      icon: <IconPackage size={18} /> },
-  { key: 'en_camino',       label: 'En camino',        icon: <IconTruck size={18} /> },
-  { key: 'entregado',       label: 'Entregado',        icon: <IconCircleCheck size={18} /> },
+  { key: 'pendiente',       label: 'Pendiente',        icon: <IconClock size={16} /> },
+  { key: 'pago_confirmado', label: 'Pago confirmado',  icon: <IconCreditCard size={16} /> },
+  { key: 'empaquetado',     label: 'Empaquetado',      icon: <IconPackage size={16} /> },
+  { key: 'en_camino',       label: 'En camino',        icon: <IconTruck size={16} /> },
+  { key: 'entregado',       label: 'Entregado',        icon: <IconCircleCheck size={16} /> },
 ]
 
 const ORDER: EstadoPedido[] = ['pendiente', 'pago_confirmado', 'empaquetado', 'en_camino', 'entregado']
 
-interface Props {
-  estadoActual: EstadoPedido
+interface HistorialEntry {
+  estado: EstadoPedido
+  changed_at: string
 }
 
-export function OrderTimeline({ estadoActual }: Props) {
+interface Props {
+  estadoActual: EstadoPedido
+  historial?: HistorialEntry[]
+}
+
+function formatDateTime(iso: string) {
+  return new Intl.DateTimeFormat('es-PE', {
+    day: '2-digit',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(iso))
+}
+
+export function OrderTimeline({ estadoActual, historial }: Props) {
   const indexActual = ORDER.indexOf(estadoActual)
+  const fechaMap: Partial<Record<EstadoPedido, string>> = {}
+  historial?.forEach((h) => { fechaMap[h.estado] = h.changed_at })
 
   return (
-    <div className="flex flex-col gap-0">
+    <div className="flex flex-col">
       {ESTADOS.map((e, i) => {
         const completado = i < indexActual
         const activo = i === indexActual
         const futuro = i > indexActual
+        const fecha = fechaMap[e.key]
+        const isLast = i === ESTADOS.length - 1
 
         return (
-          <div key={e.key} className="flex items-start gap-3">
-            {/* Dot + línea */}
-            <div className="flex flex-col items-center">
+          <div key={e.key} className="flex gap-4">
+            {/* Columna izquierda: dot + línea */}
+            <div className="flex flex-col items-center" style={{ width: 36 }}>
               <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-                  completado
-                    ? 'bg-[--color-success-bg] text-[--color-success]'
+                className="flex items-center justify-center rounded-full shrink-0 transition-all"
+                style={{
+                  width: 36,
+                  height: 36,
+                  backgroundColor: completado
+                    ? '#DCFCE7'
                     : activo
-                    ? 'bg-[--color-brand] text-white'
-                    : 'bg-[--color-surface] text-[--color-border]'
-                }`}
+                    ? '#EC4899'
+                    : '#F3F4F6',
+                  color: completado
+                    ? '#16A34A'
+                    : activo
+                    ? '#ffffff'
+                    : '#D1D5DB',
+                  boxShadow: activo ? '0 0 0 4px #FCE7F3' : 'none',
+                }}
               >
                 {e.icon}
               </div>
-              {i < ESTADOS.length - 1 && (
+              {!isLast && (
                 <div
-                  className={`w-0.5 h-8 ${
-                    completado ? 'bg-[--color-success]' : 'bg-[--color-border]'
-                  }`}
+                  style={{
+                    width: 2,
+                    flex: 1,
+                    minHeight: 24,
+                    backgroundColor: completado ? '#86EFAC' : '#E5E7EB',
+                  }}
                 />
               )}
             </div>
 
-            {/* Label */}
-            <div className="pt-2 pb-8">
+            {/* Contenido */}
+            <div className={`pb-6 ${isLast ? 'pb-0' : ''}`} style={{ paddingTop: 7 }}>
               <p
-                className={`text-sm font-semibold ${
-                  futuro ? 'text-[--color-text-secondary] opacity-40' : 'text-[--color-text]'
-                } ${activo ? 'text-[--color-brand]' : ''}`}
+                className="text-sm font-semibold leading-tight"
+                style={{
+                  color: activo ? '#EC4899' : futuro ? '#D1D5DB' : '#111827',
+                }}
               >
                 {e.label}
               </p>
-              {activo && (
-                <p className="text-xs text-[--color-text-secondary] mt-0.5">Estado actual</p>
+              {activo && !fecha && (
+                <span
+                  className="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: '#FCE7F3', color: '#EC4899' }}
+                >
+                  Estado actual
+                </span>
+              )}
+              {fecha && (
+                <p className="text-xs mt-0.5" style={{ color: '#9CA3AF' }}>
+                  {formatDateTime(fecha)}
+                </p>
               )}
             </div>
           </div>
