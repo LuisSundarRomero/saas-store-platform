@@ -328,6 +328,9 @@ $$;
 -- Permitir que el anon llame a esta función
 GRANT EXECUTE ON FUNCTION verificar_pedido(TEXT, TEXT) TO anon;
 
+-- ─── ALTER: anuncio_link (2026-06-07) ───────────────────────────
+ALTER TABLE config ADD COLUMN IF NOT EXISTS anuncio_link TEXT;
+
 -- ─── FIN ────────────────────────────────────────────────────────
 -- Verificar con:
 -- SELECT tablename FROM pg_tables WHERE schemaname = 'public';

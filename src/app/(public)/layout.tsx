@@ -6,7 +6,7 @@ import { AnnouncementBar } from '@/components/ui/AnnouncementBar'
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const [{ data: config }, { data: categorias }] = await Promise.all([
-    supabase.from('config').select('tienda_nombre, footer_descripcion, footer_politica, whatsapp_numero, anuncio_visible, anuncio_texto, anuncio_expira, footer_info1, footer_info2, footer_info3, footer_info4').single(),
+    supabase.from('config').select('tienda_nombre, footer_descripcion, footer_politica, whatsapp_numero, anuncio_visible, anuncio_texto, anuncio_link, anuncio_expira, footer_info1, footer_info2, footer_info3, footer_info4').single(),
     supabase.from('categorias').select('nombre, slug').eq('activa', true).order('orden', { ascending: true }),
   ])
 
@@ -25,6 +25,7 @@ export default async function PublicLayout({ children }: { children: React.React
       {mostrarAnuncio && (
         <AnnouncementBar
           texto={config!.anuncio_texto}
+          link={config?.anuncio_link ?? null}
           expira={config?.anuncio_expira ?? null}
         />
       )}

@@ -54,6 +54,7 @@ export function ConfigForm({ config }: Props) {
   // Anuncio
   const [anuncioVisible,  setAnuncioVisible]  = useState(config?.anuncio_visible   ?? false)
   const [anuncioTexto,    setAnuncioTexto]    = useState(config?.anuncio_texto     ?? '')
+  const [anuncioLink,     setAnuncioLink]     = useState(config?.anuncio_link      ?? '')
   const [anuncioExpira,   setAnuncioExpira]   = useState(
     config?.anuncio_expira ? new Date(config.anuncio_expira).toISOString().slice(0, 16) : ''
   )
@@ -101,6 +102,7 @@ export function ConfigForm({ config }: Props) {
         footer_info4: footerInfo4,
         anuncio_visible: anuncioVisible,
         anuncio_texto: anuncioTexto,
+        anuncio_link: anuncioLink.trim() || null,
         anuncio_expira: anuncioExpira ? new Date(anuncioExpira).toISOString() : null,
         strip_visible: stripVisible,
         strip_item1: stripItem1,
@@ -243,6 +245,19 @@ export function ConfigForm({ config }: Props) {
                   placeholder="📍 Hoy estaremos en Feria Alameda Fest — Visítanos y llévate un descuento especial 🎀"
                 />
                 <p className="text-xs text-gray-400">Puedes incluir emojis y ubicación. Aparece en la barra rosada.</p>
+                <div>
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">
+                    Enlace al hacer clic (opcional)
+                  </label>
+                  <input
+                    type="text"
+                    value={anuncioLink}
+                    onChange={(e) => setAnuncioLink(e.target.value)}
+                    placeholder="/catalogo"
+                    className={inputCls}
+                  />
+                  <p className="text-xs text-gray-400 mt-1">Ej: /catalogo, /catalogo?cat=marinette</p>
+                </div>
               </div>
 
               {/* Expiración */}
