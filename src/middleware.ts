@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
 
   const supabase = createServerClient(
@@ -19,11 +19,10 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
+  // getUser() verifica el JWT con el servidor — más seguro que getSession()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!session && request.nextUrl.pathname.startsWith('/admin')) {
+  if (!user && request.nextUrl.pathname.startsWith('/admin')) {
     return NextResponse.redirect(new URL('/admin/login', request.url))
   }
 

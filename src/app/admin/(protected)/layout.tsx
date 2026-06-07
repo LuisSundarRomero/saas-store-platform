@@ -8,9 +8,9 @@ export default async function ProtectedLayout({
   children: React.ReactNode
 }) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!session) redirect('/admin/login')
+  if (!user) redirect('/admin/login')
 
   const { data: config } = await supabase.from('config').select('tienda_nombre').single()
   const tiendaNombre = config?.tienda_nombre ?? 'Kuutsu.pe'
