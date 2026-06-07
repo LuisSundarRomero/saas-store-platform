@@ -35,6 +35,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
   const total = useCarrito((s) => s.total)
   const clearCart = useCarrito((s) => s.clearCart)
   const [telefono, setTelefono] = useState('')
+  const [nombre, setNombre] = useState('')
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
 
@@ -58,14 +59,17 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
         const { orderId, whatsappUrl } = await createOrder({
           items,
+          clienteNombre: nombre.trim() || undefined,
           clienteTelefono: telefonoFormateado,
         })
 
         pushEvent('whatsapp_redirect', { order_id: orderId, total: total() })
-        window.open(whatsappUrl, '_blank')
         clearCart()
         setTelefono('')
+        setNombre('')
         onClose()
+        // Guardamos la URL de WA para que la página de confirmación la abra
+        sessionStorage.setItem('wa_pending', whatsappUrl)
         window.location.href = `/checkout/confirmacion?order=${orderId}`
       } catch (err: any) {
         console.error('[checkout]', err)
@@ -138,6 +142,21 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-500">Total del pedido</span>
               <span className="font-bold text-xl text-gray-900">{formatPrice(total())}</span>
+            </div>
+
+            {/* Input nombre */}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-gray-600">
+                Tu nombre <span className="text-gray-400 font-normal">(opcional)</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Ej: María"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                className="w-full border rounded-xl px-3 py-3 text-sm outline-none bg-white transition-colors"
+                style={{ borderColor: '#E5E7EB' }}
+              />
             </div>
 
             {/* Input teléfono */}

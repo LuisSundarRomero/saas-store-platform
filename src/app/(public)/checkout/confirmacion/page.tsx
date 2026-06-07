@@ -1,20 +1,36 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { IconBrandWhatsapp, IconPackage, IconArrowRight } from '@tabler/icons-react'
 
-interface Props {
-  searchParams: Promise<{ order?: string }>
-}
+export default function ConfirmacionPage() {
+  const searchParams = useSearchParams()
+  const order = searchParams.get('order')
+  const [waUrl, setWaUrl] = useState<string | null>(null)
+  const [waAbierto, setWaAbierto] = useState(false)
 
-export default async function ConfirmacionPage({ searchParams }: Props) {
-  const { order } = await searchParams
-  const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ''
+  useEffect(() => {
+    const url = sessionStorage.getItem('wa_pending')
+    if (url) {
+      sessionStorage.removeItem('wa_pending')
+      setWaUrl(url)
+    }
+  }, [])
+
+  function handleAbrirWhatsApp() {
+    if (!waUrl) return
+    window.open(waUrl, '_blank')
+    setWaAbierto(true)
+  }
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-12"
       style={{ background: 'linear-gradient(180deg, #fdf0f6 0%, #ffffff 50%)' }}>
       <div className="w-full max-w-sm">
 
-        {/* Icono animado */}
+        {/* Icono */}
         <div className="flex justify-center mb-6">
           <div className="w-20 h-20 rounded-full flex items-center justify-center text-4xl"
             style={{ backgroundColor: '#FCE7F3' }}>
@@ -25,10 +41,10 @@ export default async function ConfirmacionPage({ searchParams }: Props) {
         {/* Mensaje */}
         <div className="text-center mb-6">
           <h1 className="text-2xl font-serif font-bold text-gray-900 mb-2">
-            ¡Pedido enviado!
+            ¡Pedido listo!
           </h1>
           <p className="text-gray-500 text-sm leading-relaxed">
-            Tu pedido fue enviado por WhatsApp. Guarda tu código para rastrear el estado.
+            Tu pedido fue creado. Ahora envíalo por WhatsApp para confirmarlo.
           </p>
         </div>
 
@@ -48,6 +64,17 @@ export default async function ConfirmacionPage({ searchParams }: Props) {
 
         {/* Acciones */}
         <div className="flex flex-col gap-3">
+          {waUrl && (
+            <button
+              type="button"
+              onClick={handleAbrirWhatsApp}
+              className="w-full py-3.5 rounded-full font-semibold text-white text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
+              style={{ backgroundColor: '#25D366' }}>
+              <IconBrandWhatsapp size={18} />
+              {waAbierto ? 'Abrir WhatsApp de nuevo' : 'Enviar pedido por WhatsApp'}
+            </button>
+          )}
+
           {order && (
             <Link href={`/pedido/${order}`}
               className="w-full py-3.5 rounded-full font-semibold text-white text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
@@ -56,15 +83,6 @@ export default async function ConfirmacionPage({ searchParams }: Props) {
               Rastrear mi pedido
             </Link>
           )}
-
-          <a href={`https://wa.me/${whatsapp.replace(/\s/g, '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-3.5 rounded-full font-semibold text-white text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#25D366' }}>
-            <IconBrandWhatsapp size={18} />
-            Hablar con nosotras
-          </a>
 
           <Link href="/catalogo"
             className="w-full py-3 rounded-full font-medium text-sm flex items-center justify-center gap-1.5 border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
