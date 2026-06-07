@@ -50,7 +50,7 @@ export function AnnouncementBar({ texto, link, expira }: Props) {
   if (dismissed || expired) return null
 
   const contenido = (
-    <span className="text-center leading-snug">
+    <span className="text-center leading-snug w-full block">
       {texto}
       {remaining && (
         <span className="ml-2 bg-white/20 px-2 py-0.5 rounded-full text-xs font-bold tabular-nums">
