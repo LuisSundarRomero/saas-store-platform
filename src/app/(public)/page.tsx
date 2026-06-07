@@ -2,10 +2,9 @@ import Link from 'next/link'
 import { IconBrandWhatsapp } from '@tabler/icons-react'
 import { getCategorias, getProductos, getProductosDestacados } from '@/lib/actions/productos'
 import { ProductCard } from '@/components/catalogo/ProductCard'
-import { unstable_noStore as noStore } from 'next/cache'
 import type { Metadata } from 'next'
 
-export const revalidate = 0
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'Kuutsu.pe — Zapatos coquette exclusivos',
@@ -24,7 +23,6 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  noStore()
   const { createClient } = await import('@/lib/supabase/server')
   const supabase = await createClient()
   const { data: config } = await supabase.from('config').select('*').single()

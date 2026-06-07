@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { IconArrowLeft, IconShoppingBag } from '@tabler/icons-react'
 
-
 export default function NotFound() {
   return (
     <main
@@ -9,15 +8,6 @@ export default function NotFound() {
       style={{ background: 'linear-gradient(160deg, #fff5f9 0%, #fce7f3 40%, #ffffff 100%)' }}
     >
       <div className="text-center max-w-sm w-full">
-
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <img
-            src="/web-app-manifest-192x192.png"
-            alt="Kuutsu"
-            className="w-24 h-24 rounded-3xl"
-          />
-        </div>
 
         {/* Código */}
         <p className="text-8xl font-bold mb-2" style={{ color: '#F9A8D4' }}>404</p>
