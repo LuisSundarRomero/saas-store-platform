@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { IconArrowLeft, IconShoppingBag } from '@tabler/icons-react'
 
+
 export default function NotFound() {
   return (
     <main
@@ -9,14 +10,13 @@ export default function NotFound() {
     >
       <div className="text-center max-w-sm w-full">
 
-        {/* Emoji grande */}
+        {/* Logo */}
         <div className="flex justify-center mb-6">
-          <div
-            className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl"
-            style={{ backgroundColor: '#FCE7F3' }}
-          >
-            👟
-          </div>
+          <img
+            src="/web-app-manifest-192x192.png"
+            alt="Kuutsu"
+            className="w-24 h-24 rounded-3xl"
+          />
         </div>
 
         {/* Código */}
