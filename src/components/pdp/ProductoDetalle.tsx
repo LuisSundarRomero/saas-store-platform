@@ -270,7 +270,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
             {producto.descripcion && (
               <div className="border-t border-gray-100 pt-4 mb-5">
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Descripción</p>
-                <p className="text-gray-500 text-sm leading-relaxed">{producto.descripcion}</p>
+                <p className="text-gray-500 text-sm leading-relaxed whitespace-pre-line">{producto.descripcion}</p>
               </div>
             )}
 
