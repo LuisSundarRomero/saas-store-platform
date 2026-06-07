@@ -44,5 +44,35 @@ export default async function ProductoPage({ params }: Props) {
 
   const whatsappNumero = (config?.whatsapp_numero ?? '').replace(/\s/g, '')
 
-  return <ProductoDetalle producto={producto} whatsappNumero={whatsappNumero} />
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://kuutsu-pe.vercel.app'
+  const agotado = producto.stock !== null && producto.stock === 0
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: producto.nombre,
+    description: producto.descripcion ?? `${producto.nombre} — Zapatos coquette exclusivos en Lima`,
+    image: producto.imagenes ?? [],
+    url: `${appUrl}/catalogo/${producto.slug}`,
+    brand: { '@type': 'Brand', name: 'Kuutsu' },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'PEN',
+      price: (producto.precio / 100).toFixed(2),
+      availability: agotado
+        ? 'https://schema.org/OutOfStock'
+        : 'https://schema.org/InStock',
+      seller: { '@type': 'Organization', name: 'Kuutsu.pe' },
+    },
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ProductoDetalle producto={producto} whatsappNumero={whatsappNumero} />
+    </>
+  )
 }
