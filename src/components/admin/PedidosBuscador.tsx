@@ -38,7 +38,7 @@ export function PedidosBuscador({ defaultValue = '', estado }: Props) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Buscar por código ORD-001..."
-          className="pl-8 pr-8 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-red-400 w-56 transition-colors"
+          className="pl-8 pr-8 py-2 text-sm text-gray-900 placeholder:text-gray-400 border border-gray-200 rounded-xl outline-none focus:border-red-400 w-56 transition-colors bg-white"
         />
         {value && (
           <button type="button" onClick={handleClear}

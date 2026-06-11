@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { IconBrandWhatsapp } from '@tabler/icons-react'
 import { getCategorias, getProductos, getProductosDestacados } from '@/lib/actions/productos'
 import { ProductCard } from '@/components/catalogo/ProductCard'
+import { HeroCarousel } from '@/components/home/HeroCarousel'
 import type { Metadata } from 'next'
 
 export const revalidate = 60
@@ -51,7 +52,12 @@ export default async function HomePage() {
     getProductosDestacados(),
   ])
 
-  const bannerProductos = destacados
+  const bannerImagenes: string[] = config?.banner_imagenes ?? []
+  const bannerSlides = bannerImagenes.length > 0
+    ? bannerImagenes.map((src) => ({ src, href: '/catalogo' }))
+    : destacados
+        .filter((p) => p.imagenes?.[0])
+        .map((p) => ({ src: p.imagenes[0], href: `/catalogo/${p.slug}`, alt: p.nombre }))
 
   return (
     <main className="min-h-screen bg-[#0B0B0C]">
@@ -107,69 +113,10 @@ export default async function HomePage() {
 
               </div>
 
-              {/* ── Productos — solo desktop ── */}
-              {heroImagenesVisible && bannerProductos.length > 0 && (
-                <div className="order-1 lg:order-2 hidden lg:block">
-                  <div className="gap-2.5" style={{ height: 'min(640px, 75vh)', display: 'grid', gridTemplateColumns: bannerProductos.length === 1 ? '1fr' : '1fr 1.6fr', gridTemplateRows: bannerProductos.length === 1 ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr)' }}>
-
-                    {/* 1 producto: ocupa todo */}
-                    {bannerProductos.length === 1 && bannerProductos[0] && (
-                      <Link href={`/catalogo/${bannerProductos[0].slug}`}
-                        className="group relative rounded-2xl overflow-hidden bg-[#1F1F22]">
-                        {bannerProductos[0].imagenes?.[0]
-                          ? <img src={bannerProductos[0].imagenes[0]} alt={bannerProductos[0].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                          : <div className="w-full h-full flex items-center justify-center text-4xl">👟</div>}
-                      </Link>
-                    )}
-
-                    {/* 2 productos: dos columnas iguales */}
-                    {bannerProductos.length === 2 && bannerProductos.map((p) => (
-                      <Link key={p.id} href={`/catalogo/${p.slug}`}
-                        className="group relative rounded-2xl overflow-hidden bg-[#1F1F22]"
-                        style={{ gridRow: '1 / 3', minHeight: 0 }}>
-                        {p.imagenes?.[0]
-                          ? <img src={p.imagenes[0]} alt={p.nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                          : <div className="w-full h-full flex items-center justify-center text-4xl">👟</div>}
-                      </Link>
-                    ))}
-
-                    {/* 3-4 productos: grande izquierda + derecha en columna */}
-                    {bannerProductos.length >= 3 && (
-                      <>
-                        {/* Grande izquierda — span 2 rows */}
-                        <Link href={`/catalogo/${bannerProductos[0].slug}`}
-                          className="group relative rounded-2xl overflow-hidden bg-[#1F1F22]"
-                          style={{ gridRow: '1 / 3', minHeight: 0 }}>
-                          {bannerProductos[0].imagenes?.[0]
-                            ? <img src={bannerProductos[0].imagenes[0]} alt={bannerProductos[0].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                            : <div className="w-full h-full flex items-center justify-center text-4xl">👟</div>}
-                        </Link>
-
-                        {/* Superior derecha */}
-                        <Link href={`/catalogo/${bannerProductos[1].slug}`}
-                          className="group relative rounded-2xl overflow-hidden bg-[#1F1F22]"
-                          style={{ minHeight: 0 }}>
-                          {bannerProductos[1].imagenes?.[0]
-                            ? <img src={bannerProductos[1].imagenes[0]} alt={bannerProductos[1].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" style={{ objectPosition: 'center 65%' }} />
-                            : <div className="w-full h-full flex items-center justify-center text-4xl">👟</div>}
-                        </Link>
-
-                        {/* Inferior derecha: 1 o 2 pequeños */}
-                        <div className="grid gap-2.5" style={{ gridTemplateColumns: bannerProductos.length === 4 ? '1fr 1fr' : '1fr', minHeight: 0 }}>
-                          {bannerProductos.slice(2, 4).map((p) => (
-                            <Link key={p.id} href={`/catalogo/${p.slug}`}
-                              className="group relative rounded-2xl overflow-hidden bg-[#1F1F22]">
-                              {p.imagenes?.[0]
-                                ? <img src={p.imagenes[0]} alt={p.nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                : <div className="w-full h-full flex items-center justify-center text-2xl">👟</div>}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </Link>
-                          ))}
-                        </div>
-                      </>
-                    )}
-
-                  </div>
+              {/* ── Slider de imágenes del banner ── */}
+              {heroImagenesVisible && bannerSlides.length > 0 && (
+                <div className="order-1 lg:order-2">
+                  <HeroCarousel slides={bannerSlides} />
                 </div>
               )}
 

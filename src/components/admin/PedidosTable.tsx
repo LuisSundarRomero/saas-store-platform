@@ -158,7 +158,7 @@ export function PedidosTable({ pedidos }: Props) {
                   value={p.estado}
                   onChange={(e) => handleEstado(p.id, e.target.value as EstadoPedido, p.order_id, p.cliente_telefono)}
                   disabled={isPending}
-                  className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 outline-none bg-white cursor-pointer"
+                  className="text-xs text-gray-900 border border-gray-200 rounded-lg px-2 py-1.5 outline-none bg-white cursor-pointer"
                 >
                   {ESTADOS.map((e) => (
                     <option key={e} value={e} className="capitalize">
@@ -213,7 +213,7 @@ export function PedidosTable({ pedidos }: Props) {
                         value={p.estado}
                         onChange={(e) => handleEstado(p.id, e.target.value as EstadoPedido, p.order_id, p.cliente_telefono)}
                         disabled={isPending}
-                        className="text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none bg-white cursor-pointer"
+                        className="text-xs text-gray-900 border border-gray-200 rounded-lg px-2 py-1 outline-none bg-white cursor-pointer"
                       >
                         {ESTADOS.map((e) => (
                           <option key={e} value={e} className="capitalize">

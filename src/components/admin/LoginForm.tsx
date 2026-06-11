@@ -43,7 +43,7 @@ export function LoginForm() {
             placeholder="admin@anarchyy.pe"
             required
             autoComplete="email"
-            className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-gray-200 text-sm bg-gray-50 focus:bg-white focus:border-red-400 focus:outline-none transition-colors"
+            className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 bg-gray-50 focus:bg-white focus:border-red-400 focus:outline-none transition-colors"
           />
         </div>
       </div>
@@ -60,7 +60,7 @@ export function LoginForm() {
             placeholder="••••••••"
             required
             autoComplete="current-password"
-            className="w-full pl-10 pr-11 py-3.5 rounded-2xl border border-gray-200 text-sm bg-gray-50 focus:bg-white focus:border-red-400 focus:outline-none transition-colors"
+            className="w-full pl-10 pr-11 py-3.5 rounded-2xl border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 bg-gray-50 focus:bg-white focus:border-red-400 focus:outline-none transition-colors"
           />
           <button
             type="button"

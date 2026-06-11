@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { IconArrowLeft, IconUpload } from '@tabler/icons-react'
+import { IconArrowLeft, IconUpload, IconGripVertical } from '@tabler/icons-react'
 import { createClient } from '@/lib/supabase/client'
 import { deleteProducto } from '@/lib/actions/admin'
 import { Switch } from '@/components/ui/Switch'
@@ -37,11 +37,29 @@ export function ProductoForm({ producto, categorias }: Props) {
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState('')
   const [uploadError, setUploadError] = useState('')
+  const [dragIndex, setDragIndex] = useState<number | null>(null)
+  const [overIndex, setOverIndex] = useState<number | null>(null)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState('')
 
   function toggleTalla(t: string) {
     setTallas((prev) => prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t])
+  }
+
+  function handleDrop(targetIndex: number) {
+    if (dragIndex === null || dragIndex === targetIndex) {
+      setDragIndex(null)
+      setOverIndex(null)
+      return
+    }
+    setImagenes((prev) => {
+      const next = [...prev]
+      const [moved] = next.splice(dragIndex, 1)
+      next.splice(targetIndex, 0, moved)
+      return next
+    })
+    setDragIndex(null)
+    setOverIndex(null)
   }
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -116,7 +134,7 @@ export function ProductoForm({ producto, categorias }: Props) {
     })
   }
 
-  const inputCls = "w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all bg-white"
+  const inputCls = "w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all bg-white"
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -193,13 +211,27 @@ export function ProductoForm({ producto, categorias }: Props) {
               {imagenes.length > 0 && (
                 <div className="flex gap-2 flex-wrap">
                   {imagenes.map((url, i) => (
-                    <div key={url} className="relative group">
+                    <div key={url} className="relative group"
+                      draggable
+                      onDragStart={() => setDragIndex(i)}
+                      onDragOver={(e) => { e.preventDefault(); setOverIndex(i) }}
+                      onDragLeave={() => setOverIndex((prev) => (prev === i ? null : prev))}
+                      onDrop={(e) => { e.preventDefault(); handleDrop(i) }}
+                      onDragEnd={() => { setDragIndex(null); setOverIndex(null) }}
+                      style={{
+                        opacity: dragIndex === i ? 0.4 : 1,
+                        transform: overIndex === i && dragIndex !== null && dragIndex !== i ? 'scale(1.06)' : 'scale(1)',
+                        transition: 'transform 0.1s, opacity 0.1s',
+                      }}>
                       <button type="button"
                         onClick={() => setImagenes((prev) => [prev[i], ...prev.filter((_, j) => j !== i)])}
-                        className="relative w-14 h-14 rounded-xl overflow-hidden block"
+                        className="relative w-14 h-14 rounded-xl overflow-hidden block cursor-grab active:cursor-grabbing"
                         style={{ border: i === 0 ? '2px solid #E11D2E' : '2px solid #E5E7EB' }}
                         title={i === 0 ? 'Foto principal' : 'Hacer principal'}>
-                        <Image src={url} alt="" fill sizes="56px" className="object-cover" />
+                        <Image src={url} alt="" fill sizes="56px" className="object-cover pointer-events-none" />
+                        <span className="absolute bottom-0 right-0 bg-black/40 text-white rounded-tl-md p-0.5 leading-none">
+                          <IconGripVertical size={10} />
+                        </span>
                       </button>
                       <button type="button"
                         onClick={() => setImagenes((prev) => prev.filter((_, j) => j !== i))}
@@ -218,7 +250,7 @@ export function ProductoForm({ producto, categorias }: Props) {
                 </div>
               )}
               {uploadError && <p className="text-xs text-red-500 mt-2">{uploadError}</p>}
-              {imagenes.length > 0 && <p className="text-[11px] text-gray-400 mt-2">Toca una miniatura para hacerla principal</p>}
+              {imagenes.length > 0 && <p className="text-[11px] text-gray-400 mt-2">Arrastra para ordenar · la primera es la foto principal</p>}
             </div>
 
             {/* Publicación */}

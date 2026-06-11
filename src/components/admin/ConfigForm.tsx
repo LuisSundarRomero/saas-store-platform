@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { IconBrandWhatsapp, IconCheck, IconMail, IconBuildingStore, IconPhoto, IconFileText, IconEye, IconEyeOff, IconSettings, IconSpeakerphone } from '@tabler/icons-react'
+import { IconBrandWhatsapp, IconCheck, IconMail, IconBuildingStore, IconPhoto, IconFileText, IconEye, IconEyeOff, IconSettings, IconSpeakerphone, IconUpload, IconGripVertical } from '@tabler/icons-react'
 import { Switch } from '@/components/ui/Switch'
 
 interface Props { config: any }
@@ -40,6 +40,12 @@ export function ConfigForm({ config }: Props) {
   const [heroBoton,           setHeroBoton]           = useState(config?.hero_boton             ?? 'Ver colección →')
   const [heroVisible,         setHeroVisible]         = useState(config?.hero_visible           ?? true)
   const [heroImagenesVisible, setHeroImagenesVisible] = useState(config?.hero_imagenes_visible  ?? true)
+  const [bannerImagenes,      setBannerImagenes]      = useState<string[]>(config?.banner_imagenes ?? [])
+  const [bannerUploading,     setBannerUploading]     = useState(false)
+  const [bannerUploadProgress, setBannerUploadProgress] = useState('')
+  const [bannerUploadError,   setBannerUploadError]   = useState('')
+  const [bannerDragIndex,     setBannerDragIndex]     = useState<number | null>(null)
+  const [bannerOverIndex,     setBannerOverIndex]     = useState<number | null>(null)
 
   // Textos
   const [ctaTitulo,       setCtaTitulo]       = useState(config?.cta_titulo        ?? '¿Tienes alguna consulta?')
@@ -67,7 +73,56 @@ export function ConfigForm({ config }: Props) {
   // Mensajes
   const [template, setTemplate] = useState(config?.whatsapp_template ?? '')
 
-  const inputCls = "w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all bg-white"
+  const inputCls = "w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all bg-white"
+
+  async function handleBannerUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files
+    if (!files?.length) return
+    setBannerUploadError('')
+    setBannerUploading(true)
+    const supabase = createClient()
+    const urls: string[] = []
+    const disponibles = 6 - bannerImagenes.length
+    const aSubir = Array.from(files).slice(0, disponibles)
+
+    for (let i = 0; i < aSubir.length; i++) {
+      const file = aSubir[i]
+      setBannerUploadProgress(`Subiendo ${i + 1} de ${aSubir.length}...`)
+      if (file.size > 5 * 1024 * 1024) {
+        setBannerUploadError(`"${file.name}" supera los 5MB`)
+        continue
+      }
+      const ext = file.name.split('.').pop()
+      const path = `banner-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+      const { error } = await supabase.storage.from('productos').upload(path, file, { cacheControl: '3600', upsert: false })
+      if (error) {
+        setBannerUploadError(`Error subiendo "${file.name}"`)
+      } else {
+        const { data } = supabase.storage.from('productos').getPublicUrl(path)
+        urls.push(data.publicUrl)
+      }
+    }
+    setBannerImagenes((prev) => [...prev, ...urls])
+    setBannerUploading(false)
+    setBannerUploadProgress('')
+    e.target.value = ''
+  }
+
+  function handleBannerDrop(targetIndex: number) {
+    if (bannerDragIndex === null || bannerDragIndex === targetIndex) {
+      setBannerDragIndex(null)
+      setBannerOverIndex(null)
+      return
+    }
+    setBannerImagenes((prev) => {
+      const next = [...prev]
+      const [moved] = next.splice(bannerDragIndex, 1)
+      next.splice(targetIndex, 0, moved)
+      return next
+    })
+    setBannerDragIndex(null)
+    setBannerOverIndex(null)
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -91,6 +146,7 @@ export function ConfigForm({ config }: Props) {
         hero_boton: heroBoton,
         hero_visible: heroVisible,
         hero_imagenes_visible: heroImagenesVisible,
+        banner_imagenes: bannerImagenes,
         cta_titulo: ctaTitulo,
         cta_subtitulo: ctaSubtitulo,
         cta_visible: ctaVisible,
@@ -165,7 +221,7 @@ export function ConfigForm({ config }: Props) {
                 <span className="px-3 py-2.5 text-sm text-gray-400 font-mono border-r border-gray-100 bg-gray-50">+</span>
                 <input type="tel" inputMode="numeric" value={whatsappNumero}
                   onChange={(e) => setWhatsappNumero(e.target.value)}
-                  className="flex-1 px-3 py-2.5 text-sm outline-none font-mono bg-white"
+                  className="flex-1 px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none font-mono bg-white"
                   placeholder="51982121991" />
               </div>
               <p className="text-xs text-gray-400">Código de país + número. Perú: <strong>51</strong>XXXXXXXXX</p>
@@ -365,25 +421,76 @@ export function ConfigForm({ config }: Props) {
 
             <div style={{ opacity: heroVisible ? 1 : 0.4, pointerEvents: heroVisible ? 'auto' : 'none' }} className="flex flex-col gap-4">
 
-              {/* Info imágenes destacados */}
-              <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex gap-3">
-                <span className="text-lg shrink-0">🖼️</span>
-                <div className="flex flex-col gap-0.5">
-                  <p className="text-sm font-semibold text-amber-800">Imágenes del banner</p>
-                  <p className="text-xs text-amber-700 leading-relaxed">
-                    Las fotos que aparecen son los <strong>productos marcados como Destacados</strong> en el Catálogo.
-                    Se muestran un máximo de <strong>4</strong>. Para cambiarlas, ve a Catálogo y cambia los destacados.
-                  </p>
-                </div>
-              </div>
-
               {/* Toggle imágenes */}
               <VisibilityToggle
-                label="Mostrar imágenes de productos"
-                description={heroImagenesVisible ? 'Se muestran las fotos de los productos destacados' : 'El banner aparece solo con texto, sin imágenes'}
+                label="Mostrar slider de imágenes"
+                description={heroImagenesVisible ? 'Se muestra el carrusel de imágenes del banner' : 'El banner aparece solo con texto, sin imágenes'}
                 checked={heroImagenesVisible}
                 onChange={setHeroImagenesVisible}
               />
+
+              {/* Imágenes del slider */}
+              <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">Imágenes del slider</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Sube fotos promocionales o de campaña (máx. 6)</p>
+                  </div>
+                  <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full shrink-0">
+                    {bannerImagenes.length}/6
+                  </span>
+                </div>
+
+                {bannerImagenes.length === 0 ? (
+                  <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
+                    Sin imágenes propias: por ahora se muestran las fotos de los <strong>productos destacados</strong> del catálogo.
+                  </p>
+                ) : null}
+
+                <div className="flex gap-2 flex-wrap">
+                  {bannerImagenes.map((url, i) => (
+                    <div key={url} className="relative group"
+                      draggable
+                      onDragStart={() => setBannerDragIndex(i)}
+                      onDragOver={(e) => { e.preventDefault(); setBannerOverIndex(i) }}
+                      onDragLeave={() => setBannerOverIndex((prev) => (prev === i ? null : prev))}
+                      onDrop={(e) => { e.preventDefault(); handleBannerDrop(i) }}
+                      onDragEnd={() => { setBannerDragIndex(null); setBannerOverIndex(null) }}
+                      style={{
+                        opacity: bannerDragIndex === i ? 0.4 : 1,
+                        transform: bannerOverIndex === i && bannerDragIndex !== null && bannerDragIndex !== i ? 'scale(1.06)' : 'scale(1)',
+                        transition: 'transform 0.1s, opacity 0.1s',
+                      }}>
+                      <div className="relative w-16 h-16 rounded-xl overflow-hidden cursor-grab active:cursor-grabbing"
+                        style={{ border: i === 0 ? '2px solid #E11D2E' : '2px solid #E5E7EB' }}>
+                        <img src={url} alt="" className="w-full h-full object-cover pointer-events-none" />
+                        <span className="absolute bottom-0 right-0 bg-black/40 text-white rounded-tl-md p-0.5 leading-none">
+                          <IconGripVertical size={10} />
+                        </span>
+                        {i === 0 && (
+                          <span className="absolute top-0 left-0 text-[8px] font-bold text-white px-1 rounded-br-md"
+                            style={{ backgroundColor: '#E11D2E' }}>1ª</span>
+                        )}
+                      </div>
+                      <button type="button"
+                        onClick={() => setBannerImagenes((prev) => prev.filter((_, j) => j !== i))}
+                        className="absolute -top-1 -right-1 w-4 h-4 bg-gray-800 text-white rounded-full text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  {bannerImagenes.length < 6 && (
+                    <label className={`w-16 h-16 rounded-xl border-2 border-dashed flex flex-col items-center justify-center transition-colors ${bannerUploading ? 'border-gray-100 opacity-50' : 'border-gray-200 cursor-pointer hover:border-red-300'}`}>
+                      <IconUpload size={16} className="text-gray-300" />
+                      {bannerUploading && <span className="text-[8px] text-gray-400 mt-0.5 text-center px-1">{bannerUploadProgress}</span>}
+                      <input type="file" multiple accept="image/jpeg,image/png,image/webp" className="hidden"
+                        onChange={handleBannerUpload} disabled={bannerUploading} />
+                    </label>
+                  )}
+                </div>
+                {bannerUploadError && <p className="text-xs text-red-500">{bannerUploadError}</p>}
+                {bannerImagenes.length > 0 && <p className="text-[11px] text-gray-400">Arrastra para ordenar · la primera es la que se muestra primero en el slider</p>}
+              </div>
 
               {/* Barra de características */}
               <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">

@@ -116,6 +116,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_auto_ocultar ON productos;
 CREATE TRIGGER trigger_auto_ocultar
 BEFORE UPDATE ON productos
 FOR EACH ROW EXECUTE FUNCTION auto_ocultar_sin_stock();
@@ -134,6 +135,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_historial_estado ON pedidos;
 CREATE TRIGGER trigger_historial_estado
 BEFORE UPDATE ON pedidos
 FOR EACH ROW EXECUTE FUNCTION registrar_cambio_estado();
@@ -150,28 +152,33 @@ ALTER TABLE config           ENABLE ROW LEVEL SECURITY;
 -- ─── RLS — CATEGORÍAS ───────────────────────────────────────────
 
 -- Lectura pública de categorías activas
+DROP POLICY IF EXISTS "categorias_public_read" ON categorias;
 CREATE POLICY "categorias_public_read" ON categorias
   FOR SELECT TO anon
   USING (activa = true);
 
 -- Admin acceso total
+DROP POLICY IF EXISTS "categorias_admin_all" ON categorias;
 CREATE POLICY "categorias_admin_all" ON categorias
   FOR ALL TO authenticated USING (true);
 
 -- ─── RLS — PRODUCTOS ────────────────────────────────────────────
 
 -- Lectura pública de productos visibles
+DROP POLICY IF EXISTS "productos_public_read" ON productos;
 CREATE POLICY "productos_public_read" ON productos
   FOR SELECT TO anon
   USING (visible = true);
 
 -- Admin acceso total
+DROP POLICY IF EXISTS "productos_admin_all" ON productos;
 CREATE POLICY "productos_admin_all" ON productos
   FOR ALL TO authenticated USING (true);
 
 -- ─── RLS — PEDIDOS ──────────────────────────────────────────────
 
 -- Cliente puede crear pedidos (con rate limit: máx 5 por teléfono en 10 min)
+DROP POLICY IF EXISTS "pedidos_insert_rate_limit" ON pedidos;
 CREATE POLICY "pedidos_insert_rate_limit" ON pedidos
   FOR INSERT TO anon
   WITH CHECK (
@@ -184,6 +191,7 @@ CREATE POLICY "pedidos_insert_rate_limit" ON pedidos
 
 -- Cliente puede leer SU pedido (verificación por order_id + teléfono)
 -- Se pasa via SET LOCAL en el Server Action antes de la query
+DROP POLICY IF EXISTS "pedidos_select_propio" ON pedidos;
 CREATE POLICY "pedidos_select_propio" ON pedidos
   FOR SELECT TO anon
   USING (
@@ -192,32 +200,38 @@ CREATE POLICY "pedidos_select_propio" ON pedidos
   );
 
 -- Admin acceso total
+DROP POLICY IF EXISTS "pedidos_admin_all" ON pedidos;
 CREATE POLICY "pedidos_admin_all" ON pedidos
   FOR ALL TO authenticated USING (true);
 
 -- ─── RLS — PEDIDO_ITEMS ─────────────────────────────────────────
 
 -- Cliente puede insertar items (solo junto con su pedido)
+DROP POLICY IF EXISTS "items_insert_anon" ON pedido_items;
 CREATE POLICY "items_insert_anon" ON pedido_items
   FOR INSERT TO anon WITH CHECK (true);
 
 -- Admin acceso total
+DROP POLICY IF EXISTS "items_admin_all" ON pedido_items;
 CREATE POLICY "items_admin_all" ON pedido_items
   FOR ALL TO authenticated USING (true);
 
 -- ─── RLS — HISTORIAL ────────────────────────────────────────────
 
 -- Solo admin puede ver y modificar historial
+DROP POLICY IF EXISTS "historial_admin_all" ON estado_historial;
 CREATE POLICY "historial_admin_all" ON estado_historial
   FOR ALL TO authenticated USING (true);
 
 -- ─── RLS — CONFIG ───────────────────────────────────────────────
 
 -- Lectura pública de config (nombre tienda, WhatsApp)
+DROP POLICY IF EXISTS "config_public_read" ON config;
 CREATE POLICY "config_public_read" ON config
   FOR SELECT TO anon USING (true);
 
 -- Solo admin puede modificar
+DROP POLICY IF EXISTS "config_admin_all" ON config;
 CREATE POLICY "config_admin_all" ON config
   FOR ALL TO authenticated USING (true);
 
@@ -226,14 +240,17 @@ CREATE POLICY "config_admin_all" ON config
 
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('productos', 'productos', true);
 
+DROP POLICY IF EXISTS "storage_public_read" ON storage.objects;
 CREATE POLICY "storage_public_read" ON storage.objects
   FOR SELECT TO anon
   USING (bucket_id = 'productos');
 
+DROP POLICY IF EXISTS "storage_admin_upload" ON storage.objects;
 CREATE POLICY "storage_admin_upload" ON storage.objects
   FOR INSERT TO authenticated
   WITH CHECK (bucket_id = 'productos');
 
+DROP POLICY IF EXISTS "storage_admin_delete" ON storage.objects;
 CREATE POLICY "storage_admin_delete" ON storage.objects
   FOR DELETE TO authenticated
   USING (bucket_id = 'productos');
@@ -250,9 +267,11 @@ INSERT INTO categorias (nombre, slug, orden) VALUES
 ON CONFLICT (slug) DO NOTHING;
 
 -- Config inicial (actualizar con datos reales)
+-- Solo se inserta si la tabla está vacía (config es un singleton; no tiene
+-- columna única, así que ON CONFLICT no evita duplicados al re-ejecutar).
 INSERT INTO config (tienda_nombre, whatsapp_numero)
-VALUES ('SaaS Ropa', '51987654321')
-ON CONFLICT DO NOTHING;
+SELECT 'SaaS Ropa', '51987654321'
+WHERE NOT EXISTS (SELECT 1 FROM config);
 
 -- ─── ALTER: columnas config agregadas después del schema inicial ─
 ALTER TABLE config ADD COLUMN IF NOT EXISTS hero_imagenes_visible BOOLEAN DEFAULT true;
@@ -270,10 +289,12 @@ ALTER TABLE pedidos ADD COLUMN IF NOT EXISTS comprobante_url TEXT;
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('comprobantes', 'comprobantes', true) ON CONFLICT DO NOTHING;
 
 -- 4. Políticas de storage para comprobantes
-CREATE POLICY IF NOT EXISTS "comprobantes_admin_upload" ON storage.objects
+DROP POLICY IF EXISTS "comprobantes_admin_upload" ON storage.objects;
+CREATE POLICY "comprobantes_admin_upload" ON storage.objects
   FOR INSERT TO authenticated WITH CHECK (bucket_id = 'comprobantes');
 
-CREATE POLICY IF NOT EXISTS "comprobantes_admin_read" ON storage.objects
+DROP POLICY IF EXISTS "comprobantes_admin_read" ON storage.objects;
+CREATE POLICY "comprobantes_admin_read" ON storage.objects
   FOR SELECT TO authenticated USING (bucket_id = 'comprobantes');
 
 -- ─── FUNCIÓN: verificar_pedido (2026-06-06) ──────────────────────
@@ -330,6 +351,63 @@ GRANT EXECUTE ON FUNCTION verificar_pedido(TEXT, TEXT) TO anon;
 
 -- ─── ALTER: anuncio_link (2026-06-07) ───────────────────────────
 ALTER TABLE config ADD COLUMN IF NOT EXISTS anuncio_link TEXT;
+
+-- ─── ALTER: columnas config para ConfigForm (2026-06-11) ────────
+-- Estas columnas son leídas/escritas por src/components/admin/ConfigForm.tsx
+-- y por las páginas públicas (hero, cta, footer, anuncio, strip de beneficios).
+
+ALTER TABLE config ADD COLUMN IF NOT EXISTS email_notificaciones TEXT;
+
+-- Banner / Hero
+ALTER TABLE config ADD COLUMN IF NOT EXISTS hero_badge     TEXT DEFAULT '🦇 Restock en preventa';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS hero_titulo    TEXT DEFAULT 'Hago lo que quiero vestir';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS hero_subtitulo TEXT DEFAULT 'Lujo oscuro. Essence of Dark Fashion. Piezas streetwear de edición limitada.';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS hero_boton     TEXT DEFAULT 'Ver colección →';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS hero_visible   BOOLEAN DEFAULT true;
+
+-- Imágenes del slider/carrusel del banner (URLs de Storage, en orden de aparición)
+ALTER TABLE config ADD COLUMN IF NOT EXISTS banner_imagenes TEXT[] DEFAULT '{}';
+
+-- CTA
+ALTER TABLE config ADD COLUMN IF NOT EXISTS cta_titulo     TEXT DEFAULT '¿Tienes alguna consulta?';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS cta_subtitulo  TEXT DEFAULT 'Te asesoramos personalmente para encontrar tu pieza.';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS cta_visible    BOOLEAN DEFAULT true;
+
+-- Footer
+ALTER TABLE config ADD COLUMN IF NOT EXISTS footer_descripcion TEXT DEFAULT 'Lujo oscuro / Essence of Dark Fashion. Piezas streetwear de edición limitada — hago lo que quiero vestir.';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS footer_politica    TEXT DEFAULT 'No hacemos cambios ni devoluciones 🦇';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS footer_info1       TEXT DEFAULT 'Preventas por tiempo limitado';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS footer_info2       TEXT DEFAULT 'Envíos a nivel nacional';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS footer_info3       TEXT;
+ALTER TABLE config ADD COLUMN IF NOT EXISTS footer_info4       TEXT;
+
+-- Anuncio (barra superior)
+ALTER TABLE config ADD COLUMN IF NOT EXISTS anuncio_visible BOOLEAN DEFAULT false;
+ALTER TABLE config ADD COLUMN IF NOT EXISTS anuncio_texto   TEXT;
+ALTER TABLE config ADD COLUMN IF NOT EXISTS anuncio_expira  TIMESTAMPTZ;
+
+-- Strip de beneficios
+ALTER TABLE config ADD COLUMN IF NOT EXISTS strip_visible BOOLEAN DEFAULT true;
+ALTER TABLE config ADD COLUMN IF NOT EXISTS strip_item1   TEXT DEFAULT '🖤 Diseños únicos y originales';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS strip_item2   TEXT DEFAULT '🦇 Colección dark exclusiva';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS strip_item3   TEXT DEFAULT '💬 Atención personalizada';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS strip_item4   TEXT DEFAULT '🚚 Envíos a nivel nacional';
+
+-- ─── ALTER: precio_antes en productos (2026-06-11) ──────────────
+-- Precio tachado para mostrar descuentos. En centavos, igual que 'precio'.
+ALTER TABLE productos ADD COLUMN IF NOT EXISTS precio_antes INTEGER;
+
+-- ─── ALTER: es_nuevo / destacado en productos (2026-06-11) ──────
+-- Usados por CatalogoAdminTable, ProductCard y banner del home (máx 4 destacados).
+ALTER TABLE productos ADD COLUMN IF NOT EXISTS es_nuevo  BOOLEAN DEFAULT false;
+ALTER TABLE productos ADD COLUMN IF NOT EXISTS destacado BOOLEAN DEFAULT false;
+
+-- ─── CONSTRAINT: config singleton (2026-06-11) ──────────────────
+-- 'config' debe tener una sola fila (la app usa .single()/.eq('id', ...)).
+-- Esta columna+constraint impide insertar una segunda fila por error.
+ALTER TABLE config ADD COLUMN IF NOT EXISTS singleton BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE config DROP CONSTRAINT IF EXISTS config_singleton_unique;
+ALTER TABLE config ADD CONSTRAINT config_singleton_unique UNIQUE (singleton);
 
 -- ─── FIN ────────────────────────────────────────────────────────
 -- Verificar con:
