@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { IconPlus, IconTrash, IconEdit, IconCheck, IconX, IconGripVertical } from '@tabler/icons-react'
-import { upsertCategoria, deleteCategoria } from '@/lib/actions/admin'
+import { upsertCategoria, deleteCategoria, reordenarCategorias } from '@/lib/actions/admin'
 import { Switch } from '@/components/ui/Switch'
 
 interface Categoria {
@@ -36,6 +36,31 @@ export function CategoriasManager({ categorias: inicial }: Props) {
   const [showNew, setShowNew] = useState(false)
   const [newNombre, setNewNombre] = useState('')
   const [newOrden, setNewOrden] = useState(inicial.length + 1)
+  const [categorias, setCategorias] = useState(inicial)
+  const [dragIndex, setDragIndex] = useState<number | null>(null)
+  const [overIndex, setOverIndex] = useState<number | null>(null)
+
+  useEffect(() => {
+    setCategorias(inicial)
+  }, [inicial])
+
+  function handleDrop(targetIndex: number) {
+    if (dragIndex === null || dragIndex === targetIndex) {
+      setDragIndex(null)
+      setOverIndex(null)
+      return
+    }
+    const next = [...categorias]
+    const [moved] = next.splice(dragIndex, 1)
+    next.splice(targetIndex, 0, moved)
+    setCategorias(next)
+    setDragIndex(null)
+    setOverIndex(null)
+    startTransition(async () => {
+      await reordenarCategorias(next.map((c) => c.id))
+      router.refresh()
+    })
+  }
 
   function startEdit(cat: Categoria) {
     setEditingId(cat.id)
@@ -95,17 +120,26 @@ export function CategoriasManager({ categorias: inicial }: Props) {
           <div />
         </div>
 
-        {inicial.length === 0 && !showNew && (
+        {categorias.length === 0 && !showNew && (
           <div className="py-12 text-center">
             <p className="text-gray-400 text-sm mb-1">Sin categorías</p>
             <p className="text-gray-300 text-xs">Crea la primera categoría</p>
           </div>
         )}
 
-        {inicial.map((cat) => (
+        {categorias.map((cat, i) => (
           <div key={cat.id}
+            draggable={editingId === null}
+            onDragStart={() => setDragIndex(i)}
+            onDragOver={(e) => { e.preventDefault(); setOverIndex(i) }}
+            onDragLeave={() => setOverIndex((prev) => (prev === i ? null : prev))}
+            onDrop={(e) => { e.preventDefault(); handleDrop(i) }}
+            onDragEnd={() => { setDragIndex(null); setOverIndex(null) }}
             className="grid grid-cols-[32px_1fr_80px_80px_80px] gap-3 items-center px-4 py-3 border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors group"
-            style={{ opacity: cat.activa ? 1 : 0.5 }}>
+            style={{
+              opacity: cat.activa ? (dragIndex === i ? 0.4 : 1) : 0.5,
+              backgroundColor: overIndex === i && dragIndex !== null && dragIndex !== i ? '#FEF2F2' : undefined,
+            }}>
 
             {editingId === cat.id ? (
               <div className="col-span-5 flex items-center gap-2">
@@ -129,7 +163,7 @@ export function CategoriasManager({ categorias: inicial }: Props) {
               </div>
             ) : (
               <>
-                <div className="flex items-center justify-center text-gray-200 group-hover:text-gray-400 transition-colors">
+                <div className="flex items-center justify-center text-gray-300 group-hover:text-gray-500 transition-colors cursor-grab active:cursor-grabbing">
                   <IconGripVertical size={14} />
                 </div>
 

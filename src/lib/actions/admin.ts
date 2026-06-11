@@ -158,3 +158,12 @@ export async function deleteCategoria(id: string) {
   const supabase = await createClient()
   await supabase.from('categorias').delete().eq('id', id)
 }
+
+export async function reordenarCategorias(idsEnOrden: string[]) {
+  const supabase = await createClient()
+  await Promise.all(
+    idsEnOrden.map((id, i) =>
+      supabase.from('categorias').update({ orden: i + 1 }).eq('id', id)
+    )
+  )
+}
