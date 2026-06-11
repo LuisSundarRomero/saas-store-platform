@@ -11,7 +11,7 @@ import { createClient } from '@/lib/supabase/client'
 
 const BADGE: Record<EstadoPedido, { bg: string; color: string }> = {
   pendiente:        { bg: '#FEF3C7', color: '#92400E' },
-  pago_confirmado:  { bg: '#FCE7F3', color: '#BE185D' },
+  pago_confirmado:  { bg: '#FEE2E2', color: '#991B1B' },
   empaquetado:      { bg: '#DBEAFE', color: '#1D4ED8' },
   en_camino:        { bg: '#EDE9FE', color: '#5B21B6' },
   entregado:        { bg: '#D1FAE5', color: '#065F46' },
@@ -40,7 +40,7 @@ const ESTADO_MSG: Record<EstadoPedido, string> = {
   pago_confirmado:  'Hemos recibido tu pago. ¡Gracias!',
   empaquetado:      'Tu pedido ya está empaquetado y listo para salir.',
   en_camino:        '¡Tu pedido está en camino! Pronto llegará a ti.',
-  entregado:        '¡Tu pedido fue entregado! Esperamos que lo disfrutes. 🎀',
+  entregado:        '¡Tu pedido fue entregado! Esperamos que lo disfrutes. 🦇',
 }
 
 interface ModalInfo {
@@ -118,8 +118,8 @@ export function PedidosTable({ pedidos }: Props) {
 
   function buildWhatsAppUrl(info: ModalInfo) {
     const telefono = info.clienteTelefono.replace(/\s/g, '')
-    const trackingUrl = appUrl ? `${appUrl}/pedido/${info.orderId}` : `kuutsu.pe/pedido/${info.orderId}`
-    const mensaje = `Hola! Te escribimos de Kuutsu.pe 🎀\n\nTu pedido *#${info.orderId}* ha sido actualizado:\n\n${ESTADO_EMOJI[info.nuevoEstado]} *${ESTADO_LABEL[info.nuevoEstado]}*\n${ESTADO_MSG[info.nuevoEstado]}\n\nRastrear tu pedido: ${trackingUrl}`
+    const trackingUrl = appUrl ? `${appUrl}/pedido/${info.orderId}` : `anarchyy.pe/pedido/${info.orderId}`
+    const mensaje = `Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido *#${info.orderId}* ha sido actualizado:\n\n${ESTADO_EMOJI[info.nuevoEstado]} *${ESTADO_LABEL[info.nuevoEstado]}*\n${ESTADO_MSG[info.nuevoEstado]}\n\nRastrear tu pedido: ${trackingUrl}`
     return `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
   }
 
@@ -140,10 +140,10 @@ export function PedidosTable({ pedidos }: Props) {
           return (
             <div key={p.id}
               className="bg-white rounded-xl border border-gray-100 p-4"
-              style={p.estado === 'pendiente' ? { borderLeft: '3px solid #EC4899' } : {}}>
+              style={p.estado === 'pendiente' ? { borderLeft: '3px solid #E11D2E' } : {}}>
               <div className="flex items-start justify-between mb-2">
                 <Link href={`/admin/pedidos/${p.order_id}`}
-                  className="font-bold text-base" style={{ color: '#EC4899' }}>
+                  className="font-bold text-base" style={{ color: '#E11D2E' }}>
                   #{p.order_id}
                 </Link>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full capitalize"
@@ -153,7 +153,7 @@ export function PedidosTable({ pedidos }: Props) {
               </div>
               <p className="text-sm text-gray-500 mb-1">📱 {p.cliente_telefono}</p>
               <div className="flex items-center justify-between mt-3">
-                <span className="font-bold" style={{ color: '#EC4899' }}>{formatPrice(p.total)}</span>
+                <span className="font-bold" style={{ color: '#E11D2E' }}>{formatPrice(p.total)}</span>
                 <select
                   value={p.estado}
                   onChange={(e) => handleEstado(p.id, e.target.value as EstadoPedido, p.order_id, p.cliente_telefono)}
@@ -192,15 +192,15 @@ export function PedidosTable({ pedidos }: Props) {
                 const badge = BADGE[p.estado as EstadoPedido]
                 return (
                   <tr key={p.id} className="hover:bg-gray-50 transition-colors"
-                    style={p.estado === 'pendiente' ? { borderLeft: '2px solid #EC4899' } : {}}>
+                    style={p.estado === 'pendiente' ? { borderLeft: '2px solid #E11D2E' } : {}}>
                     <td className="px-4 py-3">
                       <Link href={`/admin/pedidos/${p.order_id}`}
-                        className="font-semibold hover:underline" style={{ color: '#EC4899' }}>
+                        className="font-semibold hover:underline" style={{ color: '#E11D2E' }}>
                         #{p.order_id}
                       </Link>
                     </td>
                     <td className="px-4 py-3 text-gray-500">{p.cliente_telefono}</td>
-                    <td className="px-4 py-3 font-semibold" style={{ color: '#EC4899' }}>{formatPrice(p.total)}</td>
+                    <td className="px-4 py-3 font-semibold" style={{ color: '#E11D2E' }}>{formatPrice(p.total)}</td>
                     <td className="px-4 py-3">
                       <span className="px-2.5 py-1 rounded-full text-xs font-semibold capitalize"
                         style={{ backgroundColor: badge.bg, color: badge.color }}>
@@ -239,7 +239,7 @@ export function PedidosTable({ pedidos }: Props) {
             <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center text-lg"
-                  style={{ backgroundColor: '#FCE7F3' }}>
+                  style={{ backgroundColor: '#FEE2E2' }}>
                   💳
                 </div>
                 <div>
@@ -281,7 +281,7 @@ export function PedidosTable({ pedidos }: Props) {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full border-2 border-dashed border-gray-200 rounded-xl py-6 flex flex-col items-center gap-2 text-gray-400 hover:border-pink-300 hover:text-pink-500 transition-colors mb-3"
+                  className="w-full border-2 border-dashed border-gray-200 rounded-xl py-6 flex flex-col items-center gap-2 text-gray-400 hover:border-red-300 hover:text-red-500 transition-colors mb-3"
                 >
                   <IconUpload size={22} />
                   <span className="text-sm font-medium">Subir captura de pago</span>
@@ -297,7 +297,7 @@ export function PedidosTable({ pedidos }: Props) {
                 onClick={() => handleGuardarComprobante(false)}
                 disabled={isPending}
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-semibold text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-                style={{ backgroundColor: '#EC4899' }}
+                style={{ backgroundColor: '#E11D2E' }}
               >
                 <IconCheck size={16} />
                 {isPending ? 'Guardando...' : 'Guardar estado'}
@@ -342,7 +342,7 @@ export function PedidosTable({ pedidos }: Props) {
               <div className="rounded-xl p-3" style={{ backgroundColor: '#ECE5DD' }}>
                 <div className="bg-white rounded-xl px-4 py-3 shadow-sm">
                   <p className="text-xs text-gray-800 whitespace-pre-wrap leading-relaxed">
-                    {`Hola! Te escribimos de Kuutsu.pe 🎀\n\nTu pedido #${modal.orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[modal.nuevoEstado]} ${ESTADO_LABEL[modal.nuevoEstado]}\n${ESTADO_MSG[modal.nuevoEstado]}\n\nRastrear: ${appUrl || 'kuutsu.pe'}/pedido/${modal.orderId}`}
+                    {`Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido #${modal.orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[modal.nuevoEstado]} ${ESTADO_LABEL[modal.nuevoEstado]}\n${ESTADO_MSG[modal.nuevoEstado]}\n\nRastrear: ${appUrl || 'anarchyy.pe'}/pedido/${modal.orderId}`}
                   </p>
                   <p className="text-[10px] text-gray-400 text-right mt-1">✓✓</p>
                 </div>

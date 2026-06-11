@@ -7,18 +7,18 @@ import type { Metadata } from 'next'
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: 'Kuutsu.pe — Zapatos coquette exclusivos',
-  description: 'Zapatos coquette exclusivos en Lima. Bota peluche, Mary Jane, doble capa y más. Envíos a todo Lima · Pide por WhatsApp.',
+  title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
+  description: 'Ropa streetwear oscura de edición limitada: hoodies, cargos y poleras. Hago lo que quiero vestir. Envíos a nivel nacional · Pide por WhatsApp.',
   openGraph: {
-    title: 'Kuutsu.pe — Zapatos coquette exclusivos',
-    description: 'Zapatos coquette exclusivos en Lima. Bota peluche, Mary Jane, doble capa y más.',
+    title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
+    description: 'Ropa streetwear oscura de edición limitada: hoodies, cargos y poleras.',
     url: '/',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kuutsu.pe — Zapatos coquette exclusivos',
-    description: 'Zapatos coquette exclusivos en Lima. Bota peluche, Mary Jane, doble capa y más.',
+    title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
+    description: 'Ropa streetwear oscura de edición limitada: hoodies, cargos y poleras.',
   },
 }
 
@@ -27,21 +27,21 @@ export default async function HomePage() {
   const supabase = await createClient()
   const { data: config } = await supabase.from('config').select('*').single()
 
-  const heroBadge     = config?.hero_badge      ?? '🎀 Nueva colección disponible'
-  const heroTitulo    = config?.hero_titulo     ?? 'Zapatos que te hacen brillar'
-  const heroSubtitulo = config?.hero_subtitulo  ?? 'Modelos coquette únicos y originales. Porque cada detalle importa cuando se trata de ti.'
+  const heroBadge     = config?.hero_badge      ?? '🦇 Restock en preventa'
+  const heroTitulo    = config?.hero_titulo     ?? 'Hago lo que quiero vestir'
+  const heroSubtitulo = config?.hero_subtitulo  ?? 'Lujo oscuro. Essence of Dark Fashion. Piezas streetwear de edición limitada.'
   const heroBoton     = config?.hero_boton      ?? 'Ver colección'
   const ctaTitulo     = config?.cta_titulo      ?? '¿Tienes alguna consulta?'
-  const ctaSubtitulo  = config?.cta_subtitulo   ?? 'Te asesoramos personalmente para encontrar el modelo perfecto.'
+  const ctaSubtitulo  = config?.cta_subtitulo   ?? 'Te asesoramos personalmente para encontrar tu pieza.'
   const heroVisible          = config?.hero_visible           ?? true
   const heroImagenesVisible  = config?.hero_imagenes_visible  ?? true
   const ctaVisible    = config?.cta_visible     ?? true
   const stripVisible  = config?.strip_visible   ?? true
   const stripItems    = [
-    config?.strip_item1 ?? '🎀 Diseños únicos y originales',
-    config?.strip_item2 ?? '✨ Colección coquette exclusiva',
+    config?.strip_item1 ?? '🖤 Diseños únicos y originales',
+    config?.strip_item2 ?? '🦇 Colección dark exclusiva',
     config?.strip_item3 ?? '💬 Atención personalizada',
-    config?.strip_item4 ?? '🚚 Envíos a todo Lima',
+    config?.strip_item4 ?? '🚚 Envíos a nivel nacional',
   ].filter(Boolean)
   const whatsapp = config?.whatsapp_numero ?? ''
 
@@ -54,11 +54,11 @@ export default async function HomePage() {
   const bannerProductos = destacados
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#0B0B0C]">
 
       {/* ── HERO ── */}
       {heroVisible && (
-        <section className="relative overflow-hidden bg-white">
+        <section className="relative overflow-hidden bg-[#0B0B0C]">
           <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-[0.65fr_1.35fr] gap-6 lg:gap-8 items-center py-6 sm:py-8 lg:py-10">
 
@@ -66,20 +66,18 @@ export default async function HomePage() {
               <div className="order-2 lg:order-1 lg:pr-4 flex flex-col items-center text-center lg:items-start lg:text-left">
                 {/* Badge */}
                 <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase mb-4"
-                  style={{ backgroundColor: '#FCE7F3', color: '#BE185D' }}>
-                  <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: '#EC4899' }} />
+                  style={{ backgroundColor: '#3A1014', color: '#FF6B7A' }}>
+                  <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: '#E11D2E' }} />
                   {heroBadge}
                 </span>
 
                 {/* Título */}
-                <h1 className="font-serif leading-[1.08] mb-4"
-                  style={{ fontSize: 'clamp(2rem, 8vw, 3.8rem)', letterSpacing: '0.01em' }}>
+                <h1 className="font-display leading-[1.05] mb-4"
+                  style={{ fontSize: 'clamp(2.2rem, 9vw, 4.5rem)' }}>
                   {heroTitulo.split(' ').map((word: string, i: number, arr: string[]) => (
                     <span key={i}>
                       <span style={{
-                        color: i >= Math.floor(arr.length / 2) ? '#EC4899' : '#1A1A1A',
-                        fontWeight: i >= Math.floor(arr.length / 2) ? 600 : 300,
-                        fontStyle: 'italic',
+                        color: i >= Math.floor(arr.length / 2) ? '#E11D2E' : '#F5F5F2',
                       }}>
                         {word}
                       </span>
@@ -89,19 +87,19 @@ export default async function HomePage() {
                 </h1>
 
                 {/* Subtítulo */}
-                <p className="text-gray-400 text-sm leading-relaxed mb-5 max-w-xs lg:max-w-none">{heroSubtitulo}</p>
+                <p className="text-[#9A9A9E] text-sm leading-relaxed mb-5 max-w-xs lg:max-w-none">{heroSubtitulo}</p>
 
                 {/* CTAs */}
                 <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-4 lg:mb-8">
                   <Link href="/catalogo"
                     className="inline-flex items-center gap-2 text-white font-semibold px-6 py-3 rounded-full text-sm transition-all hover:opacity-90"
-                    style={{ backgroundColor: '#EC4899', boxShadow: '0 4px 20px rgba(236,72,153,0.3)' }}>
+                    style={{ backgroundColor: '#E11D2E', boxShadow: '0 4px 20px rgba(225,29,46,0.35)' }}>
                     {heroBoton}
                   </Link>
                   {whatsapp && (
                     <a href={`https://wa.me/${whatsapp.replace(/\s/g, '')}`} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 font-medium px-6 py-3 rounded-full text-sm border text-gray-500 hover:border-pink-300 hover:text-pink-500 transition-colors"
-                      style={{ borderColor: '#E5E7EB' }}>
+                      className="inline-flex items-center gap-2 font-medium px-6 py-3 rounded-full text-sm border text-[#9A9A9E] hover:border-[#E11D2E] hover:text-[#F5F5F2] transition-colors"
+                      style={{ borderColor: '#2C2C30' }}>
                       <IconBrandWhatsapp size={16} /> Escríbenos
                     </a>
                   )}
@@ -117,7 +115,7 @@ export default async function HomePage() {
                     {/* 1 producto: ocupa todo */}
                     {bannerProductos.length === 1 && bannerProductos[0] && (
                       <Link href={`/catalogo/${bannerProductos[0].slug}`}
-                        className="group relative rounded-2xl overflow-hidden bg-gray-100">
+                        className="group relative rounded-2xl overflow-hidden bg-[#1F1F22]">
                         {bannerProductos[0].imagenes?.[0]
                           ? <img src={bannerProductos[0].imagenes[0]} alt={bannerProductos[0].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           : <div className="w-full h-full flex items-center justify-center text-4xl">👟</div>}
@@ -127,7 +125,7 @@ export default async function HomePage() {
                     {/* 2 productos: dos columnas iguales */}
                     {bannerProductos.length === 2 && bannerProductos.map((p) => (
                       <Link key={p.id} href={`/catalogo/${p.slug}`}
-                        className="group relative rounded-2xl overflow-hidden bg-gray-100"
+                        className="group relative rounded-2xl overflow-hidden bg-[#1F1F22]"
                         style={{ gridRow: '1 / 3', minHeight: 0 }}>
                         {p.imagenes?.[0]
                           ? <img src={p.imagenes[0]} alt={p.nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -140,7 +138,7 @@ export default async function HomePage() {
                       <>
                         {/* Grande izquierda — span 2 rows */}
                         <Link href={`/catalogo/${bannerProductos[0].slug}`}
-                          className="group relative rounded-2xl overflow-hidden bg-gray-100"
+                          className="group relative rounded-2xl overflow-hidden bg-[#1F1F22]"
                           style={{ gridRow: '1 / 3', minHeight: 0 }}>
                           {bannerProductos[0].imagenes?.[0]
                             ? <img src={bannerProductos[0].imagenes[0]} alt={bannerProductos[0].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -149,7 +147,7 @@ export default async function HomePage() {
 
                         {/* Superior derecha */}
                         <Link href={`/catalogo/${bannerProductos[1].slug}`}
-                          className="group relative rounded-2xl overflow-hidden bg-gray-100"
+                          className="group relative rounded-2xl overflow-hidden bg-[#1F1F22]"
                           style={{ minHeight: 0 }}>
                           {bannerProductos[1].imagenes?.[0]
                             ? <img src={bannerProductos[1].imagenes[0]} alt={bannerProductos[1].nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" style={{ objectPosition: 'center 65%' }} />
@@ -160,7 +158,7 @@ export default async function HomePage() {
                         <div className="grid gap-2.5" style={{ gridTemplateColumns: bannerProductos.length === 4 ? '1fr 1fr' : '1fr', minHeight: 0 }}>
                           {bannerProductos.slice(2, 4).map((p) => (
                             <Link key={p.id} href={`/catalogo/${p.slug}`}
-                              className="group relative rounded-2xl overflow-hidden bg-gray-100">
+                              className="group relative rounded-2xl overflow-hidden bg-[#1F1F22]">
                               {p.imagenes?.[0]
                                 ? <img src={p.imagenes[0]} alt={p.nombre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                 : <div className="w-full h-full flex items-center justify-center text-2xl">👟</div>}
@@ -182,9 +180,9 @@ export default async function HomePage() {
 
       {/* ── STRIP ── */}
       {heroVisible && stripVisible && stripItems.length > 0 && (
-        <section className="border-y border-gray-100 py-3.5" style={{ backgroundColor: '#FAFAFA' }}>
+        <section className="border-y border-[#2C2C30] py-3.5" style={{ backgroundColor: '#161618' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center gap-6 sm:gap-12 flex-wrap text-xs sm:text-sm text-gray-500 font-medium">
+            <div className="flex items-center justify-center gap-6 sm:gap-12 flex-wrap text-xs sm:text-sm text-[#9A9A9E] font-medium">
               {stripItems.map((item, i) => (
                 <span key={i} className="flex items-center gap-1.5 whitespace-nowrap">{item}</span>
               ))}
@@ -199,23 +197,19 @@ export default async function HomePage() {
         {categorias.length > 0 && (
           <section className="py-10">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-semibold text-gray-900">Explorar por categoría</h2>
-              <Link href="/catalogo" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
+              <h2 className="text-lg font-semibold text-[#F5F5F2]">Explorar por categoría</h2>
+              <Link href="/catalogo" className="text-sm text-[#9A9A9E] hover:text-[#F5F5F2] transition-colors">
                 Ver todo →
               </Link>
             </div>
             <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
-              {categorias.map((cat, i) => {
-                const bgs   = ['#FCE7F3','#FEF3C7','#DBEAFE','#D1FAE5','#EDE9FE','#FEE2E2']
-                const texts = ['#BE185D','#92400E','#1D4ED8','#065F46','#5B21B6','#991B1B']
-                return (
-                  <Link key={cat.id} href={`/catalogo?cat=${cat.slug}`}
-                    className="shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:scale-105 hover:shadow-sm"
-                    style={{ backgroundColor: bgs[i % bgs.length], color: texts[i % texts.length] }}>
-                    {cat.nombre}
-                  </Link>
-                )
-              })}
+              {categorias.map((cat) => (
+                <Link key={cat.id} href={`/catalogo?cat=${cat.slug}`}
+                  className="shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:scale-105 border border-[#2C2C30] hover:border-[#E11D2E]"
+                  style={{ backgroundColor: '#161618', color: '#F5F5F2' }}>
+                  {cat.nombre}
+                </Link>
+              ))}
             </div>
           </section>
         )}
@@ -235,8 +229,8 @@ export default async function HomePage() {
             {/* Ver todo — debajo de la sección */}
             <div className="mt-8 flex justify-center">
               <Link href="/catalogo"
-                className="inline-flex items-center gap-2 text-sm font-semibold px-7 py-3 rounded-full border-2 transition-all hover:border-pink-300 hover:text-pink-500"
-                style={{ borderColor: '#E5E7EB', color: '#6B7280' }}>
+                className="inline-flex items-center gap-2 text-sm font-semibold px-7 py-3 rounded-full border-2 transition-all hover:border-[#E11D2E] hover:text-[#F5F5F2]"
+                style={{ borderColor: '#2C2C30', color: '#9A9A9E' }}>
                 Ver toda la colección →
               </Link>
             </div>
@@ -245,19 +239,19 @@ export default async function HomePage() {
 
         {/* ── CTA FINAL ── */}
         {ctaVisible && (
-          <section className="mb-16 rounded-3xl overflow-hidden border border-pink-100"
-            style={{ background: 'linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 50%, #FFF0F7 100%)' }}>
+          <section className="mb-16 rounded-3xl overflow-hidden border border-[#2C2C30]"
+            style={{ background: 'linear-gradient(135deg, #161618 0%, #1F1F22 50%, #161618 100%)' }}>
             <div className="px-8 sm:px-12 lg:px-16 py-12 sm:py-16 flex flex-col sm:flex-row items-center gap-8">
               <div className="flex-1 text-center sm:text-left">
                 <span className="inline-block text-xs font-bold tracking-widest uppercase mb-4 px-3 py-1.5 rounded-full"
-                  style={{ backgroundColor: 'rgba(236,72,153,0.1)', color: '#BE185D' }}>
-                  🎀 Atención personalizada
+                  style={{ backgroundColor: 'rgba(225,29,46,0.12)', color: '#FF6B7A' }}>
+                  🦇 Atención personalizada
                 </span>
                 <h3 className="text-2xl sm:text-3xl font-bold mb-3"
-                  style={{ color: '#1A1A1A' }}>
+                  style={{ color: '#F5F5F2' }}>
                   {ctaTitulo}
                 </h3>
-                <p className="text-gray-500 text-sm sm:text-base max-w-sm">
+                <p className="text-[#9A9A9E] text-sm sm:text-base max-w-sm">
                   {ctaSubtitulo}
                 </p>
               </div>
@@ -268,7 +262,7 @@ export default async function HomePage() {
                     style={{ backgroundColor: '#25D366', boxShadow: '0 4px 20px rgba(37,211,102,0.25)' }}>
                     💬 Hablar por WhatsApp
                   </a>
-                  <p className="text-xs text-gray-400">Respuesta rápida garantizada</p>
+                  <p className="text-xs text-[#9A9A9E]">Respuesta rápida garantizada</p>
                 </div>
               )}
             </div>

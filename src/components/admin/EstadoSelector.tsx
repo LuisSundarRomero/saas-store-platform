@@ -30,7 +30,7 @@ const ESTADO_MSG: Record<EstadoPedido, string> = {
   pago_confirmado:  'Hemos recibido tu pago. ¡Gracias!',
   empaquetado:      'Tu pedido ya está empaquetado y listo para salir.',
   en_camino:        '¡Tu pedido está en camino! Pronto llegará a ti.',
-  entregado:        '¡Tu pedido fue entregado! Esperamos que lo disfrutes. 🎀',
+  entregado:        '¡Tu pedido fue entregado! Esperamos que lo disfrutes. 🦇',
 }
 
 interface Props {
@@ -92,8 +92,8 @@ export function EstadoSelector({ pedidoId, estadoActual, clienteTelefono, orderI
 
   function buildWhatsAppUrl() {
     const telefono = clienteTelefono.replace(/\s/g, '')
-    const trackingUrl = appUrl ? `${appUrl}/pedido/${orderId}` : `kuutsu.pe/pedido/${orderId}`
-    const mensaje = `Hola! Te escribimos de Kuutsu.pe 🎀\n\nTu pedido *#${orderId}* ha sido actualizado:\n\n${ESTADO_EMOJI[nuevoEstado]} *${ESTADO_LABEL[nuevoEstado]}*\n${ESTADO_MSG[nuevoEstado]}\n\nRastrear tu pedido: ${trackingUrl}`
+    const trackingUrl = appUrl ? `${appUrl}/pedido/${orderId}` : `anarchyy.pe/pedido/${orderId}`
+    const mensaje = `Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido *#${orderId}* ha sido actualizado:\n\n${ESTADO_EMOJI[nuevoEstado]} *${ESTADO_LABEL[nuevoEstado]}*\n${ESTADO_MSG[nuevoEstado]}\n\nRastrear tu pedido: ${trackingUrl}`
     return `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
   }
 
@@ -110,7 +110,7 @@ export function EstadoSelector({ pedidoId, estadoActual, clienteTelefono, orderI
               setUploadError('')
             }}
             disabled={isPending}
-            className="border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-pink-400 bg-white cursor-pointer disabled:opacity-50"
+            className="border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-red-400 bg-white cursor-pointer disabled:opacity-50"
           >
             {ESTADOS.map((e) => (
               <option key={e} value={e}>
@@ -122,7 +122,7 @@ export function EstadoSelector({ pedidoId, estadoActual, clienteTelefono, orderI
             onClick={handleGuardar}
             disabled={isPending || nuevoEstado === estadoActual}
             className="text-white text-sm font-semibold px-4 py-2 rounded-xl transition-opacity hover:opacity-90 disabled:opacity-40"
-            style={{ backgroundColor: '#EC4899' }}
+            style={{ backgroundColor: '#E11D2E' }}
           >
             {isPending ? 'Guardando...' : 'Actualizar'}
           </button>
@@ -150,7 +150,7 @@ export function EstadoSelector({ pedidoId, estadoActual, clienteTelefono, orderI
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 text-sm text-gray-500 hover:text-pink-500 transition-colors"
+                className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-500 transition-colors"
               >
                 <IconUpload size={16} />
                 Subir captura (opcional)
@@ -197,7 +197,7 @@ export function EstadoSelector({ pedidoId, estadoActual, clienteTelefono, orderI
               <div className="rounded-xl p-3" style={{ backgroundColor: '#ECE5DD' }}>
                 <div className="bg-white rounded-xl px-4 py-3 shadow-sm">
                   <p className="text-xs text-gray-800 whitespace-pre-wrap leading-relaxed">
-                    {`Hola! Te escribimos de Kuutsu.pe 🎀\n\nTu pedido #${orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[nuevoEstado]} ${ESTADO_LABEL[nuevoEstado]}\n${ESTADO_MSG[nuevoEstado]}\n\nRastrear: ${appUrl || 'kuutsu.pe'}/pedido/${orderId}`}
+                    {`Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido #${orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[nuevoEstado]} ${ESTADO_LABEL[nuevoEstado]}\n${ESTADO_MSG[nuevoEstado]}\n\nRastrear: ${appUrl || 'anarchyy.pe'}/pedido/${orderId}`}
                   </p>
                   <p className="text-[10px] text-gray-400 text-right mt-1">✓✓</p>
                 </div>

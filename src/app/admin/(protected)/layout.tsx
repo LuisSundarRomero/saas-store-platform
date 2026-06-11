@@ -13,7 +13,7 @@ export default async function ProtectedLayout({
   if (!user) redirect('/admin/login')
 
   const { data: config } = await supabase.from('config').select('tienda_nombre').single()
-  const tiendaNombre = config?.tienda_nombre ?? 'Kuutsu.pe'
+  const tiendaNombre = config?.tienda_nombre ?? 'Anarchyy.pe'
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">

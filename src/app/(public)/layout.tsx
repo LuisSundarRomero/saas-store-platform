@@ -10,9 +10,9 @@ export default async function PublicLayout({ children }: { children: React.React
     supabase.from('categorias').select('nombre, slug').eq('activa', true).order('orden', { ascending: true }),
   ])
 
-  const tiendaNombre   = config?.tienda_nombre      ?? 'Kuutsu.pe'
+  const tiendaNombre   = config?.tienda_nombre      ?? 'Anarchyy.pe'
   const footerDesc     = config?.footer_descripcion ?? ''
-  const footerPolitica = config?.footer_politica    ?? 'No hacemos cambios ni devoluciones 🎀'
+  const footerPolitica = config?.footer_politica    ?? 'No hacemos cambios ni devoluciones 🦇'
   const whatsappNumero = config?.whatsapp_numero    ?? ''
 
   // Anuncio: visible, texto y que no haya expirado

@@ -40,10 +40,10 @@ export function LoginForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="admin@kuutsu.pe"
+            placeholder="admin@anarchyy.pe"
             required
             autoComplete="email"
-            className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-gray-200 text-sm bg-gray-50 focus:bg-white focus:border-pink-400 focus:outline-none transition-colors"
+            className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-gray-200 text-sm bg-gray-50 focus:bg-white focus:border-red-400 focus:outline-none transition-colors"
           />
         </div>
       </div>
@@ -60,7 +60,7 @@ export function LoginForm() {
             placeholder="••••••••"
             required
             autoComplete="current-password"
-            className="w-full pl-10 pr-11 py-3.5 rounded-2xl border border-gray-200 text-sm bg-gray-50 focus:bg-white focus:border-pink-400 focus:outline-none transition-colors"
+            className="w-full pl-10 pr-11 py-3.5 rounded-2xl border border-gray-200 text-sm bg-gray-50 focus:bg-white focus:border-red-400 focus:outline-none transition-colors"
           />
           <button
             type="button"
@@ -86,8 +86,8 @@ export function LoginForm() {
         disabled={isPending}
         className="w-full font-semibold py-4 rounded-2xl text-white text-sm transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-60 mt-1"
         style={{
-          backgroundColor: '#EC4899',
-          boxShadow: '0 4px 20px rgba(236,72,153,0.25)',
+          backgroundColor: '#E11D2E',
+          boxShadow: '0 4px 20px rgba(225,29,46,0.25)',
         }}
       >
         {isPending ? 'Entrando...' : 'Ingresar al panel'}

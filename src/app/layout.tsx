@@ -1,49 +1,48 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Josefin_Sans } from 'next/font/google'
+import { Anton, Inter } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 
-// Ultra delicada, romántica, lujosa
-const cormorant = Cormorant_Garamond({
-  variable: '--font-serif',
+// Impactante, condensada — títulos, drops, branding
+const anton = Anton({
+  variable: '--font-display',
   subsets: ['latin'],
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700'],
-  style: ['normal', 'italic'],
+  weight: ['400'],
 })
 
-// Vintage geométrico, femenino, estética coquette
-const josefin = Josefin_Sans({
+// Limpia y legible para fondos oscuros — cuerpo de texto
+const inter = Inter({
   variable: '--font-sans',
   subsets: ['latin'],
   display: 'swap',
-  weight: ['300', '400', '600', '700'],
+  weight: ['300', '400', '500', '600', '700'],
 })
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://kuutsu.pe'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://anarchyy.pe'
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: 'Kuutsu.pe — Zapatos coquette exclusivos',
-    template: '%s | Kuutsu.pe',
+    default: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
+    template: '%s | Anarchyy.pe',
   },
-  description: 'Zapatos coquette exclusivos en Lima. Modelos originales de bota peluche, Mary Jane y más. Pide por WhatsApp con envío a todo Lima.',
-  keywords: ['zapatos coquette', 'botas Lima', 'zapatos Lima', 'bota peluche', 'mary jane', 'kuutsu', 'moda femenina Peru'],
-  authors: [{ name: 'Kuutsu.pe' }],
-  creator: 'Kuutsu.pe',
+  description: 'Anarchyy.pe — ropa streetwear oscura: hoodies, pantalones cargo y poleras de edición limitada. Hago lo que quiero vestir. Envíos a nivel nacional, pedidos por WhatsApp.',
+  keywords: ['ropa streetwear', 'ropa gotica', 'hoodies Peru', 'dark fashion', 'anarchy', 'ropa negra', 'moda alternativa Peru'],
+  authors: [{ name: 'Anarchyy.pe' }],
+  creator: 'Anarchyy.pe',
   openGraph: {
     type: 'website',
     locale: 'es_PE',
     url: APP_URL,
-    siteName: 'Kuutsu.pe',
-    title: 'Kuutsu.pe — Zapatos coquette exclusivos',
-    description: 'Zapatos coquette exclusivos en Lima. Modelos originales de bota peluche, Mary Jane y más. Pide por WhatsApp.',
+    siteName: 'Anarchyy.pe',
+    title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
+    description: 'Ropa streetwear oscura de edición limitada. Hago lo que quiero vestir. Pide por WhatsApp con envío a nivel nacional.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kuutsu.pe — Zapatos coquette exclusivos',
-    description: 'Zapatos coquette exclusivos en Lima. Modelos originales de bota peluche, Mary Jane y más.',
+    title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
+    description: 'Ropa streetwear oscura de edición limitada. Hago lo que quiero vestir.',
   },
   robots: {
     index: true,
@@ -60,7 +59,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" className={`${josefin.variable} ${cormorant.variable} h-full`} suppressHydrationWarning>
+    <html lang="es" className={`${inter.variable} ${anton.variable} h-full dark`} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

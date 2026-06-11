@@ -36,17 +36,17 @@ export function SearchBar() {
 
   return (
     <form onSubmit={handleSubmit} className="relative flex items-center w-full max-w-xs">
-      <IconSearch size={15} className="absolute left-3 text-gray-400 pointer-events-none" />
+      <IconSearch size={15} className="absolute left-3 text-[#6B6B70] pointer-events-none" />
       <input
         ref={inputRef}
         type="search"
         defaultValue={q}
         placeholder="Buscar producto..."
-        className="w-full pl-8 pr-8 py-2 text-sm rounded-full border border-gray-200 bg-gray-50 focus:outline-none focus:border-pink-300 focus:bg-white transition-colors"
+        className="w-full pl-8 pr-8 py-2 text-sm rounded-full border border-[#2C2C30] bg-[#161618] text-[#F5F5F2] focus:outline-none focus:border-[#E11D2E] transition-colors"
       />
       {q && (
         <button type="button" onClick={handleClear}
-          className="absolute right-2.5 text-gray-400 hover:text-gray-600 transition-colors">
+          className="absolute right-2.5 text-[#6B6B70] hover:text-[#F5F5F2] transition-colors">
           <IconX size={14} />
         </button>
       )}

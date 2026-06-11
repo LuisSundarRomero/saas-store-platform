@@ -116,7 +116,7 @@ export function ProductoForm({ producto, categorias }: Props) {
     })
   }
 
-  const inputCls = "w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all bg-white"
+  const inputCls = "w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all bg-white"
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -145,7 +145,7 @@ export function ProductoForm({ producto, categorias }: Props) {
             )}
             <button form="producto-form" type="submit" disabled={isPending}
               className="px-5 py-2 text-sm font-semibold text-white rounded-xl transition-opacity hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#EC4899' }}>
+              style={{ backgroundColor: '#E11D2E' }}>
               {isPending ? 'Guardando...' : 'Guardar'}
             </button>
           </div>
@@ -173,12 +173,12 @@ export function ProductoForm({ producto, categorias }: Props) {
                 <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 mb-3">
                   <Image src={imagenes[0]} alt="" fill sizes="300px" className="object-cover" />
                   <span className="absolute top-2 left-2 text-white text-[10px] font-bold px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: '#EC4899' }}>
+                    style={{ backgroundColor: '#E11D2E' }}>
                     PRINCIPAL
                   </span>
                 </div>
               ) : (
-                <label className={`flex flex-col items-center justify-center aspect-square rounded-xl border-2 border-dashed transition-colors mb-3 ${imagenes.length >= 5 ? 'border-gray-100 opacity-50 cursor-not-allowed' : 'border-gray-200 cursor-pointer hover:border-pink-300 hover:bg-pink-50'}`}>
+                <label className={`flex flex-col items-center justify-center aspect-square rounded-xl border-2 border-dashed transition-colors mb-3 ${imagenes.length >= 5 ? 'border-gray-100 opacity-50 cursor-not-allowed' : 'border-gray-200 cursor-pointer hover:border-red-300 hover:bg-red-50'}`}>
                   <IconUpload size={28} className="text-gray-300 mb-2" />
                   <span className="text-sm text-gray-400 font-medium">
                     {uploading ? uploadProgress : 'Subir fotos'}
@@ -197,7 +197,7 @@ export function ProductoForm({ producto, categorias }: Props) {
                       <button type="button"
                         onClick={() => setImagenes((prev) => [prev[i], ...prev.filter((_, j) => j !== i)])}
                         className="relative w-14 h-14 rounded-xl overflow-hidden block"
-                        style={{ border: i === 0 ? '2px solid #EC4899' : '2px solid #E5E7EB' }}
+                        style={{ border: i === 0 ? '2px solid #E11D2E' : '2px solid #E5E7EB' }}
                         title={i === 0 ? 'Foto principal' : 'Hacer principal'}>
                         <Image src={url} alt="" fill sizes="56px" className="object-cover" />
                       </button>
@@ -209,7 +209,7 @@ export function ProductoForm({ producto, categorias }: Props) {
                     </div>
                   ))}
                   {imagenes.length < 5 && (
-                    <label className="w-14 h-14 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-pink-300 transition-colors">
+                    <label className="w-14 h-14 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-red-300 transition-colors">
                       <IconUpload size={16} className="text-gray-300" />
                       <input type="file" multiple accept="image/jpeg,image/png,image/webp" className="hidden"
                         onChange={handleImageUpload} disabled={uploading} />
@@ -316,7 +316,7 @@ export function ProductoForm({ producto, categorias }: Props) {
                       <button key={t} type="button" onClick={() => toggleTalla(t)}
                         className="min-w-[44px] h-10 px-3 rounded-xl text-sm font-semibold transition-all border-2"
                         style={sel
-                          ? { backgroundColor: '#EC4899', color: '#fff', borderColor: '#EC4899' }
+                          ? { backgroundColor: '#E11D2E', color: '#fff', borderColor: '#E11D2E' }
                           : { backgroundColor: '#F9FAFB', color: '#6B7280', borderColor: '#E5E7EB' }}>
                         {t}
                       </button>
@@ -336,7 +336,7 @@ export function ProductoForm({ producto, categorias }: Props) {
                       <button key={t} type="button" onClick={() => toggleTalla(t)}
                         className="min-w-[44px] h-10 px-3 rounded-xl text-sm font-semibold transition-all border-2"
                         style={sel
-                          ? { backgroundColor: '#EC4899', color: '#fff', borderColor: '#EC4899' }
+                          ? { backgroundColor: '#E11D2E', color: '#fff', borderColor: '#E11D2E' }
                           : { backgroundColor: '#F9FAFB', color: '#6B7280', borderColor: '#E5E7EB' }}>
                         {t}
                       </button>

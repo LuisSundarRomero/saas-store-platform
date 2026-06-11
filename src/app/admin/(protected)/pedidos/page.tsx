@@ -31,7 +31,7 @@ export default async function PedidosPage({ searchParams }: Props) {
   const totalPaginas = Math.ceil(totalFiltrados / POR_PAGINA)
 
   const stats = [
-    { label: 'Pedidos hoy',  value: hoy.length,           sub: 'nuevos',       color: '#EC4899', bg: '#FCE7F3' },
+    { label: 'Pedidos hoy',  value: hoy.length,           sub: 'nuevos',       color: '#E11D2E', bg: '#FEE2E2' },
     { label: 'Pendientes',   value: pendientes,             sub: 'sin atender',  color: '#D97706', bg: '#FEF3C7' },
     { label: 'Ingresos hoy', value: formatPrice(totalHoy), sub: 'total del día', color: '#059669', bg: '#D1FAE5' },
     { label: 'Entregados',   value: entregados,             sub: 'completados',  color: '#6366F1', bg: '#EDE9FE' },
@@ -78,7 +78,7 @@ export default async function PedidosPage({ searchParams }: Props) {
               className="shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all capitalize"
               style={
                 (estado ?? 'todos') === e
-                  ? { backgroundColor: '#EC4899', color: '#fff' }
+                  ? { backgroundColor: '#E11D2E', color: '#fff' }
                   : { backgroundColor: '#F9FAFB', color: '#6B7280', border: '1px solid #E5E7EB' }
               }>
               {e === 'todos' ? 'Todos' : e.replace('_', ' ')}
@@ -94,7 +94,7 @@ export default async function PedidosPage({ searchParams }: Props) {
       {q && (
         <p className="text-sm text-gray-500 mb-3">
           {totalFiltrados} resultado{totalFiltrados !== 1 ? 's' : ''} para <strong>"{q}"</strong>
-          <Link href="/admin/pedidos" className="ml-2 text-pink-500 hover:underline text-xs">Limpiar</Link>
+          <Link href="/admin/pedidos" className="ml-2 text-red-500 hover:underline text-xs">Limpiar</Link>
         </p>
       )}
 
@@ -109,7 +109,7 @@ export default async function PedidosPage({ searchParams }: Props) {
           <div className="flex gap-2">
             {page > 1 && (
               <Link href={buildUrl({ page: String(page - 1) })}
-                className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:border-pink-300 hover:text-pink-500 transition-colors">
+                className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:border-red-300 hover:text-red-500 transition-colors">
                 ← Anterior
               </Link>
             )}
@@ -123,7 +123,7 @@ export default async function PedidosPage({ searchParams }: Props) {
                   <Link key={p} href={buildUrl({ page: String(p) })}
                     className="w-9 h-9 flex items-center justify-center text-sm font-semibold rounded-xl transition-colors"
                     style={p === page
-                      ? { backgroundColor: '#EC4899', color: '#fff' }
+                      ? { backgroundColor: '#E11D2E', color: '#fff' }
                       : { border: '1px solid #E5E7EB', color: '#6B7280' }}>
                     {p}
                   </Link>
@@ -131,7 +131,7 @@ export default async function PedidosPage({ searchParams }: Props) {
               ))}
             {page < totalPaginas && (
               <Link href={buildUrl({ page: String(page + 1) })}
-                className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:border-pink-300 hover:text-pink-500 transition-colors">
+                className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:border-red-300 hover:text-red-500 transition-colors">
                 Siguiente →
               </Link>
             )}

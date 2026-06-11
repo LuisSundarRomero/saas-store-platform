@@ -81,7 +81,7 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     .select('whatsapp_numero, whatsapp_template, email_notificaciones')
     .single()
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://kuutsu-pe.vercel.app'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://anarchyy.pe'
   const trackingUrl = `${appUrl}/pedido/${orderId}`
 
   const numero = (config?.whatsapp_numero ?? process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '').replace(/\s/g, '')
@@ -94,7 +94,7 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     trackingUrl,
     template:
       config?.whatsapp_template ??
-      `Hola! Quiero hacer este pedido 🎀\n\n📦 #{orderId}\n\n{productos}\n\n💰 Total: S/ {total}\n\n🔍 Rastrear pedido: {trackingLink}`,
+      `Hola! Quiero hacer este pedido 🦇\n\n📦 #{orderId}\n\n{productos}\n\n💰 Total: S/ {total}\n\n🔍 Rastrear pedido: {trackingLink}`,
   })
 
   // Enviar email de notificación (en background, no bloquea el checkout)

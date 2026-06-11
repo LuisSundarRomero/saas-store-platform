@@ -56,16 +56,16 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
                   width: 36,
                   height: 36,
                   backgroundColor: completado
-                    ? '#DCFCE7'
+                    ? '#0F2A18'
                     : activo
-                    ? '#EC4899'
-                    : '#F3F4F6',
+                    ? '#E11D2E'
+                    : '#1F1F22',
                   color: completado
-                    ? '#16A34A'
+                    ? '#22C55E'
                     : activo
                     ? '#ffffff'
-                    : '#D1D5DB',
-                  boxShadow: activo ? '0 0 0 4px #FCE7F3' : 'none',
+                    : '#6B6B70',
+                  boxShadow: activo ? '0 0 0 4px #3A1014' : 'none',
                 }}
               >
                 {e.icon}
@@ -76,7 +76,7 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
                     width: 2,
                     flex: 1,
                     minHeight: 24,
-                    backgroundColor: completado ? '#86EFAC' : '#E5E7EB',
+                    backgroundColor: completado ? '#1B5E32' : '#2C2C30',
                   }}
                 />
               )}
@@ -87,7 +87,7 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
               <p
                 className="text-sm font-semibold leading-tight"
                 style={{
-                  color: activo ? '#EC4899' : futuro ? '#D1D5DB' : '#111827',
+                  color: activo ? '#FF6B7A' : futuro ? '#6B6B70' : '#F5F5F2',
                 }}
               >
                 {e.label}
@@ -95,13 +95,13 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
               {activo && !fecha && (
                 <span
                   className="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: '#FCE7F3', color: '#EC4899' }}
+                  style={{ backgroundColor: '#3A1014', color: '#FF6B7A' }}
                 >
                   Estado actual
                 </span>
               )}
               {fecha && (
-                <p className="text-xs mt-0.5" style={{ color: '#9CA3AF' }}>
+                <p className="text-xs mt-0.5" style={{ color: '#6B6B70' }}>
                   {formatDateTime(fecha)}
                 </p>
               )}

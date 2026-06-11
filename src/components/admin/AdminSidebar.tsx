@@ -20,7 +20,7 @@ interface SidebarProps {
   tiendaNombre?: string
 }
 
-export function AdminSidebar({ tiendaNombre = 'Kuutsu.pe' }: SidebarProps) {
+export function AdminSidebar({ tiendaNombre = 'Anarchyy.pe' }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -38,7 +38,7 @@ export function AdminSidebar({ tiendaNombre = 'Kuutsu.pe' }: SidebarProps) {
 
         {/* Logo */}
         <div className="px-6 py-5 border-b border-gray-100">
-          <span className="font-serif font-bold text-xl" style={{ color: '#EC4899' }}>
+          <span className="font-serif font-bold text-xl" style={{ color: '#E11D2E' }}>
             {tiendaNombre}
           </span>
           <p className="text-[11px] text-gray-400 mt-0.5 font-medium uppercase tracking-wider">
@@ -55,12 +55,12 @@ export function AdminSidebar({ tiendaNombre = 'Kuutsu.pe' }: SidebarProps) {
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
                 style={
                   active
-                    ? { backgroundColor: '#FCE7F3', color: '#EC4899' }
+                    ? { backgroundColor: '#FEE2E2', color: '#E11D2E' }
                     : { color: '#6B7280' }
                 }
               >
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all"
-                  style={active ? { backgroundColor: '#EC4899', color: '#fff' } : { backgroundColor: '#F3F4F6', color: '#9CA3AF' }}>
+                  style={active ? { backgroundColor: '#E11D2E', color: '#fff' } : { backgroundColor: '#F3F4F6', color: '#9CA3AF' }}>
                   <Icon size={16} />
                 </div>
                 {label}
@@ -85,7 +85,7 @@ export function AdminSidebar({ tiendaNombre = 'Kuutsu.pe' }: SidebarProps) {
 
       {/* ── TOP BAR mobile ── */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-100 px-4 h-12 flex items-center justify-between">
-        <span className="font-serif font-bold" style={{ color: '#EC4899' }}>
+        <span className="font-serif font-bold" style={{ color: '#E11D2E' }}>
           {tiendaNombre}
         </span>
         <button onClick={handleLogout}
@@ -102,7 +102,7 @@ export function AdminSidebar({ tiendaNombre = 'Kuutsu.pe' }: SidebarProps) {
           return (
             <Link key={href} href={href}
               className="flex-1 flex flex-col items-center justify-center py-2 gap-0.5"
-              style={{ color: active ? '#EC4899' : '#9ca3af' }}>
+              style={{ color: active ? '#E11D2E' : '#9ca3af' }}>
               <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />
               <span className="text-[9px] font-semibold">{label}</span>
             </Link>

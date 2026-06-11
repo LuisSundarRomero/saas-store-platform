@@ -28,7 +28,7 @@ export function Switch({ checked, onChange, disabled, label, size = 'md' }: Swit
         style={{
           width: trackW,
           height: trackH,
-          backgroundColor: checked ? '#EC4899' : '#D1D5DB',
+          backgroundColor: checked ? '#E11D2E' : '#D1D5DB',
           transition: 'background-color 0.2s ease',
           cursor: disabled ? 'not-allowed' : 'pointer',
           padding: pad,

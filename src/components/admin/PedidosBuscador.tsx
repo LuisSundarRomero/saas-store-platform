@@ -38,7 +38,7 @@ export function PedidosBuscador({ defaultValue = '', estado }: Props) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Buscar por código ORD-001..."
-          className="pl-8 pr-8 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-pink-400 w-56 transition-colors"
+          className="pl-8 pr-8 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-red-400 w-56 transition-colors"
         />
         {value && (
           <button type="button" onClick={handleClear}
@@ -49,7 +49,7 @@ export function PedidosBuscador({ defaultValue = '', estado }: Props) {
       </div>
       <button type="submit"
         className="px-4 py-2 text-sm font-semibold text-white rounded-xl transition-opacity hover:opacity-90"
-        style={{ backgroundColor: '#EC4899' }}>
+        style={{ backgroundColor: '#E11D2E' }}>
         Buscar
       </button>
     </form>

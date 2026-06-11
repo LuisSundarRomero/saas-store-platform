@@ -47,7 +47,7 @@ export function CatalogoBuscador({ defaultQ = '', categorias, currentCat, curren
           <IconSearch size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input type="text" value={q} onChange={(e) => setQ(e.target.value)}
             placeholder="Buscar producto..."
-            className="pl-8 pr-8 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-pink-400 w-48 transition-colors" />
+            className="pl-8 pr-8 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-red-400 w-48 transition-colors" />
           {q && (
             <button type="button" onClick={() => { setQ(''); router.push(buildUrl({ q: '' })) }}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500">
@@ -57,7 +57,7 @@ export function CatalogoBuscador({ defaultQ = '', categorias, currentCat, curren
         </div>
         <button type="submit"
           className="px-3 py-2 text-sm font-semibold text-white rounded-xl"
-          style={{ backgroundColor: '#EC4899' }}>
+          style={{ backgroundColor: '#E11D2E' }}>
           Buscar
         </button>
       </form>
@@ -65,7 +65,7 @@ export function CatalogoBuscador({ defaultQ = '', categorias, currentCat, curren
       {/* Filtro por categoría */}
       <select value={currentCat ?? ''}
         onChange={(e) => router.push(buildUrl({ cat: e.target.value }))}
-        className="border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-pink-400 bg-white text-gray-600">
+        className="border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-red-400 bg-white text-gray-600">
         <option value="">Todas las categorías</option>
         {categorias.map((c) => (
           <option key={c.slug} value={c.slug}>{c.nombre}</option>
@@ -79,7 +79,7 @@ export function CatalogoBuscador({ defaultQ = '', categorias, currentCat, curren
             onClick={() => router.push(buildUrl({ filtro: f.value }))}
             className="shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
             style={(currentFiltro ?? '') === f.value
-              ? { backgroundColor: '#EC4899', color: '#fff' }
+              ? { backgroundColor: '#E11D2E', color: '#fff' }
               : { backgroundColor: '#F9FAFB', color: '#6B7280', border: '1px solid #E5E7EB' }}>
             {f.label}
           </button>

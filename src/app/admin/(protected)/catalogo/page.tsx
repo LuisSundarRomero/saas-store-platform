@@ -51,7 +51,7 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
         </div>
         <Link href="/admin/catalogo/nuevo"
           className="flex items-center gap-2 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-opacity hover:opacity-90"
-          style={{ backgroundColor: '#EC4899', boxShadow: '0 2px 12px rgba(236,72,153,0.3)' }}>
+          style={{ backgroundColor: '#E11D2E', boxShadow: '0 2px 12px rgba(225,29,46,0.3)' }}>
           <IconPlus size={16} />
           <span className="hidden sm:inline">Nuevo producto</span>
           <span className="sm:hidden">Nuevo</span>
@@ -71,7 +71,7 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
         <p className="text-sm text-gray-400 mb-3">
           {total} resultado{total !== 1 ? 's' : ''}
           {q && <> para <strong>"{q}"</strong></>}
-          <Link href="/admin/catalogo" className="ml-2 text-pink-500 hover:underline text-xs">Limpiar</Link>
+          <Link href="/admin/catalogo" className="ml-2 text-red-500 hover:underline text-xs">Limpiar</Link>
         </p>
       )}
 
@@ -89,7 +89,7 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
           <div className="flex gap-2 flex-wrap">
             {page > 1 && (
               <Link href={buildUrl({ page: String(page - 1) })}
-                className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:border-pink-300 hover:text-pink-500 transition-colors">
+                className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:border-red-300 hover:text-red-500 transition-colors">
                 ← Anterior
               </Link>
             )}
@@ -101,7 +101,7 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
                   <Link href={buildUrl({ page: String(p) })}
                     className="w-9 h-9 flex items-center justify-center text-sm font-semibold rounded-xl transition-colors"
                     style={p === page
-                      ? { backgroundColor: '#EC4899', color: '#fff' }
+                      ? { backgroundColor: '#E11D2E', color: '#fff' }
                       : { border: '1px solid #E5E7EB', color: '#6B7280' }}>
                     {p}
                   </Link>
@@ -109,7 +109,7 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
               ))}
             {page < totalPaginas && (
               <Link href={buildUrl({ page: String(page + 1) })}
-                className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:border-pink-300 hover:text-pink-500 transition-colors">
+                className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:border-red-300 hover:text-red-500 transition-colors">
                 Siguiente →
               </Link>
             )}

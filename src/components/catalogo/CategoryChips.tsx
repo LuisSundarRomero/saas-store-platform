@@ -20,8 +20,8 @@ export function CategoryChips({ categorias }: CategoryChipsProps) {
         className="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all border"
         style={
           !categoriaActual
-            ? { backgroundColor: '#1A1A1A', color: '#fff', borderColor: '#1A1A1A' }
-            : { backgroundColor: '#fff', color: '#6B6B6B', borderColor: '#E5E5E3' }
+            ? { backgroundColor: '#E11D2E', color: '#fff', borderColor: '#E11D2E' }
+            : { backgroundColor: '#161618', color: '#9A9A9E', borderColor: '#2C2C30' }
         }
       >
         Todo
@@ -35,8 +35,8 @@ export function CategoryChips({ categorias }: CategoryChipsProps) {
           className="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all border"
           style={
             categoriaActual === cat.slug
-              ? { backgroundColor: '#1A1A1A', color: '#fff', borderColor: '#1A1A1A' }
-              : { backgroundColor: '#fff', color: '#6B6B6B', borderColor: '#E5E5E3' }
+              ? { backgroundColor: '#E11D2E', color: '#fff', borderColor: '#E11D2E' }
+              : { backgroundColor: '#161618', color: '#9A9A9E', borderColor: '#2C2C30' }
           }
         >
           {cat.nombre}

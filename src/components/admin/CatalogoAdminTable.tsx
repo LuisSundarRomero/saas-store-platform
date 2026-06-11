@@ -106,7 +106,7 @@ export function CatalogoAdminTable({ productos }: Props) {
                   </td>
                   <td className="px-4 py-3 text-gray-400">{p.categorias?.nombre ?? '—'}</td>
                   <td className="px-4 py-3">
-                    <span className="font-semibold" style={{ color: '#EC4899' }}>{formatPrice(p.precio)}</span>
+                    <span className="font-semibold" style={{ color: '#E11D2E' }}>{formatPrice(p.precio)}</span>
                     {p.precio_antes && (
                       <span className="text-xs text-gray-400 line-through ml-1">{formatPrice(p.precio_antes)}</span>
                     )}

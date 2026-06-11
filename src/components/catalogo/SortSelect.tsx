@@ -17,7 +17,7 @@ export function SortSelect() {
     <select
       value={sort}
       onChange={(e) => handleChange(e.target.value)}
-      className="text-sm border border-gray-200 rounded-full px-3 py-1.5 outline-none bg-white text-gray-600 cursor-pointer hover:border-pink-300 transition-colors"
+      className="text-sm border border-[#2C2C30] rounded-full px-3 py-1.5 outline-none bg-[#161618] text-[#9A9A9E] cursor-pointer hover:border-[#E11D2E] transition-colors"
     >
       <option value="nuevo">Más recientes</option>
       <option value="precio_asc">Precio: menor a mayor</option>

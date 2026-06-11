@@ -62,7 +62,7 @@ export function AnnouncementBar({ texto, link, expira }: Props) {
 
   return (
     <div className="relative flex items-center justify-center gap-3 px-10 py-2.5 text-white text-sm font-medium"
-      style={{ backgroundColor: '#EC4899' }}>
+      style={{ backgroundColor: '#E11D2E' }}>
 
       {link
         ? <Link href={link} className="hover:underline underline-offset-2">{contenido}</Link>

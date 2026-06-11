@@ -10,7 +10,7 @@ interface NavbarProps {
   tiendaNombre?: string
 }
 
-export function Navbar({ tiendaNombre = 'Kuutsu.pe' }: NavbarProps) {
+export function Navbar({ tiendaNombre = 'Anarchyy.pe' }: NavbarProps) {
   const [mounted, setMounted] = useState(false)
   const itemCount = useCarrito((s) => s.itemCount)
   const isOpen   = useCarrito((s) => s.isOpen)
@@ -23,19 +23,19 @@ export function Navbar({ tiendaNombre = 'Kuutsu.pe' }: NavbarProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-30 bg-white border-b border-gray-100">
+      <header className="sticky top-0 z-30 bg-[#0B0B0C]/95 backdrop-blur border-b border-[#2C2C30]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
 
-          <Link href="/" className="font-serif text-xl font-bold shrink-0" style={{ color: '#EC4899' }}>
+          <Link href="/" className="font-display text-xl tracking-widest shrink-0 text-[#F5F5F2]">
             {tiendaNombre}
           </Link>
 
           <nav className="flex items-center gap-1">
             <div className="hidden sm:flex items-center gap-4 mr-3">
-              <Link href="/catalogo" className="text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors">
+              <Link href="/catalogo" className="text-sm text-[#9A9A9E] hover:text-[#F5F5F2] font-medium transition-colors">
                 Catálogo
               </Link>
-              <Link href="/rastrear" className="text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors">
+              <Link href="/rastrear" className="text-sm text-[#9A9A9E] hover:text-[#F5F5F2] font-medium transition-colors">
                 Rastrear pedido
               </Link>
             </div>
@@ -43,13 +43,13 @@ export function Navbar({ tiendaNombre = 'Kuutsu.pe' }: NavbarProps) {
             <button
               type="button"
               onClick={openCart}
-              className="relative p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-800"
+              className="relative p-2 rounded-full hover:bg-[#1F1F22] transition-colors text-[#9A9A9E] hover:text-[#F5F5F2]"
             >
               <IconShoppingBag size={22} />
               {count > 0 && (
                 <span
                   className="absolute -top-0.5 -right-0.5 text-white text-[10px] font-bold min-w-[17px] h-[17px] rounded-full flex items-center justify-center px-1"
-                  style={{ backgroundColor: '#EC4899' }}
+                  style={{ backgroundColor: '#E11D2E' }}
                 >
                   {count}
                 </span>

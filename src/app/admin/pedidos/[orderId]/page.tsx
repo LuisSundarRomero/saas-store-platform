@@ -58,7 +58,7 @@ export default async function PedidoDetalleAdmin({ params }: Props) {
                     <span className="text-xs text-gray-400">× {item.cantidad}</span>
                   </div>
                 </div>
-                <span className="font-bold ml-4 shrink-0" style={{ color: '#EC4899' }}>
+                <span className="font-bold ml-4 shrink-0" style={{ color: '#E11D2E' }}>
                   {formatPrice(item.subtotal)}
                 </span>
               </div>
@@ -66,7 +66,7 @@ export default async function PedidoDetalleAdmin({ params }: Props) {
           </div>
           <div className="flex justify-between items-center pt-4 border-t border-gray-100 mt-1">
             <span className="font-semibold text-gray-700">Total del pedido</span>
-            <span className="text-xl font-bold" style={{ color: '#EC4899' }}>{formatPrice(pedido.total)}</span>
+            <span className="text-xl font-bold" style={{ color: '#E11D2E' }}>{formatPrice(pedido.total)}</span>
           </div>
         </div>
 

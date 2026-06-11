@@ -9,18 +9,18 @@ import type { Metadata } from 'next'
 export const revalidate = 30
 
 export const metadata: Metadata = {
-  title: 'Catálogo de zapatos',
-  description: 'Explora toda la colección de zapatos coquette: bota peluche, Mary Jane, doble capa y más. Envíos a todo Lima.',
+  title: 'Catálogo de ropa',
+  description: 'Explora toda la colección Anarchyy: hoodies, cargos, poleras y piezas de edición limitada. Envíos a nivel nacional.',
   openGraph: {
-    title: 'Catálogo — Kuutsu.pe',
-    description: 'Explora toda la colección de zapatos coquette. Envíos a todo Lima.',
+    title: 'Catálogo — Anarchyy.pe',
+    description: 'Explora toda la colección dark streetwear. Envíos a nivel nacional.',
     url: '/catalogo',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Catálogo — Kuutsu.pe',
-    description: 'Explora toda la colección de zapatos coquette. Envíos a todo Lima.',
+    title: 'Catálogo — Anarchyy.pe',
+    description: 'Explora toda la colección dark streetwear. Envíos a nivel nacional.',
   },
 }
 
@@ -38,9 +38,9 @@ export default async function CatalogoPage({ searchParams }: Props) {
   const categoriaActual = categorias.find((c) => c.slug === cat)
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#0B0B0C]">
       {/* Chips sticky */}
-      <div className="sticky top-14 z-10 bg-white border-b border-gray-100">
+      <div className="sticky top-14 z-10 bg-[#0B0B0C]/95 backdrop-blur border-b border-[#2C2C30]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <Suspense>
             <CategoryChips categorias={categorias} />
@@ -51,10 +51,10 @@ export default async function CatalogoPage({ searchParams }: Props) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
+            <h1 className="text-xl sm:text-2xl font-semibold text-[#F5F5F2]">
               {q ? `"${q}"` : categoriaActual ? categoriaActual.nombre : 'Todos los productos'}
             </h1>
-            <p className="text-sm text-gray-400 mt-0.5">
+            <p className="text-sm text-[#9A9A9E] mt-0.5">
               {productos.length} {productos.length === 1 ? 'producto' : 'productos'}
             </p>
           </div>
@@ -70,10 +70,10 @@ export default async function CatalogoPage({ searchParams }: Props) {
 
         {productos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-3xl">🔍</div>
+            <div className="w-16 h-16 rounded-full bg-[#1F1F22] flex items-center justify-center text-3xl">🔍</div>
             <div>
-              <p className="font-semibold text-gray-700">Sin productos</p>
-              <p className="text-sm text-gray-400 mt-1">Prueba con otra categoría o búsqueda</p>
+              <p className="font-semibold text-[#F5F5F2]">Sin productos</p>
+              <p className="text-sm text-[#9A9A9E] mt-1">Prueba con otra categoría o búsqueda</p>
             </div>
           </div>
         ) : (

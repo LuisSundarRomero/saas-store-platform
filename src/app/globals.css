@@ -1,48 +1,52 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand */
-  --color-brand:          #EC4899;
-  --color-brand-light:    #FCE7F3;
-  --color-brand-dark:     #DB2777;
+  /* Brand — Anarchy: lujo oscuro / dark streetwear */
+  --color-brand:          #E11D2E;
+  --color-brand-light:    #3A1014;
+  --color-brand-dark:     #A3121F;
 
-  /* Superficies */
-  --color-surface:        #F8F8F7;
-  --color-border:         #E5E5E3;
+  /* Fondo y superficies */
+  --color-bg:             #0B0B0C;
+  --color-surface:        #161618;
+  --color-surface-2:      #1F1F22;
+  --color-border:         #2C2C30;
 
-  /* Texto secundario */
-  --color-muted:          #6B6B6B;
+  /* Texto */
+  --color-ink:            #F5F5F2;
+  --color-muted:          #9A9A9E;
 
-  /* Semanticos */
+  /* Semanticos (ajustados a fondo oscuro) */
   --color-warning:        #F59E0B;
-  --color-warning-bg:     #FEF3C7;
-  --color-ok:             #10B981;
-  --color-ok-bg:          #D1FAE5;
-  --color-info:           #3B82F6;
-  --color-info-bg:        #DBEAFE;
+  --color-warning-bg:     #3A2A0A;
+  --color-ok:             #22C55E;
+  --color-ok-bg:          #0F2A18;
+  --color-info:           #60A5FA;
+  --color-info-bg:        #11203A;
   --color-danger:         #EF4444;
-  --color-danger-bg:      #FEE2E2;
+  --color-danger-bg:      #3A1313;
 
   /* Fuentes */
-  --font-sans:  var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
+  --font-sans:    var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), Impact, ui-sans-serif, sans-serif;
 }
 
 * { box-sizing: border-box; }
 
 body {
-  background-color: #ffffff;
-  color: #1A1A1A;
+  background-color: #0B0B0C;
+  color: #F5F5F2;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   font-size: 15px;
   letter-spacing: 0.01em;
 }
 
-/* Solo el serif en títulos explícitos — no en todo el cuerpo */
-.font-serif {
-  font-family: var(--font-serif);
-  letter-spacing: -0.01em;
+/* Tipografía de impacto — títulos, drops, CTAs grandes */
+.font-display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 @keyframes shake {
@@ -54,11 +58,11 @@ body {
 }
 
 .btn-brand {
-  background-color: #EC4899;
+  background-color: #E11D2E;
   color: #fff;
   font-weight: 600;
   border-radius: 9999px;
   transition: background-color 0.15s;
 }
-.btn-brand:hover { background-color: #DB2777; }
+.btn-brand:hover { background-color: #A3121F; }
 .btn-brand:disabled { opacity: 0.6; }

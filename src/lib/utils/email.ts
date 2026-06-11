@@ -28,7 +28,7 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
             ${variante ? `<br><span style="color:#6b7280;font-size:13px">${variante}</span>` : ''}
           </td>
           <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;text-align:center">${i.cantidad}</td>
-          <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;text-align:right;color:#EC4899;font-weight:600">
+          <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;text-align:right;color:#E11D2E;font-weight:600">
             ${formatPrice(i.precio * i.cantidad)}
           </td>
         </tr>`
@@ -43,8 +43,8 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
   <div style="max-width:520px;margin:0 auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1)">
 
     <!-- Header -->
-    <div style="background:#EC4899;padding:28px 32px;text-align:center">
-      <h1 style="color:white;margin:0;font-size:22px;font-weight:700">🎀 Nuevo pedido recibido</h1>
+    <div style="background:#E11D2E;padding:28px 32px;text-align:center">
+      <h1 style="color:white;margin:0;font-size:22px;font-weight:700">🦇 Nuevo pedido recibido</h1>
       <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:14px">${formatDate(new Date().toISOString())}</p>
     </div>
 
@@ -52,9 +52,9 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
     <div style="padding:28px 32px">
 
       <!-- Order ID -->
-      <div style="background:#fdf2f8;border:1px solid #fbcfe8;border-radius:12px;padding:16px;text-align:center;margin-bottom:24px">
-        <p style="margin:0;color:#9d174d;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Código del pedido</p>
-        <p style="margin:6px 0 0;font-size:28px;font-weight:800;color:#EC4899">#${orderId}</p>
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:16px;text-align:center;margin-bottom:24px">
+        <p style="margin:0;color:#991b1b;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Código del pedido</p>
+        <p style="margin:6px 0 0;font-size:28px;font-weight:800;color:#E11D2E">#${orderId}</p>
       </div>
 
       <!-- Cliente -->
@@ -78,14 +78,14 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
         </table>
         <div style="border-top:2px solid #f3f4f6;margin-top:12px;padding-top:12px;display:flex;justify-content:space-between">
           <strong>Total</strong>
-          <strong style="color:#EC4899;font-size:18px">${formatPrice(total)}</strong>
+          <strong style="color:#E11D2E;font-size:18px">${formatPrice(total)}</strong>
         </div>
       </div>
 
       <!-- CTA -->
       <div style="text-align:center;margin-top:24px">
         <a href="${trackingUrl}"
-          style="display:inline-block;background:#EC4899;color:white;text-decoration:none;padding:14px 28px;border-radius:9999px;font-weight:600;font-size:14px">
+          style="display:inline-block;background:#E11D2E;color:white;text-decoration:none;padding:14px 28px;border-radius:9999px;font-weight:600;font-size:14px">
           Ver pedido en el admin
         </a>
       </div>
@@ -94,7 +94,7 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
 
     <!-- Footer -->
     <div style="background:#f9fafb;padding:16px 32px;text-align:center;border-top:1px solid #f3f4f6">
-      <p style="margin:0;font-size:12px;color:#9ca3af">Kuutsu.pe · Notificación automática de pedido</p>
+      <p style="margin:0;font-size:12px;color:#9ca3af">Anarchyy.pe · Notificación automática de pedido</p>
     </div>
 
   </div>
@@ -102,9 +102,9 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
 </html>`
 
   const { data, error } = await resend.emails.send({
-    from: 'Kuutsu.pe <onboarding@resend.dev>',
+    from: 'Anarchyy.pe <onboarding@resend.dev>',
     to,
-    subject: `🎀 Nuevo pedido #${orderId} — ${formatPrice(total)}`,
+    subject: `🦇 Nuevo pedido #${orderId} — ${formatPrice(total)}`,
     html,
   })
 

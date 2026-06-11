@@ -111,12 +111,12 @@ export function CategoriasManager({ categorias: inicial }: Props) {
               <div className="col-span-5 flex items-center gap-2">
                 <div className="flex-1">
                   <input value={editNombre} onChange={(e) => setEditNombre(e.target.value)}
-                    className="w-full border border-pink-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-pink-100 bg-white"
+                    className="w-full border border-red-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-red-100 bg-white"
                     autoFocus placeholder="Nombre de la categoría" />
                 </div>
                 <div className="w-20">
                   <input type="number" value={editOrden} onChange={(e) => setEditOrden(Number(e.target.value))}
-                    className="w-full border border-gray-200 rounded-xl px-2 py-2 text-sm outline-none focus:border-pink-300 text-center bg-white" />
+                    className="w-full border border-gray-200 rounded-xl px-2 py-2 text-sm outline-none focus:border-red-300 text-center bg-white" />
                 </div>
                 <button onClick={() => handleSaveEdit(cat)} disabled={isPending}
                   className="w-9 h-9 flex items-center justify-center text-green-500 hover:bg-green-50 rounded-xl transition-colors disabled:opacity-40">
@@ -163,14 +163,14 @@ export function CategoriasManager({ categorias: inicial }: Props) {
 
         {/* Fila nueva */}
         {showNew && (
-          <div className="flex items-center gap-2 px-4 py-3 bg-pink-50 border-t border-pink-100">
+          <div className="flex items-center gap-2 px-4 py-3 bg-red-50 border-t border-red-100">
             <div className="w-6" />
             <input value={newNombre} onChange={(e) => setNewNombre(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
-              className="flex-1 border border-pink-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-pink-100 bg-white"
+              className="flex-1 border border-red-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-red-100 bg-white"
               placeholder="Nombre de la categoría (ej: Botas)" autoFocus />
             <input type="number" value={newOrden} onChange={(e) => setNewOrden(Number(e.target.value))}
-              className="w-16 border border-pink-200 rounded-xl px-2 py-2 text-sm outline-none text-center bg-white" />
+              className="w-16 border border-red-200 rounded-xl px-2 py-2 text-sm outline-none text-center bg-white" />
             <button onClick={handleCreate} disabled={isPending || !newNombre.trim()}
               className="w-9 h-9 flex items-center justify-center text-green-500 hover:bg-green-50 rounded-xl transition-colors disabled:opacity-40">
               <IconCheck size={16} />
@@ -187,7 +187,7 @@ export function CategoriasManager({ categorias: inicial }: Props) {
       {!showNew && (
         <button onClick={() => setShowNew(true)}
           className="flex items-center gap-2 text-sm font-semibold text-white px-5 py-2.5 rounded-full self-start transition-opacity hover:opacity-90 shadow-sm"
-          style={{ backgroundColor: '#EC4899', boxShadow: '0 2px 12px rgba(236,72,153,0.25)' }}>
+          style={{ backgroundColor: '#E11D2E', boxShadow: '0 2px 12px rgba(225,29,46,0.25)' }}>
           <IconPlus size={15} />
           Nueva categoría
         </button>

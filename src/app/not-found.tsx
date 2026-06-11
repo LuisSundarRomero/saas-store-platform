@@ -4,19 +4,18 @@ import { IconArrowLeft, IconShoppingBag } from '@tabler/icons-react'
 export default function NotFound() {
   return (
     <main
-      className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: 'linear-gradient(160deg, #fff5f9 0%, #fce7f3 40%, #ffffff 100%)' }}
+      className="min-h-screen flex items-center justify-center px-4 bg-[#0B0B0C]"
     >
       <div className="text-center max-w-sm w-full">
 
         {/* Código */}
-        <p className="text-8xl font-bold mb-2" style={{ color: '#F9A8D4' }}>404</p>
+        <p className="text-8xl font-display mb-2" style={{ color: '#E11D2E' }}>404</p>
 
         {/* Mensaje */}
-        <h1 className="text-xl font-bold text-gray-900 mb-2">
+        <h1 className="text-xl font-bold text-[#F5F5F2] mb-2">
           Esta página no existe
         </h1>
-        <p className="text-sm text-gray-400 mb-8 leading-relaxed">
+        <p className="text-sm text-[#9A9A9E] mb-8 leading-relaxed">
           Parece que el link no es válido o el producto ya no está disponible.
         </p>
 
@@ -25,7 +24,7 @@ export default function NotFound() {
           <Link
             href="/catalogo"
             className="inline-flex items-center justify-center gap-2 text-white font-semibold py-3.5 px-6 rounded-full transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#EC4899' }}
+            style={{ backgroundColor: '#E11D2E' }}
           >
             <IconShoppingBag size={18} />
             Ver catálogo
@@ -33,7 +32,7 @@ export default function NotFound() {
 
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 text-gray-500 font-medium py-3 px-6 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-sm"
+            className="inline-flex items-center justify-center gap-2 text-[#9A9A9E] font-medium py-3 px-6 rounded-full border border-[#2C2C30] hover:bg-[#161618] hover:text-[#F5F5F2] transition-colors text-sm"
           >
             <IconArrowLeft size={16} />
             Volver al inicio
