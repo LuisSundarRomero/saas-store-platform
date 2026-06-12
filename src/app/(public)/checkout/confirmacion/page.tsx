@@ -1,19 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo, useSyncExternalStore } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { IconBrandWhatsapp, IconPackage, IconArrowRight } from '@tabler/icons-react'
 
+function subscribeNoop() {
+  return () => {}
+}
+
+function useMounted() {
+  return useSyncExternalStore(subscribeNoop, () => true, () => false)
+}
+
 export default function ConfirmacionPage() {
   const searchParams = useSearchParams()
   const order = searchParams.get('order')
-  const [waUrl] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null
+  const mounted = useMounted()
+  const waUrl = useMemo(() => {
+    if (!mounted) return null
     const url = sessionStorage.getItem('wa_pending')
     if (url) sessionStorage.removeItem('wa_pending')
     return url
-  })
+  }, [mounted])
   const [waAbierto, setWaAbierto] = useState(false)
 
   function handleAbrirWhatsApp() {
@@ -72,7 +81,7 @@ export default function ConfirmacionPage() {
           )}
 
           {order && (
-            <Link href={`/pedido/${order}`}
+            <Link href={`/rastrear?order=${order}`}
               className="w-full py-3.5 rounded-full font-semibold text-white text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
               style={{ backgroundColor: '#E11D2E' }}>
               <IconPackage size={18} />

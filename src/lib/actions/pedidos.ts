@@ -82,7 +82,7 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     .single()
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://anarchyy.pe'
-  const trackingUrl = `${appUrl}/pedido/${orderId}`
+  const trackingUrl = `${appUrl}/rastrear?order=${orderId}`
 
   const numero = (config?.whatsapp_numero ?? process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '').replace(/\s/g, '')
 

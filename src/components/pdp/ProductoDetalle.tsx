@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { IconArrowLeft, IconShoppingBag, IconCheck, IconBrandWhatsapp, IconX, IconZoomIn, IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
-import { SizeGuide } from './SizeGuide'
 import { Producto } from '@/types'
 import { formatPrice } from '@/lib/utils/format'
 import { useCarrito } from '@/store/carrito'
@@ -215,17 +214,14 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
             {/* Tallas — ANTES de la descripción para que estén visible en mobile */}
             {necesitaTalla && (
               <div id="selector-talla" className="mb-5">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-sm font-semibold text-[#F5F5F2]">
-                    Talla {tallaSeleccionada
-                      ? <span className="font-normal text-[#9A9A9E]">— {tallaSeleccionada}</span>
-                      : shakeField === 'talla'
-                        ? <span className="font-normal text-red-400 text-xs ml-1 animate-pulse">← Selecciona una talla</span>
-                        : <span className="font-normal text-[#6B6B70] text-xs ml-1">Selecciona una</span>
-                    }
-                  </p>
-                  <SizeGuide />
-                </div>
+                <p className="text-sm font-semibold text-[#F5F5F2] mb-3">
+                  Talla {tallaSeleccionada
+                    ? <span className="font-normal text-[#9A9A9E]">— {tallaSeleccionada}</span>
+                    : shakeField === 'talla'
+                      ? <span className="font-normal text-red-400 text-xs ml-1 animate-pulse">← Selecciona una talla</span>
+                      : <span className="font-normal text-[#6B6B70] text-xs ml-1">Selecciona una</span>
+                  }
+                </p>
                 <div className={`flex flex-wrap gap-2 ${shakeField === 'talla' ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}
                   style={shakeField === 'talla' ? { outline: '2px solid #7F1D1D', borderRadius: 12, padding: '8px' } : {}}>
                   {producto.tallas.map((t) => {
@@ -307,13 +303,18 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
               </div>
             )}
 
-            {/* CTA — inline en todos los tamaños, sin fixed/sticky */}
-            <div className="flex flex-col gap-3 mt-4 pb-10">
-              <BtnAgregar
-                agotado={agotado}
-                agregado={agregado}
-                onClick={handleAgregar}
-              />
+            {/* CTA */}
+            <div className="flex flex-col gap-3 mt-4 pb-24 lg:pb-10">
+              {/* Agregar al carrito — fijo en mobile, inline en desktop */}
+              <div className="fixed bottom-0 inset-x-0 z-30 p-4 bg-[#1F1F22] border-t border-[#2C2C30] lg:static lg:p-0 lg:border-0 lg:bg-transparent">
+                <div className="max-w-6xl mx-auto lg:max-w-none">
+                  <BtnAgregar
+                    agotado={agotado}
+                    agregado={agregado}
+                    onClick={handleAgregar}
+                  />
+                </div>
+              </div>
               <a
                 href={buildWhatsAppDirectUrl()}
                 target="_blank"

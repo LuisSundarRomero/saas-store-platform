@@ -68,8 +68,9 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         setTelefono('')
         setNombre('')
         onClose()
-        // Guardamos la URL de WA para que la página de confirmación la abra
-        sessionStorage.setItem('wa_pending', whatsappUrl)
+        const waWindow = window.open(whatsappUrl, '_blank')
+        // Si el navegador bloquea el popup, la página de confirmación ofrece el botón
+        if (!waWindow) sessionStorage.setItem('wa_pending', whatsappUrl)
         window.location.href = `/checkout/confirmacion?order=${orderId}`
       } catch (err) {
         console.error('[checkout]', err)

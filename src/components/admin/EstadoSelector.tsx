@@ -93,7 +93,7 @@ export function EstadoSelector({ pedidoId, estadoActual, clienteTelefono, orderI
 
   function buildWhatsAppUrl() {
     const telefono = clienteTelefono.replace(/\s/g, '')
-    const trackingUrl = appUrl ? `${appUrl}/pedido/${orderId}` : `anarchyy.pe/pedido/${orderId}`
+    const trackingUrl = appUrl ? `${appUrl}/rastrear?order=${orderId}` : `anarchyy.pe/rastrear?order=${orderId}`
     const mensaje = `Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido *#${orderId}* ha sido actualizado:\n\n${ESTADO_EMOJI[nuevoEstado]} *${ESTADO_LABEL[nuevoEstado]}*\n${ESTADO_MSG[nuevoEstado]}\n\nRastrear tu pedido: ${trackingUrl}`
     return `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
   }
@@ -198,7 +198,7 @@ export function EstadoSelector({ pedidoId, estadoActual, clienteTelefono, orderI
               <div className="rounded-xl p-3" style={{ backgroundColor: '#ECE5DD' }}>
                 <div className="bg-white rounded-xl px-4 py-3 shadow-sm">
                   <p className="text-xs text-gray-800 whitespace-pre-wrap leading-relaxed">
-                    {`Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido #${orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[nuevoEstado]} ${ESTADO_LABEL[nuevoEstado]}\n${ESTADO_MSG[nuevoEstado]}\n\nRastrear: ${appUrl || 'anarchyy.pe'}/pedido/${orderId}`}
+                    {`Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido #${orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[nuevoEstado]} ${ESTADO_LABEL[nuevoEstado]}\n${ESTADO_MSG[nuevoEstado]}\n\nRastrear: ${appUrl || 'anarchyy.pe'}/rastrear?order=${orderId}`}
                   </p>
                   <p className="text-[10px] text-gray-400 text-right mt-1">✓✓</p>
                 </div>

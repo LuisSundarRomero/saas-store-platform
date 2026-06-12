@@ -874,7 +874,7 @@ export function ConfigForm({ config }: Props) {
                       .replace('{orderId}', 'ORD-001')
                       .replace('{productos}', '• 1x Botas Peluche (Negro)\n  _Talla 37_ — S/ 150')
                       .replace('{total}', '150')
-                      .replace('{trackingLink}', 'anarchyy.pe/pedido/ORD-001')}
+                      .replace('{trackingLink}', 'anarchyy.pe/rastrear?order=ORD-001')}
                   </p>
                   <p className="text-[10px] text-gray-400 text-right mt-1.5">12:30 ✓✓</p>
                 </div>

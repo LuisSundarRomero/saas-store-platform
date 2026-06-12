@@ -2,8 +2,6 @@ import { Resend } from 'resend'
 import { CartItem } from '@/types'
 import { formatPrice, formatDate } from './format'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 interface NuevoPedidoEmailParams {
   to: string
   orderId: string
@@ -15,6 +13,8 @@ interface NuevoPedidoEmailParams {
 
 export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
   if (!process.env.RESEND_API_KEY) return // silencioso si no hay key
+
+  const resend = new Resend(process.env.RESEND_API_KEY)
 
   const { to, orderId, clienteTelefono, items, total, trackingUrl } = params
 

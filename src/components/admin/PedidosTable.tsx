@@ -119,7 +119,7 @@ export function PedidosTable({ pedidos }: Props) {
 
   function buildWhatsAppUrl(info: ModalInfo) {
     const telefono = info.clienteTelefono.replace(/\s/g, '')
-    const trackingUrl = appUrl ? `${appUrl}/pedido/${info.orderId}` : `anarchyy.pe/pedido/${info.orderId}`
+    const trackingUrl = appUrl ? `${appUrl}/rastrear?order=${info.orderId}` : `anarchyy.pe/rastrear?order=${info.orderId}`
     const mensaje = `Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido *#${info.orderId}* ha sido actualizado:\n\n${ESTADO_EMOJI[info.nuevoEstado]} *${ESTADO_LABEL[info.nuevoEstado]}*\n${ESTADO_MSG[info.nuevoEstado]}\n\nRastrear tu pedido: ${trackingUrl}`
     return `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
   }
@@ -343,7 +343,7 @@ export function PedidosTable({ pedidos }: Props) {
               <div className="rounded-xl p-3" style={{ backgroundColor: '#ECE5DD' }}>
                 <div className="bg-white rounded-xl px-4 py-3 shadow-sm">
                   <p className="text-xs text-gray-800 whitespace-pre-wrap leading-relaxed">
-                    {`Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido #${modal.orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[modal.nuevoEstado]} ${ESTADO_LABEL[modal.nuevoEstado]}\n${ESTADO_MSG[modal.nuevoEstado]}\n\nRastrear: ${appUrl || 'anarchyy.pe'}/pedido/${modal.orderId}`}
+                    {`Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido #${modal.orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[modal.nuevoEstado]} ${ESTADO_LABEL[modal.nuevoEstado]}\n${ESTADO_MSG[modal.nuevoEstado]}\n\nRastrear: ${appUrl || 'anarchyy.pe'}/rastrear?order=${modal.orderId}`}
                   </p>
                   <p className="text-[10px] text-gray-400 text-right mt-1">✓✓</p>
                 </div>

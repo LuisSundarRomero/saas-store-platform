@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from 'react'
 import Link from 'next/link'
-import { IconShoppingBag } from '@tabler/icons-react'
+import { IconShoppingBag, IconPackage } from '@tabler/icons-react'
 import { useCarrito } from '@/store/carrito'
 import { CartDrawer } from '@/components/carrito/CartDrawer'
 
@@ -45,6 +45,13 @@ export function Navbar({ tiendaNombre = 'Anarchyy.pe' }: NavbarProps) {
                 Rastrear pedido
               </Link>
             </div>
+
+            <Link
+              href="/rastrear"
+              className="sm:hidden p-2 rounded-full hover:bg-[#1F1F22] transition-colors text-[#9A9A9E] hover:text-[#F5F5F2]"
+            >
+              <IconPackage size={22} />
+            </Link>
 
             <button
               type="button"
