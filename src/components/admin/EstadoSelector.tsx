@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useTransition, useRef } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { IconBrandWhatsapp, IconX, IconCheck, IconUpload, IconPhoto } from '@tabler/icons-react'
+import { IconBrandWhatsapp, IconX, IconCheck, IconUpload } from '@tabler/icons-react'
 import { EstadoPedido } from '@/types'
 import { updateEstadoPedido } from '@/lib/actions/admin'
 import { createClient } from '@/lib/supabase/client'
@@ -137,7 +138,7 @@ export function EstadoSelector({ pedidoId, estadoActual, clienteTelefono, orderI
 
             {preview ? (
               <div className="relative inline-block">
-                <img src={preview} alt="Comprobante" className="h-32 rounded-lg object-cover border border-gray-200" />
+                <Image src={preview} alt="Comprobante" width={128} height={128} unoptimized className="h-32 w-32 rounded-lg object-cover border border-gray-200" />
                 <button
                   type="button"
                   onClick={() => { setFile(null); setPreview(null) }}

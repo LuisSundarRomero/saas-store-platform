@@ -5,6 +5,7 @@ import { CatalogoAdminTable } from '@/components/admin/CatalogoAdminTable'
 import { CatalogoBuscador } from '@/components/admin/CatalogoBuscador'
 import { AutoPageSize } from '@/components/admin/AutoPageSize'
 import { Suspense } from 'react'
+import type { Producto, Categoria } from '@/types'
 
 interface Props {
   searchParams: Promise<{ q?: string; cat?: string; filtro?: string; page?: string; size?: string }>
@@ -23,9 +24,9 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
 
   const total = todosLosProductos.length
   const totalPaginas = Math.ceil(total / POR_PAGINA)
-  const visibles  = todosLosProductos.filter((p: any) => p.visible).length
-  const agotados  = todosLosProductos.filter((p: any) => p.stock === 0).length
-  const destacados = todosLosProductos.filter((p: any) => p.destacado).length
+  const visibles  = todosLosProductos.filter((p: Producto) => p.visible).length
+  const agotados  = todosLosProductos.filter((p: Producto) => p.stock === 0).length
+  const destacados = todosLosProductos.filter((p: Producto) => p.destacado).length
 
   function buildUrl(params: Record<string, string>) {
     const p = new URLSearchParams()
@@ -61,7 +62,7 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
       {/* Buscador + filtros */}
       <CatalogoBuscador
         defaultQ={q}
-        categorias={categorias.map((c: any) => ({ nombre: c.nombre, slug: c.slug }))}
+        categorias={categorias.map((c: Categoria) => ({ nombre: c.nombre, slug: c.slug }))}
         currentCat={cat}
         currentFiltro={filtro}
       />
@@ -70,7 +71,7 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
       {(q || filtro || cat) && (
         <p className="text-sm text-gray-400 mb-3">
           {total} resultado{total !== 1 ? 's' : ''}
-          {q && <> para <strong>"{q}"</strong></>}
+          {q && <> para <strong>&quot;{q}&quot;</strong></>}
           <Link href="/admin/catalogo" className="ml-2 text-red-500 hover:underline text-xs">Limpiar</Link>
         </p>
       )}

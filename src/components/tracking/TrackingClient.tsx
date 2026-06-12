@@ -68,7 +68,7 @@ export function TrackingClient({ orderId, whatsappNumero }: Props) {
   if (!pedido) {
     return (
       <main
-        className="min-h-screen flex items-center justify-center px-4 bg-[#0B0B0C]"
+        className="min-h-screen flex items-center justify-center px-4 bg-[#1F1F22]"
       >
         <div className="bg-[#161618] border border-[#2C2C30] rounded-3xl p-8 max-w-sm w-full text-center">
 
@@ -97,7 +97,7 @@ export function TrackingClient({ orderId, whatsappNumero }: Props) {
               value={telefono}
               onChange={(e) => { setTelefono(e.target.value); setError(false) }}
               onKeyDown={(e) => e.key === 'Enter' && handleVerificar()}
-              className="w-full border-2 rounded-2xl px-4 py-3 text-sm outline-none text-center font-mono text-[#F5F5F2] bg-[#0B0B0C] transition-colors"
+              className="w-full border-2 rounded-2xl px-4 py-3 text-sm outline-none text-center font-mono text-[#F5F5F2] bg-[#1F1F22] transition-colors"
               style={{
                 borderColor: error ? '#EF4444' : telefono.length >= 9 ? '#E11D2E' : '#2C2C30',
               }}
@@ -138,10 +138,10 @@ export function TrackingClient({ orderId, whatsappNumero }: Props) {
   const estadoColor = ESTADO_COLOR[pedido.estado] ?? ESTADO_COLOR.pendiente
 
   return (
-    <main className="min-h-screen bg-[#0B0B0C]">
+    <main className="min-h-screen bg-[#1F1F22]">
 
       {/* Header */}
-      <div className="bg-[#0B0B0C]/95 backdrop-blur border-b border-[#2C2C30] px-4 py-3.5 flex items-center gap-3 sticky top-0 z-10">
+      <div className="bg-[#1F1F22]/95 backdrop-blur border-b border-[#2C2C30] px-4 py-3.5 flex items-center gap-3 sticky top-0 z-10">
         <Link href="/"
           className="p-1.5 rounded-full hover:bg-[#1F1F22] transition-colors text-[#9A9A9E]">
           <IconArrowLeft size={18} />

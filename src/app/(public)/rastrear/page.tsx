@@ -24,7 +24,7 @@ export default function RastrearPage() {
   }
 
   return (
-    <main className="min-h-[70vh] flex items-center justify-center px-4 bg-[#0B0B0C]">
+    <main className="min-h-[70vh] flex items-center justify-center px-4 bg-[#1F1F22]">
       <div className="w-full max-w-sm">
         <div className="flex justify-center mb-5">
           <div className="w-16 h-16 rounded-full flex items-center justify-center"

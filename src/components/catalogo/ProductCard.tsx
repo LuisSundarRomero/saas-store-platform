@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { IconSkull } from '@tabler/icons-react'
 import { Producto } from '@/types'
 import { formatPrice } from '@/lib/utils/format'
 
@@ -18,10 +19,10 @@ export function ProductCard({ producto }: ProductCardProps) {
   const nuevo = producto.es_nuevo
 
   return (
-    <Link href={`/catalogo/${producto.slug}`} className="group flex flex-col">
+    <Link href={`/catalogo/${producto.slug}`} className="group flex flex-col transition-transform duration-300 hover:-translate-y-1">
 
       {/* Imagen */}
-      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#1F1F22] mb-3">
+      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#1F1F22] mb-3 ring-1 ring-transparent transition-all duration-300 group-hover:ring-[#E11D2E]/40 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
         {imagen ? (
           <>
             <Image
@@ -63,14 +64,15 @@ export function ProductCard({ producto }: ProductCardProps) {
         {/* Badge NUEVO — derecha */}
         {nuevo && (
           <div className="absolute top-2.5 right-2.5">
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#F5F5F2', color: '#0B0B0C' }}>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#F5F5F2', color: '#1F1F22' }}>
               NUEVO
             </span>
           </div>
         )}
 
         {agotado && (
-          <div className="absolute inset-0 bg-black/40 flex items-end justify-center pb-4">
+          <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center gap-2">
+            <IconSkull size={28} stroke={1.5} style={{ color: '#6B6B70' }} />
             <span className="text-[10px] font-semibold px-4 py-1.5 rounded-full" style={{ backgroundColor: '#1F1F22', color: '#9A9A9E' }}>
               Agotado
             </span>
@@ -84,7 +86,7 @@ export function ProductCard({ producto }: ProductCardProps) {
           {producto.nombre}
         </p>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold" style={{ color: '#E11D2E' }}>
+          <span className="text-sm font-bold" style={{ color: producto.precio_antes ? '#E11D2E' : '#F5F5F2' }}>
             {formatPrice(producto.precio)}
           </span>
           {producto.precio_antes && (

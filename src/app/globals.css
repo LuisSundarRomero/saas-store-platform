@@ -7,7 +7,7 @@
   --color-brand-dark:     #A3121F;
 
   /* Fondo y superficies */
-  --color-bg:             #0B0B0C;
+  --color-bg:             #1F1F22;
   --color-surface:        #161618;
   --color-surface-2:      #1F1F22;
   --color-border:         #2C2C30;
@@ -34,7 +34,7 @@
 * { box-sizing: border-box; }
 
 body {
-  background-color: #0B0B0C;
+  background-color: #1F1F22;
   color: #F5F5F2;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

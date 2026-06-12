@@ -6,7 +6,7 @@ import { AnnouncementBar } from '@/components/ui/AnnouncementBar'
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const [{ data: config }, { data: categorias }] = await Promise.all([
-    supabase.from('config').select('tienda_nombre, footer_descripcion, footer_politica, whatsapp_numero, anuncio_visible, anuncio_texto, anuncio_link, anuncio_expira, footer_info1, footer_info2, footer_info3, footer_info4').single(),
+    supabase.from('config').select('tienda_nombre, footer_descripcion, footer_politica, whatsapp_numero, anuncio_visible, anuncio_texto, anuncio_link, anuncio_expira, footer_info1, footer_info2, footer_info3, footer_info4, footer_email, footer_tagline, redes_instagram, redes_tiktok').single(),
     supabase.from('categorias').select('nombre, slug').eq('activa', true).order('orden', { ascending: true }),
   ])
 
@@ -14,6 +14,10 @@ export default async function PublicLayout({ children }: { children: React.React
   const footerDesc     = config?.footer_descripcion ?? ''
   const footerPolitica = config?.footer_politica    ?? 'No hacemos cambios ni devoluciones 🦇'
   const whatsappNumero = config?.whatsapp_numero    ?? ''
+  const footerEmail    = config?.footer_email       ?? 'contacto@anarchyy.pe'
+  const footerTagline  = config?.footer_tagline     ?? 'Hago lo que quiero vestir 🦇'
+  const redesInstagram = config?.redes_instagram    ?? ''
+  const redesTiktok    = config?.redes_tiktok       ?? ''
 
   // Anuncio: visible, texto y que no haya expirado
   const anuncioVisible = config?.anuncio_visible && config?.anuncio_texto
@@ -36,6 +40,10 @@ export default async function PublicLayout({ children }: { children: React.React
         descripcion={footerDesc}
         politica={footerPolitica}
         whatsapp={whatsappNumero}
+        email={footerEmail}
+        tagline={footerTagline}
+        instagram={redesInstagram}
+        tiktok={redesTiktok}
         categorias={categorias ?? []}
         infoItems={[
           config?.footer_info1,

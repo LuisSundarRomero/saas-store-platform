@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { IconBrandWhatsapp, IconPackage, IconArrowRight } from '@tabler/icons-react'
@@ -8,16 +8,13 @@ import { IconBrandWhatsapp, IconPackage, IconArrowRight } from '@tabler/icons-re
 export default function ConfirmacionPage() {
   const searchParams = useSearchParams()
   const order = searchParams.get('order')
-  const [waUrl, setWaUrl] = useState<string | null>(null)
-  const [waAbierto, setWaAbierto] = useState(false)
-
-  useEffect(() => {
+  const [waUrl] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
     const url = sessionStorage.getItem('wa_pending')
-    if (url) {
-      sessionStorage.removeItem('wa_pending')
-      setWaUrl(url)
-    }
-  }, [])
+    if (url) sessionStorage.removeItem('wa_pending')
+    return url
+  })
+  const [waAbierto, setWaAbierto] = useState(false)
 
   function handleAbrirWhatsApp() {
     if (!waUrl) return
@@ -26,7 +23,7 @@ export default function ConfirmacionPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#0B0B0C]">
+    <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#1F1F22]">
       <div className="w-full max-w-sm">
 
         {/* Icono */}

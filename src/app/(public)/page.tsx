@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { IconBrandWhatsapp } from '@tabler/icons-react'
-import { getCategorias, getProductos, getProductosDestacados } from '@/lib/actions/productos'
+import { getProductos, getProductosDestacados } from '@/lib/actions/productos'
 import { ProductCard } from '@/components/catalogo/ProductCard'
 import { HeroCarousel } from '@/components/home/HeroCarousel'
 import type { Metadata } from 'next'
@@ -32,11 +32,8 @@ export default async function HomePage() {
   const heroTitulo    = config?.hero_titulo     ?? 'Hago lo que quiero vestir'
   const heroSubtitulo = config?.hero_subtitulo  ?? 'Lujo oscuro. Essence of Dark Fashion. Piezas streetwear de edición limitada.'
   const heroBoton     = config?.hero_boton      ?? 'Ver colección'
-  const ctaTitulo     = config?.cta_titulo      ?? '¿Tienes alguna consulta?'
-  const ctaSubtitulo  = config?.cta_subtitulo   ?? 'Te asesoramos personalmente para encontrar tu pieza.'
   const heroVisible          = config?.hero_visible           ?? true
   const heroImagenesVisible  = config?.hero_imagenes_visible  ?? true
-  const ctaVisible    = config?.cta_visible     ?? true
   const stripVisible  = config?.strip_visible   ?? true
   const stripItems    = [
     config?.strip_item1 ?? '🖤 Diseños únicos y originales',
@@ -46,25 +43,57 @@ export default async function HomePage() {
   ].filter(Boolean)
   const whatsapp = config?.whatsapp_numero ?? ''
 
-  const [categorias, novedades, destacados] = await Promise.all([
-    getCategorias(),
+  const [novedades, destacados] = await Promise.all([
     getProductos({ limit: 12 }),
     getProductosDestacados(),
   ])
 
   const bannerImagenes: string[] = config?.banner_imagenes ?? []
+  const bannerLinks: string[] = config?.banner_links ?? []
   const bannerSlides = bannerImagenes.length > 0
-    ? bannerImagenes.map((src) => ({ src, href: '/catalogo' }))
+    ? bannerImagenes.map((src, i) => ({ src, href: bannerLinks[i]?.trim() || '/catalogo' }))
     : destacados
         .filter((p) => p.imagenes?.[0])
         .map((p) => ({ src: p.imagenes[0], href: `/catalogo/${p.slug}`, alt: p.nombre }))
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://anarchyy.pe'
+  const sameAs = [
+    config?.redes_instagram,
+    config?.redes_tiktok,
+    whatsapp ? `https://wa.me/${whatsapp.replace(/\s/g, '')}` : null,
+  ].filter(Boolean) as string[]
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${appUrl}/#organization`,
+        name: config?.tienda_nombre ?? 'Anarchyy.pe',
+        url: appUrl,
+        logo: `${appUrl}/favicon-96x96.png`,
+        ...(sameAs.length > 0 && { sameAs }),
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${appUrl}/#website`,
+        url: appUrl,
+        name: config?.tienda_nombre ?? 'Anarchyy.pe',
+        publisher: { '@id': `${appUrl}/#organization` },
+      },
+    ],
+  }
+
   return (
-    <main className="min-h-screen bg-[#0B0B0C]">
+    <main className="min-h-screen bg-[#1F1F22]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       {/* ── HERO ── */}
       {heroVisible && (
-        <section className="relative overflow-hidden bg-[#0B0B0C]">
+        <section className="relative overflow-hidden bg-[#121214]">
           <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-[0.65fr_1.35fr] gap-6 lg:gap-8 items-center py-6 sm:py-8 lg:py-10">
 
@@ -140,35 +169,17 @@ export default async function HomePage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ── CATEGORÍAS ── */}
-        {categorias.length > 0 && (
-          <section className="py-10">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-semibold text-[#F5F5F2]">Explorar por categoría</h2>
-              <Link href="/catalogo" className="text-sm text-[#9A9A9E] hover:text-[#F5F5F2] transition-colors">
-                Ver todo →
-              </Link>
-            </div>
-            <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
-              {categorias.map((cat) => (
-                <Link key={cat.id} href={`/catalogo?cat=${cat.slug}`}
-                  className="shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:scale-105 border border-[#2C2C30] hover:border-[#E11D2E]"
-                  style={{ backgroundColor: '#161618', color: '#F5F5F2' }}>
-                  {cat.nombre}
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
         {/* ── ÚLTIMAS LLEGADAS ── */}
         {novedades.length > 0 && (
-          <section className="pb-16">
+          <section className="py-16">
 
+            <div className="mb-5">
+              <h2 className="text-lg font-semibold text-[#F5F5F2]">Recién llegado</h2>
+            </div>
 
-            {/* Grid uniforme — máx 6, proporcional */}
-            <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-3 lg:grid-cols-6">
-              {novedades.slice(0, 6).map((p) => (
+            {/* Grid proporcional — pensado para pocos productos */}
+            <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-3 lg:grid-cols-4">
+              {novedades.slice(0, 8).map((p) => (
                 <ProductCard key={p.id} producto={p} />
               ))}
             </div>
@@ -180,38 +191,6 @@ export default async function HomePage() {
                 style={{ borderColor: '#2C2C30', color: '#9A9A9E' }}>
                 Ver toda la colección →
               </Link>
-            </div>
-          </section>
-        )}
-
-        {/* ── CTA FINAL ── */}
-        {ctaVisible && (
-          <section className="mb-16 rounded-3xl overflow-hidden border border-[#2C2C30]"
-            style={{ background: 'linear-gradient(135deg, #161618 0%, #1F1F22 50%, #161618 100%)' }}>
-            <div className="px-8 sm:px-12 lg:px-16 py-12 sm:py-16 flex flex-col sm:flex-row items-center gap-8">
-              <div className="flex-1 text-center sm:text-left">
-                <span className="inline-block text-xs font-bold tracking-widest uppercase mb-4 px-3 py-1.5 rounded-full"
-                  style={{ backgroundColor: 'rgba(225,29,46,0.12)', color: '#FF6B7A' }}>
-                  🦇 Atención personalizada
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-bold mb-3"
-                  style={{ color: '#F5F5F2' }}>
-                  {ctaTitulo}
-                </h3>
-                <p className="text-[#9A9A9E] text-sm sm:text-base max-w-sm">
-                  {ctaSubtitulo}
-                </p>
-              </div>
-              {whatsapp && (
-                <div className="flex flex-col items-center gap-3 shrink-0">
-                  <a href={`https://wa.me/${whatsapp.replace(/\s/g, '')}`} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2.5 font-semibold px-7 py-3.5 rounded-full text-sm text-white transition-all hover:opacity-90 hover:shadow-lg"
-                    style={{ backgroundColor: '#25D366', boxShadow: '0 4px 20px rgba(37,211,102,0.25)' }}>
-                    💬 Hablar por WhatsApp
-                  </a>
-                  <p className="text-xs text-[#9A9A9E]">Respuesta rápida garantizada</p>
-                </div>
-              )}
             </div>
           </section>
         )}

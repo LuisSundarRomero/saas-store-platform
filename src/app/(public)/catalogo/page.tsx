@@ -38,9 +38,9 @@ export default async function CatalogoPage({ searchParams }: Props) {
   const categoriaActual = categorias.find((c) => c.slug === cat)
 
   return (
-    <main className="min-h-screen bg-[#0B0B0C]">
+    <main className="min-h-screen bg-[#1F1F22]">
       {/* Chips sticky */}
-      <div className="sticky top-14 z-10 bg-[#0B0B0C]/95 backdrop-blur border-b border-[#2C2C30]">
+      <div className="sticky top-14 z-10 bg-[#1F1F22]/95 backdrop-blur border-b border-[#2C2C30]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <Suspense>
             <CategoryChips categorias={categorias} />

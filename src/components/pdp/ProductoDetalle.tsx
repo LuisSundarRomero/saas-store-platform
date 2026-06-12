@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { IconArrowLeft, IconShoppingBag, IconCheck, IconBrandWhatsapp } from '@tabler/icons-react'
+import { IconArrowLeft, IconShoppingBag, IconCheck, IconBrandWhatsapp, IconX, IconZoomIn, IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 import { SizeGuide } from './SizeGuide'
 import { Producto } from '@/types'
 import { formatPrice } from '@/lib/utils/format'
@@ -25,17 +25,31 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
   )
   const [agregado, setAgregado] = useState(false)
   const [shakeField, setShakeField] = useState<'talla' | 'color' | null>(null)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
   const addItem  = useCarrito((s) => s.addItem)
   const openCart = useCarrito((s) => s.openCart)
+
+  useEffect(() => {
+    if (!lightboxOpen) return
+    document.body.style.overflow = 'hidden'
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setLightboxOpen(false)
+      if (e.key === 'ArrowLeft') setImagenActual((i) => (i - 1 + producto.imagenes.length) % producto.imagenes.length)
+      if (e.key === 'ArrowRight') setImagenActual((i) => (i + 1) % producto.imagenes.length)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [lightboxOpen, producto.imagenes.length])
 
   const agotado = producto.stock !== null && producto.stock === 0
   const stockBajo = producto.stock !== null && producto.stock > 0 && producto.stock <= 5
   const necesitaTalla = producto.tallas.length > 0
   const necesitaColor = producto.colores.length > 0
-  const puedeAgregar =
-    !agotado &&
-    (!necesitaTalla || !!tallaSeleccionada) &&
-    (!necesitaColor || !!colorSeleccionado)
+  const tallaSeleccionadaAgotada = !!tallaSeleccionada && producto.stock_tallas?.[tallaSeleccionada] === 0
+  const colorSeleccionadoAgotado = !!colorSeleccionado && producto.stock_colores?.[colorSeleccionado] === 0
 
   const descuento = producto.precio_antes
     ? Math.round((1 - producto.precio / producto.precio_antes) * 100)
@@ -52,7 +66,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
   }, [producto])
 
   function handleAgregar() {
-    if (agotado) return
+    if (agotado || tallaSeleccionadaAgotada || colorSeleccionadoAgotado) return
     if (necesitaTalla && !tallaSeleccionada) {
       setShakeField('talla')
       setTimeout(() => setShakeField(null), 600)
@@ -101,7 +115,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0B0C]">
+    <div className="min-h-screen bg-[#1F1F22]">
       {/* Back */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
         <Link href="/catalogo" className="inline-flex items-center gap-1 text-sm text-[#9A9A9E] hover:text-[#F5F5F2] transition-colors">
@@ -119,7 +133,12 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
             {producto.imagenes.length > 0 ? (
               <>
                 {/* Mobile: imagen cuadrada para dejar espacio al selector */}
-                <div className="relative aspect-square lg:aspect-[4/5] bg-[#1F1F22] lg:rounded-2xl overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setLightboxOpen(true)}
+                  aria-label="Ver imagen en tamaño completo"
+                  className="group relative aspect-square lg:aspect-[4/5] bg-[#1F1F22] lg:rounded-2xl overflow-hidden w-full cursor-zoom-in"
+                >
                   <Image
                     src={producto.imagenes[imagenActual]}
                     alt={producto.nombre}
@@ -142,7 +161,11 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
                       </span>
                     </div>
                   )}
-                </div>
+                  <span className="absolute bottom-3 right-3 flex items-center justify-center w-9 h-9 rounded-full text-white opacity-80 group-hover:opacity-100 transition-opacity"
+                    style={{ backgroundColor: 'rgba(18,18,20,0.55)', backdropFilter: 'blur(4px)' }}>
+                    <IconZoomIn size={18} />
+                  </span>
+                </button>
                 {producto.imagenes.length > 1 && (
                   <div className="flex gap-2 mt-2 px-4 lg:px-0 overflow-x-auto">
                     {producto.imagenes.map((img, i) => (
@@ -179,7 +202,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
 
             {/* Precio */}
             <div className="flex items-center gap-3 mb-5">
-              <span className="text-2xl font-bold" style={{ color: '#E11D2E' }}>
+              <span className="text-2xl font-bold" style={{ color: producto.precio_antes ? '#E11D2E' : '#F5F5F2' }}>
                 {formatPrice(producto.precio)}
               </span>
               {producto.precio_antes && (
@@ -207,18 +230,23 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
                   style={shakeField === 'talla' ? { outline: '2px solid #7F1D1D', borderRadius: 12, padding: '8px' } : {}}>
                   {producto.tallas.map((t) => {
                     const sel = tallaSeleccionada === t
+                    const tallaAgotada = producto.stock_tallas?.[t] === 0
                     return (
                       <button
                         key={t}
                         type="button"
-                        onClick={() => setTallaSeleccionada(t)}
+                        onClick={() => !tallaAgotada && setTallaSeleccionada(t)}
+                        disabled={tallaAgotada}
+                        title={tallaAgotada ? 'Talla agotada' : undefined}
                         className="min-w-[52px] min-h-[52px] px-4 rounded-xl border-2 text-sm font-semibold transition-colors"
                         style={{
                           backgroundColor: sel ? '#E11D2E' : '#161618',
-                          color: sel ? '#fff' : '#F5F5F2',
+                          color: tallaAgotada ? '#4A4A4E' : sel ? '#fff' : '#F5F5F2',
                           borderColor: sel ? '#E11D2E' : '#2C2C30',
+                          textDecoration: tallaAgotada ? 'line-through' : 'none',
+                          opacity: tallaAgotada ? 0.5 : 1,
                           touchAction: 'manipulation',
-                          cursor: 'pointer',
+                          cursor: tallaAgotada ? 'not-allowed' : 'pointer',
                         }}
                       >
                         {t}
@@ -244,18 +272,23 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
                   style={shakeField === 'color' ? { outline: '2px solid #7F1D1D', borderRadius: 12, padding: '8px' } : {}}>
                   {producto.colores.map((c) => {
                     const sel = colorSeleccionado === c
+                    const colorAgotado = producto.stock_colores?.[c] === 0
                     return (
                       <button
                         key={c}
                         type="button"
-                        onClick={() => setColorSeleccionado(c)}
+                        onClick={() => !colorAgotado && setColorSeleccionado(c)}
+                        disabled={colorAgotado}
+                        title={colorAgotado ? 'Color agotado' : undefined}
                         className="min-h-[52px] px-5 rounded-xl border-2 text-sm font-semibold capitalize transition-colors"
                         style={{
                           backgroundColor: sel ? '#E11D2E' : '#161618',
-                          color: sel ? '#fff' : '#F5F5F2',
+                          color: colorAgotado ? '#4A4A4E' : sel ? '#fff' : '#F5F5F2',
                           borderColor: sel ? '#E11D2E' : '#2C2C30',
+                          textDecoration: colorAgotado ? 'line-through' : 'none',
+                          opacity: colorAgotado ? 0.5 : 1,
                           touchAction: 'manipulation',
-                          cursor: 'pointer',
+                          cursor: colorAgotado ? 'not-allowed' : 'pointer',
                         }}
                       >
                         {c}
@@ -295,6 +328,70 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Lightbox — imagen en tamaño completo */}
+      {lightboxOpen && producto.imagenes.length > 0 && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxOpen(false)}
+            aria-label="Cerrar"
+            className="absolute top-4 right-4 flex items-center justify-center w-10 h-10 rounded-full text-white hover:opacity-80 transition-opacity"
+            style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+          >
+            <IconX size={22} />
+          </button>
+
+          {producto.imagenes.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setImagenActual((i) => (i - 1 + producto.imagenes.length) % producto.imagenes.length) }}
+                aria-label="Imagen anterior"
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-white hover:opacity-80 transition-opacity"
+                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+              >
+                <IconChevronLeft size={22} />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setImagenActual((i) => (i + 1) % producto.imagenes.length) }}
+                aria-label="Imagen siguiente"
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-white hover:opacity-80 transition-opacity"
+                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+              >
+                <IconChevronRight size={22} />
+              </button>
+            </>
+          )}
+
+          <div className="relative w-full h-full max-w-5xl max-h-[85vh] m-4" onClick={(e) => e.stopPropagation()}>
+            <Image
+              src={producto.imagenes[imagenActual]}
+              alt={producto.nombre}
+              fill
+              className="object-contain"
+              sizes="100vw"
+            />
+          </div>
+
+          {producto.imagenes.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+              {producto.imagenes.map((_, i) => (
+                <span key={i} className="h-1.5 rounded-full transition-all duration-300 block"
+                  style={{
+                    width: i === imagenActual ? '18px' : '6px',
+                    backgroundColor: i === imagenActual ? '#E11D2E' : 'rgba(255,255,255,0.4)',
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

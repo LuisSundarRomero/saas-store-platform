@@ -1,9 +1,10 @@
 import { getCategorias } from '@/lib/actions/admin'
 import { CategoriasManager } from '@/components/admin/CategoriasManager'
+import type { Categoria } from '@/types'
 
 export default async function CategoriasPage() {
-  const categorias = await getCategorias()
-  const activas = categorias.filter((c: any) => c.activa).length
+  const categorias: Categoria[] = await getCategorias()
+  const activas = categorias.filter((c) => c.activa).length
 
   return (
     <div className="p-4 sm:p-6 max-w-[1400px] mx-auto">
@@ -43,7 +44,7 @@ export default async function CategoriasPage() {
           </div>
 
           {/* Vista previa de chips */}
-          {categorias.filter((c: any) => c.activa).length > 0 && (
+          {categorias.filter((c) => c.activa).length > 0 && (
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
               <h3 className="font-semibold text-gray-800 mb-3">Vista previa en catálogo</h3>
               <p className="text-xs text-gray-400 mb-3">Así verán los chips tus clientes:</p>
@@ -53,9 +54,9 @@ export default async function CategoriasPage() {
                   Todo
                 </span>
                 {categorias
-                  .filter((c: any) => c.activa)
-                  .sort((a: any, b: any) => a.orden - b.orden)
-                  .map((cat: any) => (
+                  .filter((c) => c.activa)
+                  .sort((a, b) => a.orden - b.orden)
+                  .map((cat) => (
                     <span key={cat.id} className="px-4 py-2 rounded-full text-sm font-medium border border-gray-200 text-gray-600">
                       {cat.nombre}
                     </span>

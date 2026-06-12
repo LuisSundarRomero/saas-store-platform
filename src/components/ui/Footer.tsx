@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { IconBrandWhatsapp, IconMail } from '@tabler/icons-react'
+import { IconBrandWhatsapp, IconMail, IconBrandInstagram, IconBrandTiktok } from '@tabler/icons-react'
 
 interface Categoria { nombre: string; slug: string }
 
@@ -8,6 +8,10 @@ interface Props {
   descripcion?: string
   politica?: string
   whatsapp?: string
+  email?: string
+  tagline?: string
+  instagram?: string
+  tiktok?: string
   categorias?: Categoria[]
   infoItems?: string[]
 }
@@ -17,6 +21,10 @@ export function Footer({
   descripcion = 'Lujo oscuro / Essence of Dark Fashion. Piezas streetwear de edición limitada — hago lo que quiero vestir.',
   politica = 'No hacemos cambios ni devoluciones 🦇',
   whatsapp = '',
+  email = 'contacto@anarchyy.pe',
+  tagline = 'Hago lo que quiero vestir 🦇',
+  instagram = '',
+  tiktok = '',
   categorias = [],
   infoItems = ['Preventas por tiempo limitado', 'Envíos a nivel nacional'],
 }: Props) {
@@ -24,7 +32,7 @@ export function Footer({
   const year = new Date().getFullYear()
 
   return (
-    <footer className="mt-auto border-t border-[#2C2C30]" style={{ backgroundColor: '#0B0B0C' }}>
+    <footer className="mt-auto border-t border-[#2C2C30]" style={{ backgroundColor: '#121214' }}>
 
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -45,10 +53,24 @@ export function Footer({
                   <IconBrandWhatsapp size={16} />
                 </a>
               )}
-              <a href="mailto:contacto@anarchyy.pe"
-                className="w-9 h-9 rounded-xl flex items-center justify-center border border-[#2C2C30] text-[#9A9A9E] hover:border-[#E11D2E] hover:text-[#E11D2E] transition-all bg-[#161618]">
-                <IconMail size={16} />
-              </a>
+              {email && (
+                <a href={`mailto:${email}`}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-[#2C2C30] text-[#9A9A9E] hover:border-[#E11D2E] hover:text-[#E11D2E] transition-all bg-[#161618]">
+                  <IconMail size={16} />
+                </a>
+              )}
+              {instagram && (
+                <a href={instagram} target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-[#2C2C30] text-[#9A9A9E] hover:border-[#E11D2E] hover:text-[#E11D2E] transition-all bg-[#161618]">
+                  <IconBrandInstagram size={16} />
+                </a>
+              )}
+              {tiktok && (
+                <a href={tiktok} target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-[#2C2C30] text-[#9A9A9E] hover:border-[#F5F5F2] hover:text-[#F5F5F2] transition-all bg-[#161618]">
+                  <IconBrandTiktok size={16} />
+                </a>
+              )}
             </div>
           </div>
 
@@ -99,20 +121,24 @@ export function Footer({
                   <IconBrandWhatsapp size={15} className="shrink-0" /> +{waNum}
                 </a>
               )}
-              <a href="mailto:contacto@anarchyy.pe"
-                className="text-sm text-[#9A9A9E] hover:text-[#E11D2E] transition-colors flex items-center gap-2">
-                <IconMail size={15} className="shrink-0" /> contacto@anarchyy.pe
-              </a>
+              {email && (
+                <a href={`mailto:${email}`}
+                  className="text-sm text-[#9A9A9E] hover:text-[#E11D2E] transition-colors flex items-center gap-2">
+                  <IconMail size={15} className="shrink-0" /> {email}
+                </a>
+              )}
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-[#2C2C30] bg-[#0B0B0C]">
+      <div className="border-t border-[#2C2C30] bg-[#121214]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-[#9A9A9E]">© {year} {tiendaNombre} — Todos los derechos reservados</p>
-          <p className="text-xs font-medium" style={{ color: '#E11D2E' }}>Hago lo que quiero vestir 🦇</p>
+          {tagline && (
+            <p className="text-xs font-medium" style={{ color: '#E11D2E' }}>{tagline}</p>
+          )}
         </div>
       </div>
     </footer>

@@ -22,7 +22,7 @@ export default async function PedidosPage({ searchParams }: Props) {
 
   const pendientes = todos.filter((p) => p.estado === 'pendiente').length
   const hoy        = todos.filter((p) => new Date(p.created_at).toDateString() === new Date().toDateString())
-  const totalHoy   = hoy.reduce((s: number, p: any) => s + p.total, 0)
+  const totalHoy   = hoy.reduce((s, p) => s + p.total, 0)
   const entregados = todos.filter((p) => p.estado === 'entregado').length
 
   // Total para paginación (con filtros)
@@ -93,7 +93,7 @@ export default async function PedidosPage({ searchParams }: Props) {
       {/* Info resultados */}
       {q && (
         <p className="text-sm text-gray-500 mb-3">
-          {totalFiltrados} resultado{totalFiltrados !== 1 ? 's' : ''} para <strong>"{q}"</strong>
+          {totalFiltrados} resultado{totalFiltrados !== 1 ? 's' : ''} para <strong>&quot;{q}&quot;</strong>
           <Link href="/admin/pedidos" className="ml-2 text-red-500 hover:underline text-xs">Limpiar</Link>
         </p>
       )}

@@ -22,6 +22,8 @@ export interface Producto {
   colores: string[]
   precio_antes: number | null
   stock: number | null
+  stock_tallas: Record<string, number> | null
+  stock_colores: Record<string, number> | null
   es_nuevo: boolean
   destacado: boolean
   visible: boolean

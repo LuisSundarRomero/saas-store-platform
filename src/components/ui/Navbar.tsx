@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import { IconShoppingBag } from '@tabler/icons-react'
 import { useCarrito } from '@/store/carrito'
@@ -10,20 +10,26 @@ interface NavbarProps {
   tiendaNombre?: string
 }
 
+function subscribeNoop() {
+  return () => {}
+}
+
+function useMounted() {
+  return useSyncExternalStore(subscribeNoop, () => true, () => false)
+}
+
 export function Navbar({ tiendaNombre = 'Anarchyy.pe' }: NavbarProps) {
-  const [mounted, setMounted] = useState(false)
+  const mounted = useMounted()
   const itemCount = useCarrito((s) => s.itemCount)
   const isOpen   = useCarrito((s) => s.isOpen)
   const openCart  = useCarrito((s) => s.openCart)
   const closeCart = useCarrito((s) => s.closeCart)
 
-  useEffect(() => { setMounted(true) }, [])
-
   const count = mounted ? itemCount() : 0
 
   return (
     <>
-      <header className="sticky top-0 z-30 bg-[#0B0B0C]/95 backdrop-blur border-b border-[#2C2C30]">
+      <header className="sticky top-0 z-30 bg-[#1F1F22]/95 backdrop-blur border-b border-[#2C2C30]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
 
           <Link href="/" className="font-display text-xl tracking-widest shrink-0 text-[#F5F5F2]">

@@ -5,7 +5,7 @@ import { getPedidoAdmin } from '@/lib/actions/admin'
 import { formatPrice, formatDate } from '@/lib/utils/format'
 import { EstadoSelector } from '@/components/admin/EstadoSelector'
 import { OrderTimeline } from '@/components/tracking/OrderTimeline'
-import { EstadoPedido } from '@/types'
+import { EstadoPedido, PedidoItem } from '@/types'
 
 interface Props {
   params: Promise<{ orderId: string }>
@@ -43,14 +43,14 @@ export default async function PedidoDetalleAdmin({ params }: Props) {
         <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-5">
           <h2 className="font-semibold text-gray-800 mb-4">Productos del pedido</h2>
           <div className="flex flex-col gap-0">
-            {pedido.pedido_items?.map((item: any, i: number) => (
+            {pedido.pedido_items?.map((item: PedidoItem, i: number) => (
               <div key={item.id}
                 className="flex items-start justify-between py-3 text-sm"
                 style={{ borderBottom: i < pedido.pedido_items.length - 1 ? '1px solid #F3F4F6' : 'none' }}>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-800">{item.nombre}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    {[item.talla, item.color].filter(Boolean).map((v: string) => (
+                    {[item.talla, item.color].filter((v): v is string => Boolean(v)).map((v) => (
                       <span key={v} className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
                         {v}
                       </span>

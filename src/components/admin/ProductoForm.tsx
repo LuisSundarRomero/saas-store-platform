@@ -8,12 +8,13 @@ import { IconArrowLeft, IconUpload, IconGripVertical } from '@tabler/icons-react
 import { createClient } from '@/lib/supabase/client'
 import { deleteProducto } from '@/lib/actions/admin'
 import { Switch } from '@/components/ui/Switch'
+import type { Producto } from '@/types'
 
 const TALLAS_ROPA = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
 const TALLAS_ZAPATOS = ['35', '36', '37', '38', '39', '40', '41', '42']
 
 interface Props {
-  producto?: any
+  producto?: Producto
   categorias: { id: string; nombre: string }[]
 }
 
@@ -29,9 +30,15 @@ export function ProductoForm({ producto, categorias }: Props) {
   )
   const [categoriaId, setCategoriaId] = useState(producto?.categoria_id ?? '')
   const [tallas, setTallas] = useState<string[]>(producto?.tallas ?? [])
-  const [colores, setColores] = useState(producto?.colores?.join(', ') ?? '')
+  const [colores, setColores] = useState<string>(producto?.colores?.join(', ') ?? '')
   const [stockActivo, setStockActivo] = useState(producto?.stock !== null)
   const [stock, setStock] = useState(producto?.stock?.toString() ?? '0')
+  const [stockTallas, setStockTallas] = useState<Record<string, string>>(
+    Object.fromEntries(Object.entries(producto?.stock_tallas ?? {}).map(([k, v]) => [k, String(v)]))
+  )
+  const [stockColores, setStockColores] = useState<Record<string, string>>(
+    Object.fromEntries(Object.entries(producto?.stock_colores ?? {}).map(([k, v]) => [k, String(v)]))
+  )
   const [visible, setVisible] = useState(producto?.visible ?? true)
   const [imagenes, setImagenes] = useState<string[]>(producto?.imagenes ?? [])
   const [uploading, setUploading] = useState(false)
@@ -45,6 +52,8 @@ export function ProductoForm({ producto, categorias }: Props) {
   function toggleTalla(t: string) {
     setTallas((prev) => prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t])
   }
+
+  const coloresArray = colores.split(',').map((c) => c.trim()).filter(Boolean)
 
   function handleDrop(targetIndex: number) {
     if (dragIndex === null || dragIndex === targetIndex) {
@@ -108,8 +117,14 @@ export function ProductoForm({ producto, categorias }: Props) {
         categoria_id: categoriaId || null,
         imagenes,
         tallas,
-        colores: colores.split(',').map((c: string) => c.trim()).filter(Boolean),
+        colores: coloresArray,
         stock: stockActivo ? parseInt(stock) : null,
+        stock_tallas: stockActivo
+          ? Object.fromEntries(tallas.map((t) => [t, parseInt(stockTallas[t] ?? '0') || 0]))
+          : {},
+        stock_colores: stockActivo
+          ? Object.fromEntries(coloresArray.map((c) => [c, parseInt(stockColores[c] ?? '0') || 0]))
+          : {},
         visible,
         slug: nombre.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
       }
@@ -128,7 +143,7 @@ export function ProductoForm({ producto, categorias }: Props) {
   function handleDelete() {
     if (!confirm('¿Eliminar este producto?')) return
     startTransition(async () => {
-      await deleteProducto(producto.id)
+      await deleteProducto(producto!.id)
       router.push('/admin/catalogo')
       router.refresh()
     })
@@ -377,7 +392,26 @@ export function ProductoForm({ producto, categorias }: Props) {
                 </div>
               </div>
 
-              <div>
+              {stockActivo && tallas.length > 0 && (
+                <div className="border-t border-gray-50 pt-4">
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-2">
+                    Stock por talla
+                    <span className="normal-case font-normal ml-1 text-gray-400">(0 = agotada)</span>
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {tallas.map((t) => (
+                      <div key={t} className="flex items-center gap-1.5 bg-gray-50 rounded-lg px-2 py-1.5">
+                        <span className="text-xs font-semibold text-gray-600 w-7 text-center">{t}</span>
+                        <input type="number" min="0" value={stockTallas[t] ?? '0'}
+                          onChange={(e) => setStockTallas((prev) => ({ ...prev, [t]: e.target.value }))}
+                          className="w-14 text-center text-sm border border-gray-200 rounded-md px-1 py-1 outline-none focus:border-red-400 bg-white text-gray-900" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="border-t border-gray-50 pt-4">
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">
                   Colores
                   <span className="normal-case font-normal ml-1 text-gray-400">(separados por coma)</span>
@@ -385,6 +419,25 @@ export function ProductoForm({ producto, categorias }: Props) {
                 <input value={colores} onChange={(e) => setColores(e.target.value)}
                   className={inputCls} placeholder="negro, hueso, camel, marron" />
               </div>
+
+              {stockActivo && coloresArray.length > 0 && (
+                <div>
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-2">
+                    Stock por color
+                    <span className="normal-case font-normal ml-1 text-gray-400">(0 = agotado)</span>
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {coloresArray.map((c) => (
+                      <div key={c} className="flex items-center gap-1.5 bg-gray-50 rounded-lg px-2 py-1.5">
+                        <span className="text-xs font-semibold text-gray-600 capitalize">{c}</span>
+                        <input type="number" min="0" value={stockColores[c] ?? '0'}
+                          onChange={(e) => setStockColores((prev) => ({ ...prev, [c]: e.target.value }))}
+                          className="w-14 text-center text-sm border border-gray-200 rounded-md px-1 py-1 outline-none focus:border-red-400 bg-white text-gray-900" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {error && (

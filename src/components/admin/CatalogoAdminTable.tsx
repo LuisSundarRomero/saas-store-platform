@@ -9,9 +9,10 @@ import { useRouter } from 'next/navigation'
 import { formatPrice } from '@/lib/utils/format'
 import { toggleVisibilidadProducto, toggleDestacadoProducto, toggleEsNuevoProducto } from '@/lib/actions/admin'
 import { IconStar, IconSparkles } from '@tabler/icons-react'
+import type { Producto } from '@/types'
 
 interface Props {
-  productos: any[]
+  productos: Producto[]
 }
 
 export function CatalogoAdminTable({ productos }: Props) {
@@ -20,8 +21,7 @@ export function CatalogoAdminTable({ productos }: Props) {
 
   const destacadosCount = productos.filter((p) => p.destacado).length
 
-  function handleToggle(id: string, visible: boolean, stock: number | null) {
-    if (visible && stock !== null && stock === 0) return
+  function handleToggle(id: string, visible: boolean) {
     startTransition(async () => {
       await toggleVisibilidadProducto(id, visible)
       router.refresh()
@@ -33,8 +33,8 @@ export function CatalogoAdminTable({ productos }: Props) {
       try {
         await toggleEsNuevoProducto(id, esNuevo)
         router.refresh()
-      } catch (e: any) {
-        alert('Error: ' + e.message)
+      } catch (e) {
+        alert('Error: ' + (e instanceof Error ? e.message : String(e)))
       }
     })
   }
@@ -88,7 +88,6 @@ export function CatalogoAdminTable({ productos }: Props) {
             {productos.map((p) => {
               const agotado = p.stock !== null && p.stock === 0
               const stockBajo = p.stock !== null && p.stock > 0 && p.stock <= 5
-              const toggleBloqueado = agotado && !p.visible
 
               return (
                 <tr key={p.id} className="hover:bg-gray-50 transition-colors">
@@ -106,7 +105,7 @@ export function CatalogoAdminTable({ productos }: Props) {
                   </td>
                   <td className="px-4 py-3 text-gray-400">{p.categorias?.nombre ?? '—'}</td>
                   <td className="px-4 py-3">
-                    <span className="font-semibold" style={{ color: '#E11D2E' }}>{formatPrice(p.precio)}</span>
+                    <span className="font-semibold" style={{ color: p.precio_antes ? '#E11D2E' : '#1F2937' }}>{formatPrice(p.precio)}</span>
                     {p.precio_antes && (
                       <span className="text-xs text-gray-400 line-through ml-1">{formatPrice(p.precio_antes)}</span>
                     )}
@@ -154,8 +153,8 @@ export function CatalogoAdminTable({ productos }: Props) {
                     <div className="flex items-center gap-2">
                       <Switch
                         checked={p.visible}
-                        onChange={() => handleToggle(p.id, !p.visible, p.stock)}
-                        disabled={isPending || toggleBloqueado}
+                        onChange={() => handleToggle(p.id, !p.visible)}
+                        disabled={isPending}
                         size="sm"
                       />
                       {agotado && <span className="text-xs text-gray-400">stock 0</span>}

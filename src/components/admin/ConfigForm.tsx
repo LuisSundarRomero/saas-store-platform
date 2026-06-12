@@ -1,18 +1,55 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { IconBrandWhatsapp, IconCheck, IconMail, IconBuildingStore, IconPhoto, IconFileText, IconEye, IconEyeOff, IconSettings, IconSpeakerphone, IconUpload, IconGripVertical } from '@tabler/icons-react'
+import { IconBrandWhatsapp, IconCheck, IconMail, IconBuildingStore, IconPhoto, IconEye, IconEyeOff, IconSettings, IconSpeakerphone, IconUpload, IconGripVertical, IconBrandInstagram, IconBrandTiktok, IconShare, IconLayoutBottombar } from '@tabler/icons-react'
 import { Switch } from '@/components/ui/Switch'
 
-interface Props { config: any }
+interface ConfigData {
+  id: string
+  tienda_nombre?: string | null
+  whatsapp_numero?: string | null
+  moneda?: string | null
+  email_notificaciones?: string | null
+  hero_badge?: string | null
+  hero_titulo?: string | null
+  hero_subtitulo?: string | null
+  hero_boton?: string | null
+  hero_visible?: boolean | null
+  hero_imagenes_visible?: boolean | null
+  banner_imagenes?: string[] | null
+  banner_links?: string[] | null
+  strip_visible?: boolean | null
+  strip_item1?: string | null
+  strip_item2?: string | null
+  strip_item3?: string | null
+  strip_item4?: string | null
+  footer_descripcion?: string | null
+  footer_politica?: string | null
+  footer_info1?: string | null
+  footer_info2?: string | null
+  footer_info3?: string | null
+  footer_info4?: string | null
+  footer_email?: string | null
+  footer_tagline?: string | null
+  redes_instagram?: string | null
+  redes_tiktok?: string | null
+  whatsapp_template?: string | null
+  anuncio_visible?: boolean | null
+  anuncio_texto?: string | null
+  anuncio_link?: string | null
+  anuncio_expira?: string | null
+}
+
+interface Props { config: ConfigData | null }
 
 const TABS = [
   { id: 'tienda',   label: 'Tienda',    icon: IconBuildingStore },
   { id: 'anuncio',  label: 'Anuncio',   icon: IconSettings },
   { id: 'banner',   label: 'Banner',    icon: IconPhoto },
-  { id: 'textos',   label: 'Textos',    icon: IconFileText },
+  { id: 'textos',   label: 'Footer',    icon: IconLayoutBottombar },
   { id: 'mensajes', label: 'Mensajes',  icon: IconBrandWhatsapp },
 ]
 
@@ -26,6 +63,7 @@ export function ConfigForm({ config }: Props) {
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [now] = useState(() => Date.now())
 
   // Tienda
   const [tiendaNombre,      setTiendaNombre]      = useState(config?.tienda_nombre      ?? '')
@@ -41,6 +79,11 @@ export function ConfigForm({ config }: Props) {
   const [heroVisible,         setHeroVisible]         = useState(config?.hero_visible           ?? true)
   const [heroImagenesVisible, setHeroImagenesVisible] = useState(config?.hero_imagenes_visible  ?? true)
   const [bannerImagenes,      setBannerImagenes]      = useState<string[]>(config?.banner_imagenes ?? [])
+  const [bannerLinks,         setBannerLinks]         = useState<string[]>(() => {
+    const imgs = config?.banner_imagenes ?? []
+    const links = config?.banner_links ?? []
+    return imgs.map((_: string, i: number) => links[i] ?? '')
+  })
   const [bannerUploading,     setBannerUploading]     = useState(false)
   const [bannerUploadProgress, setBannerUploadProgress] = useState('')
   const [bannerUploadError,   setBannerUploadError]   = useState('')
@@ -48,15 +91,16 @@ export function ConfigForm({ config }: Props) {
   const [bannerOverIndex,     setBannerOverIndex]     = useState<number | null>(null)
 
   // Textos
-  const [ctaTitulo,       setCtaTitulo]       = useState(config?.cta_titulo        ?? '¿Tienes alguna consulta?')
-  const [ctaSubtitulo,    setCtaSubtitulo]    = useState(config?.cta_subtitulo     ?? 'Te asesoramos personalmente para encontrar tu pieza.')
-  const [ctaVisible,      setCtaVisible]      = useState(config?.cta_visible       ?? true)
   const [footerDesc,      setFooterDesc]      = useState(config?.footer_descripcion ?? 'Lujo oscuro / Essence of Dark Fashion. Piezas streetwear de edición limitada — hago lo que quiero vestir.')
   const [footerPolitica,  setFooterPolitica]  = useState(config?.footer_politica   ?? 'No hacemos cambios ni devoluciones 🦇')
   const [footerInfo1,     setFooterInfo1]     = useState(config?.footer_info1      ?? 'Preventas por tiempo limitado')
   const [footerInfo2,     setFooterInfo2]     = useState(config?.footer_info2      ?? 'Envíos a nivel nacional')
   const [footerInfo3,     setFooterInfo3]     = useState(config?.footer_info3      ?? '')
   const [footerInfo4,     setFooterInfo4]     = useState(config?.footer_info4      ?? '')
+  const [footerEmail,     setFooterEmail]     = useState(config?.footer_email      ?? 'contacto@anarchyy.pe')
+  const [footerTagline,   setFooterTagline]   = useState(config?.footer_tagline    ?? 'Hago lo que quiero vestir 🦇')
+  const [redesInstagram,  setRedesInstagram]  = useState(config?.redes_instagram   ?? '')
+  const [redesTiktok,     setRedesTiktok]     = useState(config?.redes_tiktok      ?? '')
   // Anuncio
   const [anuncioVisible,  setAnuncioVisible]  = useState(config?.anuncio_visible   ?? false)
   const [anuncioTexto,    setAnuncioTexto]    = useState(config?.anuncio_texto     ?? '')
@@ -103,6 +147,7 @@ export function ConfigForm({ config }: Props) {
       }
     }
     setBannerImagenes((prev) => [...prev, ...urls])
+    setBannerLinks((prev) => [...prev, ...urls.map(() => '')])
     setBannerUploading(false)
     setBannerUploadProgress('')
     e.target.value = ''
@@ -115,6 +160,12 @@ export function ConfigForm({ config }: Props) {
       return
     }
     setBannerImagenes((prev) => {
+      const next = [...prev]
+      const [moved] = next.splice(bannerDragIndex, 1)
+      next.splice(targetIndex, 0, moved)
+      return next
+    })
+    setBannerLinks((prev) => {
       const next = [...prev]
       const [moved] = next.splice(bannerDragIndex, 1)
       next.splice(targetIndex, 0, moved)
@@ -147,15 +198,17 @@ export function ConfigForm({ config }: Props) {
         hero_visible: heroVisible,
         hero_imagenes_visible: heroImagenesVisible,
         banner_imagenes: bannerImagenes,
-        cta_titulo: ctaTitulo,
-        cta_subtitulo: ctaSubtitulo,
-        cta_visible: ctaVisible,
+        banner_links: bannerLinks,
         footer_descripcion: footerDesc,
         footer_politica: footerPolitica,
         footer_info1: footerInfo1,
         footer_info2: footerInfo2,
         footer_info3: footerInfo3,
         footer_info4: footerInfo4,
+        footer_email: footerEmail.trim() || null,
+        footer_tagline: footerTagline,
+        redes_instagram: redesInstagram.trim() || null,
+        redes_tiktok: redesTiktok.trim() || null,
         anuncio_visible: anuncioVisible,
         anuncio_texto: anuncioTexto,
         anuncio_link: anuncioLink.trim() || null,
@@ -335,7 +388,7 @@ export function ConfigForm({ config }: Props) {
                   Déjalo vacío para que no expire.
                 </p>
                 {anuncioExpira && (() => {
-                  const diff = new Date(anuncioExpira).getTime() - Date.now()
+                  const diff = new Date(anuncioExpira).getTime() - now
                   if (diff <= 0) return <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">⚠️ Esta fecha ya pasó — el anuncio no se mostrará</p>
                   const h = Math.floor(diff / 3600000)
                   const d = Math.floor(h / 24)
@@ -381,7 +434,7 @@ export function ConfigForm({ config }: Props) {
                   {anuncioExpira && new Date(anuncioExpira) > new Date() && (
                     <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0">
                       ⏱ {(() => {
-                        const diff = new Date(anuncioExpira).getTime() - Date.now()
+                        const diff = new Date(anuncioExpira).getTime() - now
                         const h = Math.floor(diff / 3600000)
                         return h >= 24 ? `${Math.floor(h/24)}d ${h%24}h` : `${h}h`
                       })()}
@@ -445,7 +498,11 @@ export function ConfigForm({ config }: Props) {
                   <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
                     Sin imágenes propias: por ahora se muestran las fotos de los <strong>productos destacados</strong> del catálogo.
                   </p>
-                ) : null}
+                ) : (
+                  <p className="text-[11px] text-gray-400">
+                    El campo bajo cada imagen es el link al que redirige (ej: <code className="bg-gray-100 px-1 rounded">/catalogo</code> o <code className="bg-gray-100 px-1 rounded">/catalogo/mi-producto</code>). Vacío = /catalogo.
+                  </p>
+                )}
 
                 <div className="flex gap-2 flex-wrap">
                   {bannerImagenes.map((url, i) => (
@@ -463,7 +520,7 @@ export function ConfigForm({ config }: Props) {
                       }}>
                       <div className="relative w-16 h-16 rounded-xl overflow-hidden cursor-grab active:cursor-grabbing"
                         style={{ border: i === 0 ? '2px solid #E11D2E' : '2px solid #E5E7EB' }}>
-                        <img src={url} alt="" className="w-full h-full object-cover pointer-events-none" />
+                        <Image src={url} alt="" fill className="object-cover pointer-events-none" />
                         <span className="absolute bottom-0 right-0 bg-black/40 text-white rounded-tl-md p-0.5 leading-none">
                           <IconGripVertical size={10} />
                         </span>
@@ -473,10 +530,24 @@ export function ConfigForm({ config }: Props) {
                         )}
                       </div>
                       <button type="button"
-                        onClick={() => setBannerImagenes((prev) => prev.filter((_, j) => j !== i))}
+                        onClick={() => {
+                          setBannerImagenes((prev) => prev.filter((_, j) => j !== i))
+                          setBannerLinks((prev) => prev.filter((_, j) => j !== i))
+                        }}
                         className="absolute -top-1 -right-1 w-4 h-4 bg-gray-800 text-white rounded-full text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         ×
                       </button>
+                      <input
+                        type="text"
+                        value={bannerLinks[i] ?? ''}
+                        onChange={(e) => setBannerLinks((prev) => {
+                          const next = [...prev]
+                          next[i] = e.target.value
+                          return next
+                        })}
+                        placeholder="/catalogo"
+                        className="mt-1 w-16 text-[10px] text-center border border-gray-200 rounded-md px-1 py-0.5 outline-none focus:border-red-400 bg-white text-gray-900"
+                      />
                     </div>
                   ))}
                   {bannerImagenes.length < 6 && (
@@ -503,12 +574,12 @@ export function ConfigForm({ config }: Props) {
                 </div>
                 {!stripVisible && <p className="text-xs text-amber-500 bg-amber-50 px-3 py-2 rounded-lg">⚠️ La barra está oculta</p>}
                 <div className={`grid grid-cols-1 sm:grid-cols-2 gap-2 ${!stripVisible ? 'opacity-40 pointer-events-none' : ''}`}>
-                  {[
+                  {([
                     [stripItem1, setStripItem1],
                     [stripItem2, setStripItem2],
                     [stripItem3, setStripItem3],
                     [stripItem4, setStripItem4],
-                  ].map(([val, setter]: any, i) => (
+                  ] as [string, (v: string) => void][]).map(([val, setter], i) => (
                     <input key={i} value={val} onChange={(e) => setter(e.target.value)}
                       className={inputCls} placeholder={`Item ${i + 1}`} />
                   ))}
@@ -529,16 +600,16 @@ export function ConfigForm({ config }: Props) {
           </div>
 
           {/* Preview */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
+          <div className="hidden lg:flex bg-white rounded-2xl border border-gray-100 p-5 flex-col gap-3">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Vista previa</p>
 
             {/* Banner completo: texto + imágenes */}
-            <div className="rounded-2xl overflow-hidden relative" style={{ background: 'linear-gradient(180deg, #fff5f5 0%, #fffafa 100%)' }}>
+            <div className="rounded-2xl overflow-hidden relative" style={{ backgroundColor: '#121214' }}>
               {!heroVisible && (
-                <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-2xl">
+                <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-2xl">
                   <div className="text-center">
                     <p className="text-2xl mb-1">🙈</p>
-                    <p className="text-sm font-semibold text-gray-500">Banner oculto</p>
+                    <p className="text-sm font-semibold text-gray-200">Banner oculto</p>
                     <p className="text-xs text-gray-400">No se muestra en el sitio</p>
                   </div>
                 </div>
@@ -546,52 +617,57 @@ export function ConfigForm({ config }: Props) {
               <div className={`flex gap-3 p-5 ${heroImagenesVisible ? '' : 'justify-center'}`}>
 
                 {/* Texto */}
-                <div className={`flex flex-col justify-center gap-2 ${heroImagenesVisible ? 'flex-1 min-w-0' : 'text-center max-w-[220px]'}`}>
-                  <span className="inline-block self-start text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-full"
-                    style={{ backgroundColor: '#FEE2E2', color: '#991B1B' }}>
+                <div className={`flex flex-col justify-center gap-2 ${heroImagenesVisible ? 'flex-1 min-w-0' : 'text-center max-w-[220px] items-center'}`}>
+                  <span className="inline-flex items-center gap-1.5 self-start text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-full"
+                    style={{ backgroundColor: '#3A1014', color: '#FF6B7A' }}>
+                    <span className="w-1 h-1 rounded-full inline-block" style={{ backgroundColor: '#E11D2E' }} />
                     {heroBadge || '🦇 Badge'}
                   </span>
-                  <p className="font-serif text-base font-bold leading-tight" style={{ color: '#E11D2E' }}>
-                    {heroTitulo || 'Título'}
+                  <p className="font-display text-base font-bold leading-tight">
+                    {(heroTitulo || 'Título').split(' ').map((word: string, i: number, arr: string[]) => (
+                      <span key={i}>
+                        <span style={{ color: i >= Math.floor(arr.length / 2) ? '#E11D2E' : '#F5F5F2' }}>{word}</span>
+                        {i < arr.length - 1 && ' '}
+                      </span>
+                    ))}
                   </p>
-                  <p className="text-[10px] text-gray-400 leading-relaxed line-clamp-2">{heroSubtitulo}</p>
+                  <p className="text-[10px] text-[#9A9A9E] leading-relaxed line-clamp-2">{heroSubtitulo}</p>
                   <span className="self-start inline-block text-[10px] font-semibold text-white px-3 py-1.5 rounded-full"
                     style={{ backgroundColor: '#E11D2E' }}>
                     {heroBoton || 'Botón'}
                   </span>
                 </div>
 
-                {/* Imágenes — placeholder tipo mosaico */}
+                {/* Imágenes — placeholder tipo slider */}
                 {heroImagenesVisible && (
-                  <div className="grid grid-cols-2 gap-1.5 shrink-0" style={{ width: '55%' }}>
-                    <div className="row-span-2 rounded-xl bg-gray-200 flex items-center justify-center text-gray-300 text-xs" style={{ minHeight: 100 }}>
-                      📸
-                    </div>
-                    <div className="rounded-xl bg-gray-200 flex items-center justify-center text-gray-300 text-[10px]">
-                      📸
-                    </div>
-                    <div className="rounded-xl bg-gray-200 flex items-center justify-center text-gray-300 text-[10px]">
-                      📸
+                  <div className="relative shrink-0 rounded-xl flex flex-col items-center justify-center gap-2 text-[#5A5A5E] text-xs"
+                    style={{ width: '55%', minHeight: 120, backgroundColor: '#1F1F22' }}>
+                    📸
+                    {/* Dots del slider */}
+                    <div className="absolute bottom-2 flex items-center gap-1">
+                      {Array.from({ length: Math.min(bannerImagenes.length || 3, 6) }).map((_, i) => (
+                        <span key={i} className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: i === 0 ? '#E11D2E' : '#3A3A3E' }} />
+                      ))}
                     </div>
                   </div>
                 )}
               </div>
 
               {heroImagenesVisible && (
-                <p className="text-[9px] text-gray-400 text-center pb-2">
-                  Las fotos son los productos destacados del catálogo
+                <p className="text-[9px] text-[#6B6B70] text-center pb-2">
+                  {bannerImagenes.length > 0 ? 'Tus imágenes subidas' : 'Las fotos son los productos destacados del catálogo'}
                 </p>
               )}
             </div>
 
             {/* Strip preview */}
             {stripVisible ? (
-              <div className="border border-gray-100 rounded-xl py-2.5 px-3" style={{ backgroundColor: '#FAFAFA' }}>
+              <div className="border rounded-xl py-2.5 px-3" style={{ backgroundColor: '#161618', borderColor: '#2C2C30' }}>
                 <div className="flex items-center justify-center gap-3 flex-wrap">
                   {[stripItem1, stripItem2, stripItem3, stripItem4].filter(Boolean).map((item, i, arr) => (
                     <div key={i} className="flex items-center gap-2">
-                      <span className="text-[10px] text-gray-500 font-medium">{item}</span>
-                      {i < arr.length - 1 && <span className="text-gray-200 text-xs">|</span>}
+                      <span className="text-[10px] text-[#9A9A9E] font-medium">{item}</span>
+                      {i < arr.length - 1 && <span className="text-[#2C2C30] text-xs">|</span>}
                     </div>
                   ))}
                 </div>
@@ -610,21 +686,15 @@ export function ConfigForm({ config }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-gray-800">Sección CTA</p>
-                <Switch checked={ctaVisible} onChange={setCtaVisible} size="sm" />
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center">
+                  <IconLayoutBottombar size={16} className="text-gray-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Footer</p>
+                  <p className="text-xs text-gray-400">Pie de página del sitio</p>
+                </div>
               </div>
-              {!ctaVisible && <p className="text-xs text-amber-500 bg-amber-50 px-3 py-2 rounded-lg">⚠️ Esta sección está oculta en el sitio</p>}
-              <div className={ctaVisible ? '' : 'opacity-40 pointer-events-none'}>
-              <Field label="Título" value={ctaTitulo} onChange={setCtaTitulo}
-                placeholder="¿Tienes alguna consulta?" inputCls={inputCls} />
-              <FieldArea label="Subtítulo" value={ctaSubtitulo} onChange={setCtaSubtitulo}
-                placeholder="Te asesoramos personalmente..." inputCls={inputCls} />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
-              <p className="text-sm font-semibold text-gray-800">Footer</p>
               <FieldArea label="Descripción de la tienda" value={footerDesc} onChange={setFooterDesc}
                 placeholder="Lujo oscuro / Essence of Dark Fashion. Piezas streetwear de edición limitada..." inputCls={inputCls} />
               <Field label="Política (texto pequeño)" value={footerPolitica} onChange={setFooterPolitica}
@@ -635,12 +705,12 @@ export function ConfigForm({ config }: Props) {
                   <span className="normal-case font-normal ml-1 text-gray-400">(hasta 4, déjalos vacíos para no mostrarlos)</span>
                 </label>
                 <div className="flex flex-col gap-2">
-                  {[
+                  {([
                     [footerInfo1, setFooterInfo1, 'Ej: Preventas por tiempo limitado'],
                     [footerInfo2, setFooterInfo2, 'Ej: Envíos a nivel nacional'],
                     [footerInfo3, setFooterInfo3, 'Ej: Piezas de edición limitada'],
                     [footerInfo4, setFooterInfo4, 'Ej: Paga por WhatsApp'],
-                  ].map(([val, setter, ph]: any, i) => (
+                  ] as [string, (v: string) => void, string][]).map(([val, setter, ph], i) => (
                     <div key={i} className="flex items-center gap-2">
                       <span className="text-red-400 font-bold text-sm">•</span>
                       <input value={val} onChange={(e) => setter(e.target.value)}
@@ -649,44 +719,121 @@ export function ConfigForm({ config }: Props) {
                   ))}
                 </div>
               </div>
+              <Field label="Email de contacto" value={footerEmail} onChange={setFooterEmail}
+                placeholder="contacto@anarchyy.pe" hint="Aparece en el footer (ícono y sección de contacto)" inputCls={inputCls} />
+              <Field label="Frase final (barra inferior)" value={footerTagline} onChange={setFooterTagline}
+                placeholder="Hago lo que quiero vestir 🦇" hint="Déjalo vacío para no mostrar nada" inputCls={inputCls} />
+            </div>
+
+            <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#FEE2E2' }}>
+                  <IconShare size={16} style={{ color: '#E11D2E' }} />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Redes sociales</p>
+                  <p className="text-xs text-gray-400">Íconos que aparecen en el footer</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2.5 border-2 rounded-xl px-3.5 py-2.5"
+                  style={{ borderColor: redesInstagram ? '#E11D2E' : '#E5E7EB' }}>
+                  <IconBrandInstagram size={18} className="shrink-0" style={{ color: redesInstagram ? '#E11D2E' : '#9CA3AF' }} />
+                  <input value={redesInstagram} onChange={(e) => setRedesInstagram(e.target.value)}
+                    className="flex-1 text-sm text-gray-900 placeholder:text-gray-400 outline-none bg-white"
+                    placeholder="https://instagram.com/anarchyy.pe" />
+                </div>
+                <div className="flex items-center gap-2.5 border-2 rounded-xl px-3.5 py-2.5"
+                  style={{ borderColor: redesTiktok ? '#E11D2E' : '#E5E7EB' }}>
+                  <IconBrandTiktok size={18} className="shrink-0" style={{ color: redesTiktok ? '#E11D2E' : '#9CA3AF' }} />
+                  <input value={redesTiktok} onChange={(e) => setRedesTiktok(e.target.value)}
+                    className="flex-1 text-sm text-gray-900 placeholder:text-gray-400 outline-none bg-white"
+                    placeholder="https://tiktok.com/@anarchyy.pe" />
+                </div>
+              </div>
+              <p className="text-xs text-gray-400">Pega el link completo del perfil. Déjalo vacío para no mostrar ese ícono.</p>
             </div>
           </div>
 
           {/* Preview completo */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
+          <div className="hidden lg:flex bg-white rounded-2xl border border-gray-100 p-5 flex-col gap-4">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Vista previa</p>
-
-            {/* CTA preview */}
-            {ctaVisible ? (
-              <div className="rounded-2xl p-6 text-center"
-                style={{ background: 'linear-gradient(135deg, #fff5f5 0%, #fee2e2 100%)' }}>
-                <p className="text-xl mb-1.5">🦇</p>
-                <h3 className="font-serif text-base font-bold text-gray-900 mb-1.5">{ctaTitulo}</h3>
-                <p className="text-[10px] text-gray-500 mb-3 max-w-[200px] mx-auto">{ctaSubtitulo}</p>
-                <span className="inline-block text-[10px] font-semibold text-white px-4 py-1.5 rounded-full"
-                  style={{ backgroundColor: '#25D366' }}>
-                  💬 Hablar por WhatsApp
-                </span>
-              </div>
-            ) : (
-              <div className="border border-dashed border-gray-200 rounded-2xl py-4 text-center">
-                <p className="text-[10px] text-gray-300">Sección CTA oculta</p>
-              </div>
-            )}
 
             {/* Footer preview */}
             <div className="rounded-xl overflow-hidden border border-gray-200">
-              <div className="bg-gray-900 p-3">
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">Footer preview</p>
-                <p className="text-[11px] text-white font-serif font-bold mb-1">{footerDesc ? footerDesc.slice(0, 40) + '…' : 'Descripción'}</p>
-                {footerPolitica && <p className="text-[9px] text-red-400 mb-2">{footerPolitica}</p>}
-                <div className="flex flex-col gap-1">
-                  {[footerInfo1, footerInfo2, footerInfo3, footerInfo4].filter(Boolean).map((item: string, i: number) => (
-                    <div key={i} className="flex items-center gap-1.5">
-                      <span className="text-red-500 text-[8px]">•</span>
-                      <p className="text-[9px] text-gray-400">{item}</p>
-                    </div>
-                  ))}
+              <div className="p-4" style={{ backgroundColor: '#121214' }}>
+                {/* Marca */}
+                <p className="font-display text-base tracking-widest mb-1.5" style={{ color: '#F5F5F2' }}>
+                  {tiendaNombre || 'Anarchyy.pe'}
+                </p>
+                <p className="text-[10px] leading-relaxed mb-2.5 max-w-[220px]" style={{ color: '#9A9A9E' }}>
+                  {footerDesc ? footerDesc.slice(0, 70) + (footerDesc.length > 70 ? '…' : '') : 'Descripción de la tienda'}
+                </p>
+
+                {/* Íconos sociales */}
+                <div className="flex items-center gap-1.5 mb-3">
+                  {whatsappNumero && (
+                    <span className="w-6 h-6 rounded-lg border flex items-center justify-center" style={{ borderColor: '#2C2C30', color: '#9A9A9E', backgroundColor: '#161618' }}>
+                      <IconBrandWhatsapp size={12} />
+                    </span>
+                  )}
+                  {footerEmail && (
+                    <span className="w-6 h-6 rounded-lg border flex items-center justify-center" style={{ borderColor: '#2C2C30', color: '#9A9A9E', backgroundColor: '#161618' }}>
+                      <IconMail size={12} />
+                    </span>
+                  )}
+                  {redesInstagram && (
+                    <span className="w-6 h-6 rounded-lg border flex items-center justify-center" style={{ borderColor: '#2C2C30', color: '#9A9A9E', backgroundColor: '#161618' }}>
+                      <IconBrandInstagram size={12} />
+                    </span>
+                  )}
+                  {redesTiktok && (
+                    <span className="w-6 h-6 rounded-lg border flex items-center justify-center" style={{ borderColor: '#2C2C30', color: '#9A9A9E', backgroundColor: '#161618' }}>
+                      <IconBrandTiktok size={12} />
+                    </span>
+                  )}
+                  {!whatsappNumero && !footerEmail && !redesInstagram && !redesTiktok && (
+                    <p className="text-[9px]" style={{ color: '#9A9A9E' }}>Sin íconos de contacto configurados</p>
+                  )}
+                </div>
+
+                {/* Información */}
+                {(footerPolitica || footerInfo1 || footerInfo2 || footerInfo3 || footerInfo4) && (
+                  <div className="flex flex-col gap-1.5 pt-2.5 mb-2.5" style={{ borderTop: '1px solid #2C2C30' }}>
+                    {footerPolitica && (
+                      <p className="text-[10px] leading-relaxed pb-1.5" style={{ color: '#9A9A9E', borderBottom: '1px solid #2C2C30' }}>{footerPolitica}</p>
+                    )}
+                    {[footerInfo1, footerInfo2, footerInfo3, footerInfo4].filter(Boolean).map((item: string, i: number) => (
+                      <div key={i} className="flex items-start gap-1.5">
+                        <span className="mt-1 w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: '#E11D2E' }} />
+                        <p className="text-[10px] leading-snug" style={{ color: '#9A9A9E' }}>{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Contacto */}
+                {(footerEmail || whatsappNumero) && (
+                  <div className="flex flex-col gap-1 pt-2.5 mb-2.5" style={{ borderTop: '1px solid #2C2C30' }}>
+                    {whatsappNumero && (
+                      <p className="text-[10px] flex items-center gap-1.5" style={{ color: '#9A9A9E' }}>
+                        <IconBrandWhatsapp size={11} className="shrink-0" /> +{whatsappNumero.replace(/\s/g, '')}
+                      </p>
+                    )}
+                    {footerEmail && (
+                      <p className="text-[10px] flex items-center gap-1.5" style={{ color: '#9A9A9E' }}>
+                        <IconMail size={11} className="shrink-0" /> {footerEmail}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Bottom bar */}
+                <div className="flex items-center justify-between gap-2 pt-2.5" style={{ borderTop: '1px solid #2C2C30' }}>
+                  <p className="text-[9px]" style={{ color: '#9A9A9E' }}>© {new Date().getFullYear()} {tiendaNombre || 'Anarchyy.pe'}</p>
+                  {footerTagline && (
+                    <p className="text-[9px] font-medium text-right" style={{ color: '#E11D2E' }}>{footerTagline}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -755,7 +902,16 @@ export function ConfigForm({ config }: Props) {
 }
 
 // Componentes helper
-function Field({ label, value, onChange, placeholder, hint, inputCls }: any) {
+interface FieldProps {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  hint?: string
+  inputCls: string
+}
+
+function Field({ label, value, onChange, placeholder, hint, inputCls }: FieldProps) {
   return (
     <div>
       <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">{label}</label>
@@ -765,7 +921,7 @@ function Field({ label, value, onChange, placeholder, hint, inputCls }: any) {
   )
 }
 
-function FieldArea({ label, value, onChange, placeholder, inputCls }: any) {
+function FieldArea({ label, value, onChange, placeholder, inputCls }: Omit<FieldProps, 'hint'>) {
   return (
     <div>
       <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">{label}</label>
@@ -775,7 +931,14 @@ function FieldArea({ label, value, onChange, placeholder, inputCls }: any) {
   )
 }
 
-function VisibilityToggle({ label, description, checked, onChange }: any) {
+interface VisibilityToggleProps {
+  label: string
+  description: string
+  checked: boolean
+  onChange: (checked: boolean) => void
+}
+
+function VisibilityToggle({ label, description, checked, onChange }: VisibilityToggleProps) {
   return (
     <div className="flex items-center justify-between bg-white rounded-2xl border border-gray-100 px-4 py-3">
       <div className="flex items-center gap-2.5">

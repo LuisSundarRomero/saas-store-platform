@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS productos (
   tallas       TEXT[] DEFAULT '{}',                  -- ['XS','S','M','L','XL']
   colores      TEXT[] DEFAULT '{}',                  -- ['blanco','negro','azul']
   stock        INTEGER CHECK (stock >= 0),           -- NULL = sin control de stock
+  stock_tallas  JSONB DEFAULT '{}'::jsonb,           -- { "M": 3, "L": 0 }
+  stock_colores JSONB DEFAULT '{}'::jsonb,           -- { "negro": 2, "hueso": 0 }
   visible      BOOLEAN DEFAULT true,
   created_at   TIMESTAMPTZ DEFAULT now(),
   updated_at   TIMESTAMPTZ DEFAULT now()
@@ -103,23 +105,24 @@ CREATE INDEX IF NOT EXISTS idx_pedidos_created_at   ON pedidos(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_pedido_items_pedido  ON pedido_items(pedido_id);
 CREATE INDEX IF NOT EXISTS idx_historial_pedido     ON estado_historial(pedido_id);
 
--- ─── FUNCIÓN: auto-ocultar producto con stock = 0 ───────────────
+-- ─── FUNCIÓN: actualizar updated_at en productos ─────────────────
+-- Nota (2026-06-11): antes este trigger también forzaba visible=false
+-- cuando stock=0, impidiendo que el admin mostrara productos agotados
+-- con su badge "Agotado". Ahora la visibilidad es 100% manual.
 
-CREATE OR REPLACE FUNCTION auto_ocultar_sin_stock()
+CREATE OR REPLACE FUNCTION actualizar_updated_at_producto()
 RETURNS TRIGGER AS $$
 BEGIN
-  IF NEW.stock IS NOT NULL AND NEW.stock = 0 THEN
-    NEW.visible = false;
-  END IF;
   NEW.updated_at = now();
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS trigger_auto_ocultar ON productos;
-CREATE TRIGGER trigger_auto_ocultar
+DROP TRIGGER IF EXISTS trigger_productos_updated_at ON productos;
+CREATE TRIGGER trigger_productos_updated_at
 BEFORE UPDATE ON productos
-FOR EACH ROW EXECUTE FUNCTION auto_ocultar_sin_stock();
+FOR EACH ROW EXECUTE FUNCTION actualizar_updated_at_producto();
 
 -- ─── FUNCIÓN: auto-registrar historial de estado ────────────────
 
@@ -388,6 +391,13 @@ ALTER TABLE config ADD COLUMN IF NOT EXISTS anuncio_expira  TIMESTAMPTZ;
 
 -- Strip de beneficios
 ALTER TABLE config ADD COLUMN IF NOT EXISTS strip_visible BOOLEAN DEFAULT true;
+
+-- ─── ALTER: stock por talla y por color (2026-06-12) ────────────
+-- Mapas independientes { "talla": stock } y { "color": stock }.
+-- Una clave ausente significa "sin control de stock para esa variante";
+-- valor 0 significa que esa talla/color específico está agotado.
+ALTER TABLE productos ADD COLUMN IF NOT EXISTS stock_tallas  JSONB DEFAULT '{}'::jsonb;
+ALTER TABLE productos ADD COLUMN IF NOT EXISTS stock_colores JSONB DEFAULT '{}'::jsonb;
 ALTER TABLE config ADD COLUMN IF NOT EXISTS strip_item1   TEXT DEFAULT '🖤 Diseños únicos y originales';
 ALTER TABLE config ADD COLUMN IF NOT EXISTS strip_item2   TEXT DEFAULT '🦇 Colección dark exclusiva';
 ALTER TABLE config ADD COLUMN IF NOT EXISTS strip_item3   TEXT DEFAULT '💬 Atención personalizada';
@@ -408,6 +418,19 @@ ALTER TABLE productos ADD COLUMN IF NOT EXISTS destacado BOOLEAN DEFAULT false;
 ALTER TABLE config ADD COLUMN IF NOT EXISTS singleton BOOLEAN NOT NULL DEFAULT true;
 ALTER TABLE config DROP CONSTRAINT IF EXISTS config_singleton_unique;
 ALTER TABLE config ADD CONSTRAINT config_singleton_unique UNIQUE (singleton);
+
+-- ─── ALTER: contacto y tagline del footer (2026-06-12) ──────────
+ALTER TABLE config ADD COLUMN IF NOT EXISTS footer_email   TEXT DEFAULT 'contacto@anarchyy.pe';
+ALTER TABLE config ADD COLUMN IF NOT EXISTS footer_tagline TEXT DEFAULT 'Hago lo que quiero vestir 🦇';
+
+-- ─── ALTER: redes sociales (2026-06-12) ─────────────────────────
+-- URL completa de cada red. Vacío/NULL = no se muestra el ícono.
+ALTER TABLE config ADD COLUMN IF NOT EXISTS redes_instagram TEXT;
+ALTER TABLE config ADD COLUMN IF NOT EXISTS redes_tiktok    TEXT;
+
+-- ─── ALTER: links del slider del banner (2026-06-12) ────────────
+-- Mismo orden/largo que banner_imagenes. Vacío en una posición = usa /catalogo.
+ALTER TABLE config ADD COLUMN IF NOT EXISTS banner_links TEXT[] DEFAULT '{}';
 
 -- ─── FIN ────────────────────────────────────────────────────────
 -- Verificar con:

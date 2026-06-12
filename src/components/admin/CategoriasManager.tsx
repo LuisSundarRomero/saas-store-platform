@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { IconPlus, IconTrash, IconEdit, IconCheck, IconX, IconGripVertical } from '@tabler/icons-react'
 import { upsertCategoria, deleteCategoria, reordenarCategorias } from '@/lib/actions/admin'
@@ -37,12 +37,14 @@ export function CategoriasManager({ categorias: inicial }: Props) {
   const [newNombre, setNewNombre] = useState('')
   const [newOrden, setNewOrden] = useState(inicial.length + 1)
   const [categorias, setCategorias] = useState(inicial)
+  const [prevInicial, setPrevInicial] = useState(inicial)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [overIndex, setOverIndex] = useState<number | null>(null)
 
-  useEffect(() => {
+  if (inicial !== prevInicial) {
+    setPrevInicial(inicial)
     setCategorias(inicial)
-  }, [inicial])
+  }
 
   function handleDrop(targetIndex: number) {
     if (dragIndex === null || dragIndex === targetIndex) {

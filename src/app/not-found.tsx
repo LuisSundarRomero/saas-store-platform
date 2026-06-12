@@ -4,7 +4,7 @@ import { IconArrowLeft, IconShoppingBag } from '@tabler/icons-react'
 export default function NotFound() {
   return (
     <main
-      className="min-h-screen flex items-center justify-center px-4 bg-[#0B0B0C]"
+      className="min-h-screen flex items-center justify-center px-4 bg-[#1F1F22]"
     >
       <div className="text-center max-w-sm w-full">
 

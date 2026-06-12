@@ -71,7 +71,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         // Guardamos la URL de WA para que la página de confirmación la abra
         sessionStorage.setItem('wa_pending', whatsappUrl)
         window.location.href = `/checkout/confirmacion?order=${orderId}`
-      } catch (err: any) {
+      } catch (err) {
         console.error('[checkout]', err)
         setError('No se pudo crear el pedido. Verifica tu conexión e intenta de nuevo.')
       }
@@ -85,7 +85,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
       )}
 
       <div
-        className="fixed top-0 right-0 h-full w-full max-w-[380px] bg-[#0B0B0C] z-50 flex flex-col shadow-2xl transition-transform duration-300"
+        className="fixed top-0 right-0 h-full w-full max-w-[380px] bg-[#1F1F22] z-50 flex flex-col shadow-2xl transition-transform duration-300"
         style={{
           transform: open ? 'translateX(0)' : 'translateX(100%)',
           pointerEvents: open ? 'auto' : 'none',
@@ -154,7 +154,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 placeholder="Ej: María"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
-                className="w-full border rounded-xl px-3 py-3 text-sm outline-none bg-[#0B0B0C] text-[#F5F5F2] transition-colors"
+                className="w-full border rounded-xl px-3 py-3 text-sm outline-none bg-[#1F1F22] text-[#F5F5F2] transition-colors"
                 style={{ borderColor: '#2C2C30' }}
               />
             </div>
@@ -174,7 +174,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                   setError('')
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && handleCheckout()}
-                className="w-full border rounded-xl px-3 py-3 text-sm outline-none bg-[#0B0B0C] text-[#F5F5F2] transition-colors font-mono"
+                className="w-full border rounded-xl px-3 py-3 text-sm outline-none bg-[#1F1F22] text-[#F5F5F2] transition-colors font-mono"
                 style={{
                   borderColor: error ? '#EF4444' : telefono.length >= 9 ? '#E11D2E' : '#2C2C30',
                 }}

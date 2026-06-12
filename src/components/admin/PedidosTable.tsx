@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useTransition, useRef } from 'react'
-import { EstadoPedido } from '@/types'
+import { EstadoPedido, Pedido } from '@/types'
 import { formatPrice, formatDate } from '@/lib/utils/format'
 import { updateEstadoPedido } from '@/lib/actions/admin'
 import { useRouter } from 'next/navigation'
@@ -54,7 +55,7 @@ interface ComprobanteModalInfo {
   orderId: string
 }
 
-interface Props { pedidos: any[] }
+interface Props { pedidos: Pedido[] }
 
 export function PedidosTable({ pedidos }: Props) {
   const router = useRouter()
@@ -267,9 +268,9 @@ export function PedidosTable({ pedidos }: Props) {
               />
 
               {comprobantePreview ? (
-                <div className="relative inline-block mb-3">
-                  <img src={comprobantePreview} alt="Comprobante"
-                    className="h-40 w-full object-cover rounded-xl border border-gray-200" />
+                <div className="relative inline-block mb-3 w-full h-40">
+                  <Image src={comprobantePreview} alt="Comprobante" fill unoptimized
+                    className="object-cover rounded-xl border border-gray-200" />
                   <button
                     type="button"
                     onClick={() => { setComprobanteFile(null); setComprobantePreview(null) }}
