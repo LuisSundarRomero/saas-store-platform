@@ -1,7 +1,9 @@
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { IconBrandWhatsapp } from '@tabler/icons-react'
-import { getProductos, getProductosDestacados } from '@/lib/actions/productos'
+import { getProductos, getProductosDestacados, getCategorias } from '@/lib/actions/productos'
 import { ProductCard } from '@/components/catalogo/ProductCard'
+import { CategoryChips } from '@/components/catalogo/CategoryChips'
 import { HeroCarousel } from '@/components/home/HeroCarousel'
 import type { Metadata } from 'next'
 
@@ -43,9 +45,10 @@ export default async function HomePage() {
   ].filter(Boolean)
   const whatsapp = config?.whatsapp_numero ?? ''
 
-  const [novedades, destacados] = await Promise.all([
+  const [novedades, destacados, categorias] = await Promise.all([
     getProductos({ limit: 12 }),
     getProductosDestacados(),
+    getCategorias(),
   ])
 
   const bannerImagenes: string[] = config?.banner_imagenes ?? []
@@ -169,13 +172,23 @@ export default async function HomePage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ── ÚLTIMAS LLEGADAS ── */}
-        {novedades.length > 0 && (
-          <section className="py-16">
-
-            <div className="mb-5">
+        {/* ── CATEGORÍAS ── */}
+        {categorias.length > 0 && (
+          <section className="pt-10">
+            <div className="mb-4">
               <h2 className="text-lg font-semibold text-[#F5F5F2]">Recién llegado</h2>
             </div>
+
+            <Suspense>
+              <CategoryChips categorias={categorias} />
+            </Suspense>
+          </section>
+        )}
+
+        {/* ── ÚLTIMAS LLEGADAS ── */}
+        {novedades.length > 0 && (
+          <section className="pb-10 pt-6">
+
 
             {/* Grid proporcional — pensado para pocos productos */}
             <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-3 lg:grid-cols-4">

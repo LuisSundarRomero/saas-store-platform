@@ -35,7 +35,7 @@ export default async function LoginPage() {
           <LoginForm />
         </div>
 
-        <p className="text-center text-xs text-gray-300 mt-5">
+        <p className="text-center text-xs text-gray-400 mt-5">
           Acceso restringido al equipo de Anarchy
         </p>
       </div>
