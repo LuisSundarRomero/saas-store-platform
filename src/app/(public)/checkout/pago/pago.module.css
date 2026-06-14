@@ -1,4 +1,5 @@
 .culqiWrapper {
+  position: relative;
   width: 100%;
   max-width: 440px;
   aspect-ratio: 440 / 820;
@@ -16,6 +17,7 @@
   height: 820px;
   transform-origin: top center;
   flex-shrink: 0;
+  transition: opacity 0.25s ease;
 }
 
 
@@ -24,4 +26,67 @@
   width: 440px !important;
   height: 820px !important;
   border: 0 !important;
+}
+
+/* Skeleton mientras carga el formulario de Culqi */
+.skeleton {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 16px;
+  box-sizing: border-box;
+}
+
+.skeletonBar,
+.skeletonField,
+.skeletonTab,
+.skeletonButton {
+  border-radius: 10px;
+  background: linear-gradient(90deg, #1F1F22 25%, #2C2C30 50%, #1F1F22 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.4s ease-in-out infinite;
+}
+
+.skeletonBar {
+  width: 50%;
+  height: 14px;
+  border-radius: 6px;
+}
+
+.skeletonTabs {
+  display: flex;
+  gap: 8px;
+}
+
+.skeletonTab {
+  flex: 1;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.skeletonRow {
+  display: flex;
+  gap: 12px;
+}
+
+.skeletonField {
+  height: 46px;
+  border-radius: 12px;
+}
+
+.skeletonButton {
+  margin-top: auto;
+  height: 48px;
+  border-radius: 999px;
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }

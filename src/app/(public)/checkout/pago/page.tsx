@@ -74,6 +74,7 @@ export default function CheckoutPagoPage() {
   const culqiRef = useRef<CulqiCheckoutInstance | null>(null)
   const culqiWrapperRef = useRef<HTMLDivElement>(null)
   const [culqiScale, setCulqiScale] = useState(1)
+  const [formVisible, setFormVisible] = useState(false)
   const orderCompletedRef = useRef(false)
 
   useEffect(() => {
@@ -334,12 +335,25 @@ export default function CheckoutPagoPage() {
         setError(checkout.error?.user_message ?? 'No se pudo procesar el pago.')
       }
     }
+
+    const container = document.getElementById('culqi-checkout-container')
+    const formObserver = container
+      ? new MutationObserver(() => {
+          if (container.childElementCount > 0) {
+            setFormVisible(true)
+            formObserver?.disconnect()
+          }
+        })
+      : null
+    formObserver?.observe(container as HTMLElement, { childList: true })
+
     setTimeout(() => {
       checkout.open()
     }, 100)
 
     return () => {
       culqiRef.current = null
+      formObserver?.disconnect()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items.length, checkoutInfo.email, culqiReady])
@@ -377,10 +391,25 @@ export default function CheckoutPagoPage() {
   ref={culqiWrapperRef}
   className={styles.culqiWrapper}
 >
-  {!culqiReady && (
-    <p className="text-sm text-[#6B6B70] self-center">
-      Cargando formulario de pago...
-    </p>
+  {!formVisible && (
+    <div className={styles.skeleton}>
+      <div className={styles.skeletonBar} style={{ width: '40%' }} />
+      <div className={styles.skeletonTabs}>
+        <div className={styles.skeletonTab} />
+        <div className={styles.skeletonTab} />
+      </div>
+      <div className={styles.skeletonBar} style={{ width: '30%', height: 10 }} />
+      <div className={styles.skeletonField} />
+      <div className={styles.skeletonBar} style={{ width: '30%', height: 10 }} />
+      <div className={styles.skeletonField} />
+      <div className={styles.skeletonRow}>
+        <div className={styles.skeletonField} style={{ flex: 1 }} />
+        <div className={styles.skeletonField} style={{ flex: 1 }} />
+      </div>
+      <div className={styles.skeletonBar} style={{ width: '30%', height: 10 }} />
+      <div className={styles.skeletonField} />
+      <div className={styles.skeletonButton} />
+    </div>
   )}
 
   <div
@@ -388,6 +417,7 @@ export default function CheckoutPagoPage() {
     className={styles.culqiContainer}
     style={{
       transform: `scale(${culqiScale})`,
+      opacity: formVisible ? 1 : 0,
     }}
   />
 </div>
