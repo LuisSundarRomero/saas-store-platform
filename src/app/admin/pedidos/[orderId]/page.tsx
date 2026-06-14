@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { IconArrowLeft, IconBrandWhatsapp, IconPhone } from '@tabler/icons-react'
+import { IconArrowLeft, IconBrandWhatsapp, IconPhone, IconUser, IconMapPin } from '@tabler/icons-react'
 import { getPedidoAdmin } from '@/lib/actions/admin'
 import { formatPrice, formatDate } from '@/lib/utils/format'
 import { EstadoSelector } from '@/components/admin/EstadoSelector'
@@ -76,12 +76,28 @@ export default async function PedidoDetalleAdmin({ params }: Props) {
           {/* Cliente */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5">
             <h2 className="font-semibold text-gray-800 mb-3">Cliente</h2>
+            {pedido.cliente_nombre && (
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center">
+                  <IconUser size={15} className="text-gray-500" />
+                </div>
+                <span className="text-sm font-medium text-gray-700">{pedido.cliente_nombre}</span>
+              </div>
+            )}
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-xl bg-green-50 flex items-center justify-center">
                 <IconPhone size={15} className="text-green-600" />
               </div>
               <span className="font-mono text-sm font-medium text-gray-700">{pedido.cliente_telefono}</span>
             </div>
+            {pedido.cliente_direccion && (
+              <div className="flex items-start gap-2 mb-3">
+                <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
+                  <IconMapPin size={15} className="text-gray-500" />
+                </div>
+                <span className="text-sm text-gray-700 leading-snug pt-1.5">{pedido.cliente_direccion}</span>
+              </div>
+            )}
             <a href={`https://wa.me/${pedido.cliente_telefono}?text=${encodeURIComponent(`Hola! Te escribimos sobre tu pedido #${orderId}`)}`}
               target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"

@@ -1,39 +1,18 @@
 'use client'
 
-import { useState, useMemo, useSyncExternalStore } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { IconBrandWhatsapp, IconPackage, IconArrowRight } from '@tabler/icons-react'
-
-function subscribeNoop() {
-  return () => {}
-}
-
-function useMounted() {
-  return useSyncExternalStore(subscribeNoop, () => true, () => false)
-}
+import { IconPackage, IconArrowRight } from '@tabler/icons-react'
+import { CheckoutStepper } from '@/components/checkout/CheckoutStepper'
 
 export default function ConfirmacionPage() {
   const searchParams = useSearchParams()
   const order = searchParams.get('order')
-  const mounted = useMounted()
-  const waUrl = useMemo(() => {
-    if (!mounted) return null
-    const url = sessionStorage.getItem('wa_pending')
-    if (url) sessionStorage.removeItem('wa_pending')
-    return url
-  }, [mounted])
-  const [waAbierto, setWaAbierto] = useState(false)
-
-  function handleAbrirWhatsApp() {
-    if (!waUrl) return
-    window.open(waUrl, '_blank')
-    setWaAbierto(true)
-  }
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#1F1F22]">
+    <main className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-[#1F1F22]">
       <div className="w-full max-w-sm">
+        <CheckoutStepper currentStep={3} />
 
         {/* Icono */}
         <div className="flex justify-center mb-6">
@@ -46,10 +25,10 @@ export default function ConfirmacionPage() {
         {/* Mensaje */}
         <div className="text-center mb-6">
           <h1 className="text-2xl font-display text-[#F5F5F2] mb-2">
-            ¡Pedido listo!
+            ¡Pago confirmado!
           </h1>
           <p className="text-[#9A9A9E] text-sm leading-relaxed">
-            Tu pedido fue creado. Ahora envíalo por WhatsApp para confirmarlo.
+            Tu pedido fue registrado y ya estamos preparándolo.
           </p>
         </div>
 
@@ -69,17 +48,6 @@ export default function ConfirmacionPage() {
 
         {/* Acciones */}
         <div className="flex flex-col gap-3">
-          {waUrl && (
-            <button
-              type="button"
-              onClick={handleAbrirWhatsApp}
-              className="w-full py-3.5 rounded-full font-semibold text-white text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#25D366' }}>
-              <IconBrandWhatsapp size={18} />
-              {waAbierto ? 'Abrir WhatsApp de nuevo' : 'Enviar pedido por WhatsApp'}
-            </button>
-          )}
-
           {order && (
             <Link href={`/rastrear?order=${order}`}
               className="w-full py-3.5 rounded-full font-semibold text-white text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-90"

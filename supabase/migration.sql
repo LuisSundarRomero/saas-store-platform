@@ -432,6 +432,18 @@ ALTER TABLE config ADD COLUMN IF NOT EXISTS redes_tiktok    TEXT;
 -- Mismo orden/largo que banner_imagenes. Vacío en una posición = usa /catalogo.
 ALTER TABLE config ADD COLUMN IF NOT EXISTS banner_links TEXT[] DEFAULT '{}';
 
+-- ─── ALTER: pago online con Culqi (2026-06-12) ──────────────────
+-- metodo_pago: 'whatsapp' (legado) | 'culqi' (pagado online con tarjeta, único método activo)
+-- culqi_charge_id: ID del cargo en Culqi (formato "chr_...") para referencia/reembolsos
+-- cliente_email: requerido por Culqi para crear el cargo
+ALTER TABLE pedidos ADD COLUMN IF NOT EXISTS metodo_pago     TEXT DEFAULT 'whatsapp';
+ALTER TABLE pedidos ADD COLUMN IF NOT EXISTS culqi_charge_id TEXT;
+ALTER TABLE pedidos ADD COLUMN IF NOT EXISTS cliente_email   TEXT;
+
+-- ─── ALTER: dirección de entrega (2026-06-14) ───────────────────
+-- Dirección exacta del cliente, obligatoria desde el checkout para pedidos nuevos.
+ALTER TABLE pedidos ADD COLUMN IF NOT EXISTS cliente_direccion TEXT;
+
 -- ─── FIN ────────────────────────────────────────────────────────
 -- Verificar con:
 -- SELECT tablename FROM pg_tables WHERE schemaname = 'public';

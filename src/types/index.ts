@@ -32,13 +32,19 @@ export interface Producto {
   categorias?: Categoria
 }
 
+export type MetodoPago = 'whatsapp' | 'culqi'
+
 export interface Pedido {
   id: string
   order_id: string // 'ORD-001'
   cliente_nombre: string | null
   cliente_telefono: string
+  cliente_email: string | null
+  cliente_direccion: string | null
   total: number // en centavos
   estado: EstadoPedido
+  metodo_pago: MetodoPago
+  culqi_charge_id: string | null
   notas: string | null
   created_at: string
   updated_at: string
@@ -82,6 +88,7 @@ export interface CartItem {
   nombre: string
   imagen: string
   precio: number // centavos
+  precioAntes?: number // centavos, precio original si tiene descuento
   talla: string
   color: string
   cantidad: number

@@ -83,6 +83,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
       nombre: producto.nombre,
       imagen: producto.imagenes?.[0] ?? '',
       precio: producto.precio,
+      precioAntes: producto.precio_antes ?? undefined,
       talla: tallaSeleccionada ?? '',
       color: colorSeleccionado ?? '',
       cantidad: 1,

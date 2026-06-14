@@ -4,14 +4,25 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { CartItem } from '@/types'
 
+export interface CheckoutInfo {
+  nombre: string
+  telefono: string
+  email: string
+  direccion: string
+}
+
+const emptyCheckoutInfo: CheckoutInfo = { nombre: '', telefono: '', email: '', direccion: '' }
+
 interface CartStore {
   items: CartItem[]
   isOpen: boolean
+  checkoutInfo: CheckoutInfo
   openCart: () => void
   closeCart: () => void
   addItem: (item: CartItem) => void
   removeItem: (productoId: string, talla: string, color: string) => void
   updateQty: (productoId: string, talla: string, color: string, qty: number) => void
+  setCheckoutInfo: (info: Partial<CheckoutInfo>) => void
   clearCart: () => void
   total: () => number
   itemCount: () => number
@@ -22,9 +33,13 @@ export const useCarrito = create<CartStore>()(
     (set, get) => ({
       items: [],
       isOpen: false,
+      checkoutInfo: emptyCheckoutInfo,
 
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
+
+      setCheckoutInfo: (info) =>
+        set((state) => ({ checkoutInfo: { ...state.checkoutInfo, ...info } })),
 
       addItem: (item) => {
         set((state) => {
@@ -72,7 +87,7 @@ export const useCarrito = create<CartStore>()(
         }))
       },
 
-      clearCart: () => set({ items: [] }),
+      clearCart: () => set({ items: [], checkoutInfo: emptyCheckoutInfo }),
 
       total: () =>
         get().items.reduce((sum, i) => sum + i.precio * i.cantidad, 0),
@@ -83,7 +98,16 @@ export const useCarrito = create<CartStore>()(
     {
       name: 'saas-ropa-cart',
       // isOpen nunca se persiste — siempre empieza cerrado
-      partialize: (state) => ({ items: state.items }),
+      partialize: (state) => ({ items: state.items, checkoutInfo: state.checkoutInfo }),
+      // Completa campos nuevos de checkoutInfo (ej: direccion) ausentes en estado persistido viejo
+      merge: (persisted, current) => {
+        const persistedState = persisted as Partial<CartStore>
+        return {
+          ...current,
+          ...persistedState,
+          checkoutInfo: { ...current.checkoutInfo, ...persistedState.checkoutInfo },
+        }
+      },
     }
   )
 )

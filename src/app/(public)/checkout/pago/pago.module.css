@@ -1,0 +1,27 @@
+.culqiWrapper {
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 440 / 820;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: #161618;
+  border-radius: 16px;
+}
+
+
+.culqiContainer {
+  width: 440px;
+  height: 820px;
+  transform-origin: top center;
+  flex-shrink: 0;
+}
+
+
+/* iframe generado por Culqi */
+.culqiContainer iframe {
+  width: 440px !important;
+  height: 820px !important;
+  border: 0 !important;
+}
