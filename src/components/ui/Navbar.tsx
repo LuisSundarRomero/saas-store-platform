@@ -20,12 +20,12 @@ function useMounted() {
 
 export function Navbar({ tiendaNombre = 'Anarchyy.pe' }: NavbarProps) {
   const mounted = useMounted()
-  const itemCount = useCarrito((s) => s.itemCount)
+  const itemCount = useCarrito((s) => s.itemCount())
   const isOpen   = useCarrito((s) => s.isOpen)
   const openCart  = useCarrito((s) => s.openCart)
   const closeCart = useCarrito((s) => s.closeCart)
 
-  const count = mounted ? itemCount() : 0
+  const count = mounted ? itemCount : 0
 
   return (
     <>
