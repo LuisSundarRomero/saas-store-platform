@@ -1,9 +1,20 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import Script from 'next/script'
 import { IconMail, IconLock, IconEye, IconEyeOff } from '@tabler/icons-react'
 import { createClient } from '@/lib/supabase/client'
+import { verifyTurnstileToken } from '@/lib/actions/turnstile'
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: string | HTMLElement, options: Record<string, unknown>) => string
+      reset: (widgetId?: string) => void
+    }
+  }
+}
 
 export function LoginForm() {
   const router = useRouter()
@@ -11,16 +22,43 @@ export function LoginForm() {
   const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
   const [error, setError] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState('')
   const [isPending, startTransition] = useTransition()
+  const turnstileRef = useRef<HTMLDivElement>(null)
+
+  const renderTurnstile = useCallback(() => {
+    if (turnstileRef.current && window.turnstile) {
+      window.turnstile.render(turnstileRef.current, {
+        sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!,
+        callback: (token: string) => setTurnstileToken(token),
+      })
+    }
+  }, [])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+
+    if (!turnstileToken) {
+      setError('Completa la verificación de seguridad')
+      return
+    }
+
     startTransition(async () => {
+      const tokenValido = await verifyTurnstileToken(turnstileToken)
+      if (!tokenValido) {
+        setError('Verificación de seguridad fallida, intenta de nuevo')
+        window.turnstile?.reset()
+        setTurnstileToken('')
+        return
+      }
+
       const supabase = createClient()
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
         setError('Email o contraseña incorrectos')
+        window.turnstile?.reset()
+        setTurnstileToken('')
       } else {
         router.push('/admin/pedidos')
         router.refresh()
@@ -30,6 +68,11 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        onLoad={renderTurnstile}
+        strategy="lazyOnload"
+      />
 
       {/* Email */}
       <div className="flex flex-col gap-1.5">
@@ -72,6 +115,9 @@ export function LoginForm() {
           </button>
         </div>
       </div>
+
+      {/* Verificación de seguridad */}
+      <div ref={turnstileRef} className="flex justify-center" />
 
       {/* Error */}
       {error && (
