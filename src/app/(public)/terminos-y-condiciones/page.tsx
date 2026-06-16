@@ -1,0 +1,151 @@
+import Link from 'next/link'
+import { IconArrowLeft, IconFileText } from '@tabler/icons-react'
+import { createClient } from '@/lib/supabase/server'
+
+export default async function TerminosPage() {
+  const supabase = await createClient()
+  const { data: config } = await supabase
+    .from('config')
+    .select('tienda_nombre, empresa_razon_social, empresa_ruc, empresa_direccion, whatsapp_numero, footer_email')
+    .single()
+
+  const tiendaNombre = config?.tienda_nombre ?? 'Anarchyy.pe'
+  const razonSocial = config?.empresa_razon_social || tiendaNombre
+  const ruc = config?.empresa_ruc ?? ''
+  const direccion = config?.empresa_direccion ?? ''
+  const whatsapp = config?.whatsapp_numero ?? ''
+  const email = config?.footer_email ?? ''
+
+  const hoy = new Date()
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
+  const fecha = `${hoy.getDate()} de ${meses[hoy.getMonth()]} de ${hoy.getFullYear()}`
+
+  return (
+    <main className="min-h-screen bg-[#1F1F22]">
+
+      {/* Header */}
+      <div className="bg-[#1F1F22]/95 backdrop-blur border-b border-[#2C2C30] px-4 py-3.5 flex items-center gap-3 sticky top-0 z-10">
+        <Link href="/"
+          className="p-1.5 rounded-full hover:bg-[#161618] transition-colors text-[#9A9A9E]">
+          <IconArrowLeft size={18} />
+        </Link>
+        <p className="font-bold text-[#F5F5F2] text-sm">Términos y condiciones</p>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-4">
+
+        {/* Intro */}
+        <div className="flex items-center gap-3 mb-1">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#3A1014' }}>
+            <IconFileText size={22} style={{ color: '#E11D2E' }} />
+          </div>
+          <p className="text-sm text-[#9A9A9E] leading-relaxed">
+            Al realizar una compra en {tiendaNombre} aceptas los siguientes términos y condiciones.
+            Te recomendamos leerlos antes de completar tu pedido.
+          </p>
+        </div>
+
+        <div className="bg-[#161618] border border-[#2C2C30] rounded-2xl p-5 flex flex-col gap-5 text-sm text-[#C9C9CD] leading-relaxed">
+
+          <section>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+              1. Cómo funciona la compra
+            </p>
+            <p>
+              El proceso de compra en {tiendaNombre} consta de los siguientes pasos: (1) eliges tus
+              productos y los agregas al carrito, (2) ingresas tus datos de contacto y dirección de
+              entrega, (3) seleccionas tu método de pago y confirmas la compra, y (4) recibes una
+              confirmación con el número de tu pedido. Desde ese momento puedes rastrear el estado
+              de tu pedido desde la sección &quot;Rastrear pedido&quot; usando tu código y número de celular.
+            </p>
+          </section>
+
+          <section>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+              2. Métodos de pago
+            </p>
+            <p>
+              Aceptamos pagos con tarjetas de crédito y débito (Visa, Mastercard) y Yape, procesados
+              de forma segura a través de Culqi, una pasarela de pagos certificada PCI-DSS.
+              {tiendaNombre} no almacena los datos de tu tarjeta en ningún momento. El pedido se
+              confirma automáticamente una vez que el pago es aprobado.
+            </p>
+          </section>
+
+          <section>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+              3. Tiempos de entrega
+            </p>
+            <p>
+              Los tiempos de entrega varían según tu ubicación y la disponibilidad del producto.
+              En general, los pedidos se procesan y despachan dentro de las 24-48 horas posteriores
+              a la confirmación del pago, y la entrega puede tomar entre 1 y 7 días hábiles dependiendo
+              del destino. Te mantendremos informado sobre el estado de tu pedido a través de
+              {whatsapp ? ' WhatsApp y' : ''} el correo registrado, y podrás consultarlo en cualquier
+              momento desde &quot;Rastrear pedido&quot;.
+            </p>
+          </section>
+
+          <section>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+              4. Responsabilidad del vendedor
+            </p>
+            <p>
+              {razonSocial}{ruc ? ` (RUC ${ruc})` : ''} es responsable de la calidad de los productos
+              ofrecidos, de la veracidad de la información publicada en el catálogo y de gestionar el
+              envío de los pedidos confirmados. En caso de fallas atribuibles al vendedor (producto
+              dañado, incompleto o distinto al solicitado), el cliente tiene derecho a solicitar el
+              cambio, devolución o reembolso correspondiente, conforme a la política de cambios y
+              devoluciones vigente. {tiendaNombre} no se hace responsable por demoras ocasionadas por
+              causas ajenas a su control, como huelgas, desastres naturales o fallas de las empresas
+              de transporte.
+            </p>
+          </section>
+
+          <section>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+              5. Uso de la plataforma
+            </p>
+            <p>
+              Al usar este sitio te comprometes a proporcionar información veraz y actualizada, y a
+              utilizar la plataforma únicamente para fines lícitos relacionados con la compra de
+              productos. Todo el contenido del sitio (textos, imágenes, marca y diseño) es propiedad
+              de {tiendaNombre} y no puede ser reproducido sin autorización.
+              {tiendaNombre} se reserva el derecho de actualizar estos términos en cualquier momento;
+              los cambios serán publicados en esta misma página.
+            </p>
+          </section>
+
+          <section>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+              6. Reclamos
+            </p>
+            <p>
+              Si tienes una queja o reclamo sobre tu compra, puedes registrarlo en nuestro{' '}
+              <Link href="/libro-de-reclamaciones" className="underline" style={{ color: '#F5F5F2' }}>
+                Libro de Reclamaciones
+              </Link>, conforme al Código de Protección y Defensa del Consumidor.
+            </p>
+          </section>
+
+          {(whatsapp || email) && (
+            <section>
+              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+                7. Contacto
+              </p>
+              <p>
+                {direccion && <>{direccion}<br /></>}
+                {email && <>Email: {email}<br /></>}
+                {whatsapp && <>WhatsApp: +{whatsapp}</>}
+              </p>
+            </section>
+          )}
+
+          <p className="text-xs text-[#6B6B70] pt-2 border-t border-[#2C2C30]">
+            Última actualización: {fecha}
+          </p>
+        </div>
+      </div>
+    </main>
+  )
+}

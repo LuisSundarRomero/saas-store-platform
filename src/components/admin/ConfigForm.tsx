@@ -41,6 +41,9 @@ interface ConfigData {
   anuncio_texto?: string | null
   anuncio_link?: string | null
   anuncio_expira?: string | null
+  empresa_razon_social?: string | null
+  empresa_ruc?: string | null
+  empresa_direccion?: string | null
 }
 
 interface Props { config: ConfigData | null }
@@ -70,6 +73,9 @@ export function ConfigForm({ config }: Props) {
   const [whatsappNumero,    setWhatsappNumero]    = useState(config?.whatsapp_numero    ?? '')
   const [moneda,            setMoneda]            = useState(config?.moneda             ?? 'PEN')
   const [emailNotif,        setEmailNotif]        = useState(config?.email_notificaciones ?? '')
+  const [empresaRazonSocial, setEmpresaRazonSocial] = useState(config?.empresa_razon_social ?? '')
+  const [empresaRuc,         setEmpresaRuc]         = useState(config?.empresa_ruc          ?? '')
+  const [empresaDireccion,   setEmpresaDireccion]   = useState(config?.empresa_direccion    ?? '')
 
   // Banner
   const [heroBadge,           setHeroBadge]           = useState(config?.hero_badge             ?? '🦇 Restock en preventa')
@@ -92,13 +98,13 @@ export function ConfigForm({ config }: Props) {
 
   // Textos
   const [footerDesc,      setFooterDesc]      = useState(config?.footer_descripcion ?? 'Lujo oscuro / Essence of Dark Fashion. Piezas streetwear de edición limitada — hago lo que quiero vestir.')
-  const [footerPolitica,  setFooterPolitica]  = useState(config?.footer_politica   ?? 'No hacemos cambios ni devoluciones 🦇')
+  const [footerPolitica,  setFooterPolitica]  = useState(config?.footer_politica   ?? '')
   const [footerInfo1,     setFooterInfo1]     = useState(config?.footer_info1      ?? 'Preventas por tiempo limitado')
   const [footerInfo2,     setFooterInfo2]     = useState(config?.footer_info2      ?? 'Envíos a nivel nacional')
   const [footerInfo3,     setFooterInfo3]     = useState(config?.footer_info3      ?? '')
   const [footerInfo4,     setFooterInfo4]     = useState(config?.footer_info4      ?? '')
   const [footerEmail,     setFooterEmail]     = useState(config?.footer_email      ?? 'contacto@anarchyy.pe')
-  const [footerTagline,   setFooterTagline]   = useState(config?.footer_tagline    ?? 'Hago lo que quiero vestir 🦇')
+  const [footerTagline,   setFooterTagline]   = useState(config?.footer_tagline    ?? '')
   const [redesInstagram,  setRedesInstagram]  = useState(config?.redes_instagram   ?? '')
   const [redesTiktok,     setRedesTiktok]     = useState(config?.redes_tiktok      ?? '')
   // Anuncio
@@ -191,6 +197,9 @@ export function ConfigForm({ config }: Props) {
         whatsapp_numero: numero,
         moneda,
         email_notificaciones: emailNotif.trim() || null,
+        empresa_razon_social: empresaRazonSocial.trim() || null,
+        empresa_ruc: empresaRuc.trim() || null,
+        empresa_direccion: empresaDireccion.trim() || null,
         hero_badge: heroBadge,
         hero_titulo: heroTitulo,
         hero_subtitulo: heroSubtitulo,
@@ -318,6 +327,36 @@ export function ConfigForm({ config }: Props) {
                 <option value="USD">$ — Dólar</option>
                 <option value="COP">$ — Peso colombiano</option>
               </select>
+            </div>
+          </div>
+
+          {/* Datos de la empresa */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4 lg:col-span-2">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-8 h-8 rounded-xl bg-purple-50 flex items-center justify-center">
+                <IconBuildingStore size={16} className="text-purple-500" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-800">Datos de la empresa</p>
+                <p className="text-xs text-gray-400">Aparecen en el Libro de Reclamaciones</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">Razón social</label>
+                <input value={empresaRazonSocial} onChange={(e) => setEmpresaRazonSocial(e.target.value)}
+                  className={inputCls} placeholder="Anarchyy E.I.R.L." />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">RUC</label>
+                <input value={empresaRuc} onChange={(e) => setEmpresaRuc(e.target.value)}
+                  className={inputCls} placeholder="20123456789" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">Dirección</label>
+                <input value={empresaDireccion} onChange={(e) => setEmpresaDireccion(e.target.value)}
+                  className={inputCls} placeholder="Av. Principal 123, Lima" />
+              </div>
             </div>
           </div>
         </div>
@@ -698,7 +737,7 @@ export function ConfigForm({ config }: Props) {
               <FieldArea label="Descripción de la tienda" value={footerDesc} onChange={setFooterDesc}
                 placeholder="Lujo oscuro / Essence of Dark Fashion. Piezas streetwear de edición limitada..." inputCls={inputCls} />
               <Field label="Política (texto pequeño)" value={footerPolitica} onChange={setFooterPolitica}
-                placeholder="No hacemos cambios ni devoluciones 🦇" inputCls={inputCls} />
+                placeholder="Opcional — déjalo vacío para no mostrar nada" inputCls={inputCls} />
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-2">
                   Items de información

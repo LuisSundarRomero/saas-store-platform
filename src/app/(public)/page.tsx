@@ -12,6 +12,9 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
   description: 'Ropa streetwear oscura de edición limitada: hoodies, cargos y poleras. Hago lo que quiero vestir. Envíos a nivel nacional · Pide por WhatsApp.',
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
     description: 'Ropa streetwear oscura de edición limitada: hoodies, cargos y poleras.',

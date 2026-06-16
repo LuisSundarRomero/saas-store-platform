@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import Script from 'next/script'
 import { IconArrowLeft } from '@tabler/icons-react'
 import { useCarrito } from '@/store/carrito'
@@ -75,6 +76,7 @@ export default function CheckoutPagoPage() {
   const culqiWrapperRef = useRef<HTMLDivElement>(null)
   const [culqiScale, setCulqiScale] = useState(1)
   const [formVisible, setFormVisible] = useState(false)
+  const [terminosChecked, setTerminosChecked] = useState(false)
   const orderCompletedRef = useRef(false)
 
   useEffect(() => {
@@ -387,40 +389,72 @@ export default function CheckoutPagoPage() {
               Tus datos de pago son procesados de forma segura por Culqi.
             </p>
 
-            <div
-  ref={culqiWrapperRef}
-  className={styles.culqiWrapper}
->
-  {!formVisible && (
-    <div className={styles.skeleton}>
-      <div className={styles.skeletonBar} style={{ width: '40%' }} />
-      <div className={styles.skeletonTabs}>
-        <div className={styles.skeletonTab} />
-        <div className={styles.skeletonTab} />
-      </div>
-      <div className={styles.skeletonBar} style={{ width: '30%', height: 10 }} />
-      <div className={styles.skeletonField} />
-      <div className={styles.skeletonBar} style={{ width: '30%', height: 10 }} />
-      <div className={styles.skeletonField} />
-      <div className={styles.skeletonRow}>
-        <div className={styles.skeletonField} style={{ flex: 1 }} />
-        <div className={styles.skeletonField} style={{ flex: 1 }} />
-      </div>
-      <div className={styles.skeletonBar} style={{ width: '30%', height: 10 }} />
-      <div className={styles.skeletonField} />
-      <div className={styles.skeletonButton} />
-    </div>
-  )}
+            <label className="flex items-start gap-3 cursor-pointer mb-4">
+              <input
+                type="checkbox"
+                checked={terminosChecked}
+                onChange={(e) => setTerminosChecked(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded accent-[#E11D2E] shrink-0"
+              />
+              <span className="text-sm text-[#9A9A9E] leading-relaxed">
+                He leído y acepto los{' '}
+                <Link href="/terminos-y-condiciones" target="_blank" rel="noopener noreferrer"
+                  className="underline" style={{ color: '#F5F5F2' }}>
+                  Términos y condiciones
+                </Link>
+                {' '}de compra, incluyendo la política de pagos, tiempos de entrega y devoluciones.
+              </span>
+            </label>
 
-  <div
-    id="culqi-checkout-container"
-    className={styles.culqiContainer}
-    style={{
-      transform: `scale(${culqiScale})`,
-      opacity: formVisible ? 1 : 0,
-    }}
-  />
-</div>
+            <div className="relative">
+              <div
+                ref={culqiWrapperRef}
+                className={styles.culqiWrapper}
+                style={{
+                  opacity: terminosChecked ? 1 : 0.35,
+                  pointerEvents: terminosChecked ? 'auto' : 'none',
+                  transition: 'opacity 0.2s',
+                }}
+              >
+                {!formVisible && (
+                  <div className={styles.skeleton}>
+                    <div className={styles.skeletonBar} style={{ width: '40%' }} />
+                    <div className={styles.skeletonTabs}>
+                      <div className={styles.skeletonTab} />
+                      <div className={styles.skeletonTab} />
+                    </div>
+                    <div className={styles.skeletonBar} style={{ width: '30%', height: 10 }} />
+                    <div className={styles.skeletonField} />
+                    <div className={styles.skeletonBar} style={{ width: '30%', height: 10 }} />
+                    <div className={styles.skeletonField} />
+                    <div className={styles.skeletonRow}>
+                      <div className={styles.skeletonField} style={{ flex: 1 }} />
+                      <div className={styles.skeletonField} style={{ flex: 1 }} />
+                    </div>
+                    <div className={styles.skeletonBar} style={{ width: '30%', height: 10 }} />
+                    <div className={styles.skeletonField} />
+                    <div className={styles.skeletonButton} />
+                  </div>
+                )}
+
+                <div
+                  id="culqi-checkout-container"
+                  className={styles.culqiContainer}
+                  style={{
+                    transform: `scale(${culqiScale})`,
+                    opacity: formVisible ? 1 : 0,
+                  }}
+                />
+              </div>
+
+              {!terminosChecked && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <p className="text-xs font-medium text-[#F5F5F2] bg-[#1F1F22]/90 px-3 py-1.5 rounded-full border border-[#2C2C30]">
+                    Acepta los términos para continuar
+                  </p>
+                </div>
+              )}
+            </div>
 
             {error && (
               <p className="text-xs font-medium mt-3" style={{ color: '#EF4444' }}>

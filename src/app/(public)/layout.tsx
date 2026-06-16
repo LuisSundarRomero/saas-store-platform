@@ -12,10 +12,10 @@ export default async function PublicLayout({ children }: { children: React.React
 
   const tiendaNombre   = config?.tienda_nombre      ?? 'Anarchyy.pe'
   const footerDesc     = config?.footer_descripcion ?? ''
-  const footerPolitica = config?.footer_politica    ?? 'No hacemos cambios ni devoluciones 🦇'
+  const footerPolitica = config?.footer_politica    ?? ''
   const whatsappNumero = config?.whatsapp_numero    ?? ''
   const footerEmail    = config?.footer_email       ?? 'contacto@anarchyy.pe'
-  const footerTagline  = config?.footer_tagline     ?? 'Hago lo que quiero vestir 🦇'
+  const footerTagline  = config?.footer_tagline     ?? ''
   const redesInstagram = config?.redes_instagram    ?? ''
   const redesTiktok    = config?.redes_tiktok       ?? ''
 

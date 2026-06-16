@@ -83,6 +83,33 @@ export interface Config {
   whatsapp_template: string
 }
 
+export type TipoDocumento = 'DNI' | 'CE' | 'Pasaporte'
+export type TipoBien = 'producto' | 'servicio'
+export type TipoReclamacion = 'reclamo' | 'queja'
+export type EstadoReclamacion = 'pendiente' | 'atendido'
+
+export interface Reclamacion {
+  id: string
+  numero: number
+  consumidor_nombre: string
+  consumidor_domicilio: string
+  consumidor_tipo_doc: TipoDocumento
+  consumidor_num_doc: string
+  consumidor_email: string
+  consumidor_telefono: string | null
+  tutor_nombre: string | null
+  bien_tipo: TipoBien
+  bien_descripcion: string
+  monto_reclamado: number | null // en centavos
+  tipo: TipoReclamacion
+  detalle: string
+  pedido: string
+  estado: EstadoReclamacion
+  respuesta: string | null
+  created_at: string
+  respondido_at: string | null
+}
+
 export interface CartItem {
   productoId: string
   nombre: string

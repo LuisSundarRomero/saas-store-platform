@@ -263,10 +263,8 @@ CREATE POLICY "storage_admin_delete" ON storage.objects
 -- Categorías de ejemplo
 INSERT INTO categorias (nombre, slug, orden) VALUES
   ('Polos',       'polos',       1),
-  ('Jeans',       'jeans',       2),
-  ('Vestidos',    'vestidos',    3),
-  ('Casacas',     'casacas',     4),
-  ('Accesorios',  'accesorios',  5)
+  ('Casacas',     'casacas',     2),
+  ('Pantalones',  'pantalones',  3)
 ON CONFLICT (slug) DO NOTHING;
 
 -- Config inicial (actualizar con datos reales)

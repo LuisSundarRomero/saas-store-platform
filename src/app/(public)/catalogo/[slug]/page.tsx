@@ -17,6 +17,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${producto.nombre} — Anarchyy.pe`,
     description: producto.descripcion ?? `${producto.nombre} · ${formatPrice(producto.precio)} · Ropa streetwear oscura de edición limitada`,
+    alternates: {
+      canonical: `/catalogo/${producto.slug}`,
+    },
     openGraph: {
       title: producto.nombre,
       description: `${formatPrice(producto.precio)} — ${producto.descripcion ?? 'Ropa streetwear oscura de edición limitada · Anarchyy.pe'}`,

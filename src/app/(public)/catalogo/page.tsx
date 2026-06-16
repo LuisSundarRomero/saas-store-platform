@@ -8,24 +8,59 @@ import type { Metadata } from 'next'
 
 export const revalidate = 30
 
-export const metadata: Metadata = {
-  title: 'Catálogo de ropa',
-  description: 'Explora toda la colección Anarchyy: hoodies, cargos, poleras y piezas de edición limitada. Envíos a nivel nacional.',
-  openGraph: {
-    title: 'Catálogo — Anarchyy.pe',
-    description: 'Explora toda la colección dark streetwear. Envíos a nivel nacional.',
-    url: '/catalogo',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Catálogo — Anarchyy.pe',
-    description: 'Explora toda la colección dark streetwear. Envíos a nivel nacional.',
-  },
-}
-
 interface Props {
   searchParams: Promise<{ cat?: string; q?: string; sort?: string }>
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { cat } = await searchParams
+
+  if (cat) {
+    const categorias = await getCategorias()
+    const categoria = categorias.find((c) => c.slug === cat)
+
+    if (categoria) {
+      const title = `${categoria.nombre} — Catálogo`
+      const description = `Descubre ${categoria.nombre.toLowerCase()} de la colección Anarchyy: piezas streetwear oscuras de edición limitada. Envíos a nivel nacional.`
+      return {
+        title,
+        description,
+        alternates: {
+          canonical: `/catalogo?cat=${categoria.slug}`,
+        },
+        openGraph: {
+          title: `${title} — Anarchyy.pe`,
+          description,
+          url: `/catalogo?cat=${categoria.slug}`,
+          type: 'website',
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title: `${title} — Anarchyy.pe`,
+          description,
+        },
+      }
+    }
+  }
+
+  return {
+    title: 'Catálogo de ropa',
+    description: 'Explora toda la colección Anarchyy: hoodies, cargos, poleras y piezas de edición limitada. Envíos a nivel nacional.',
+    alternates: {
+      canonical: '/catalogo',
+    },
+    openGraph: {
+      title: 'Catálogo — Anarchyy.pe',
+      description: 'Explora toda la colección dark streetwear. Envíos a nivel nacional.',
+      url: '/catalogo',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Catálogo — Anarchyy.pe',
+      description: 'Explora toda la colección dark streetwear. Envíos a nivel nacional.',
+    },
+  }
 }
 
 export default async function CatalogoPage({ searchParams }: Props) {

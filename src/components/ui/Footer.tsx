@@ -19,10 +19,10 @@ interface Props {
 export function Footer({
   tiendaNombre = 'Anarchyy.pe',
   descripcion = 'Lujo oscuro / Essence of Dark Fashion. Piezas streetwear de edición limitada — hago lo que quiero vestir.',
-  politica = 'No hacemos cambios ni devoluciones 🦇',
+  politica = '',
   whatsapp = '',
   email = 'contacto@anarchyy.pe',
-  tagline = 'Hago lo que quiero vestir 🦇',
+  tagline = '',
   instagram = '',
   tiktok = '',
   categorias = [],
@@ -134,10 +134,26 @@ export function Footer({
 
       {/* Bottom bar */}
       <div className="border-t border-[#2C2C30] bg-[#121214]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-[#9A9A9E]">© {year} {tiendaNombre} — Todos los derechos reservados</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-[#9A9A9E] order-1">© {year} {tiendaNombre} — Todos los derechos reservados</p>
+
+          <div className="flex items-center gap-x-5 gap-y-2 flex-wrap justify-center order-3 sm:order-2">
+            <Link href="/libro-de-reclamaciones"
+              className="text-xs text-[#9A9A9E] hover:text-[#F5F5F2] transition-colors">
+              Libro de Reclamaciones
+            </Link>
+            <Link href="/terminos-y-condiciones"
+              className="text-xs text-[#9A9A9E] hover:text-[#F5F5F2] transition-colors">
+              Términos y condiciones
+            </Link>
+            <Link href="/politica-de-privacidad"
+              className="text-xs text-[#9A9A9E] hover:text-[#F5F5F2] transition-colors">
+              Política de privacidad
+            </Link>
+          </div>
+
           {tagline && (
-            <p className="text-xs font-medium" style={{ color: '#E11D2E' }}>{tagline}</p>
+            <p className="text-xs font-medium order-2 sm:order-3" style={{ color: '#E11D2E' }}>{tagline}</p>
           )}
         </div>
       </div>
