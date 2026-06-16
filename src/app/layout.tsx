@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from 'next'
 import { Anton, Inter } from 'next/font/google'
+import { headers } from 'next/headers'
 import Script from 'next/script'
 import './globals.css'
 
-// Impactante, condensada — títulos, drops, branding
 const anton = Anton({
   variable: '--font-display',
   subsets: ['latin'],
@@ -11,7 +11,6 @@ const anton = Anton({
   weight: ['400'],
 })
 
-// Limpia y legible para fondos oscuros — cuerpo de texto
 const inter = Inter({
   variable: '--font-sans',
   subsets: ['latin'],
@@ -19,36 +18,42 @@ const inter = Inter({
   weight: ['300', '400', '500', '600', '700'],
 })
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://anarchyy.pe'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://contahorro.com'
 
-export const metadata: Metadata = {
-  metadataBase: new URL(APP_URL),
-  title: {
-    default: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
-    template: '%s | Anarchyy.pe',
-  },
-  description: 'Anarchyy.pe — ropa streetwear oscura: hoodies, pantalones cargo y poleras de edición limitada. Hago lo que quiero vestir. Envíos a nivel nacional, pedidos por WhatsApp.',
-  keywords: ['ropa streetwear', 'ropa gotica', 'hoodies Peru', 'dark fashion', 'anarchy', 'ropa negra', 'moda alternativa Peru'],
-  authors: [{ name: 'Anarchyy.pe' }],
-  creator: 'Anarchyy.pe',
-  openGraph: {
-    type: 'website',
-    locale: 'es_PE',
-    url: APP_URL,
-    siteName: 'Anarchyy.pe',
-    title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
-    description: 'Ropa streetwear oscura de edición limitada. Hago lo que quiero vestir. Pide por WhatsApp con envío a nivel nacional.',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
-    description: 'Ropa streetwear oscura de edición limitada. Hago lo que quiero vestir.',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true },
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const h = await headers()
+  const nombre = h.get('x-tenant-nombre') ?? 'Mi Tienda'
+  const slug   = h.get('x-tenant-slug')   ?? ''
+  const url    = slug ? `https://${slug}.${process.env.NEXT_PUBLIC_MAIN_DOMAIN}` : APP_URL
+
+  return {
+    metadataBase: new URL(url),
+    title: {
+      default: nombre,
+      template: `%s | ${nombre}`,
+    },
+    description: `${nombre} — Tienda online. Pedidos por WhatsApp con envío a nivel nacional.`,
+    authors: [{ name: nombre }],
+    creator: nombre,
+    openGraph: {
+      type: 'website',
+      locale: 'es_PE',
+      url,
+      siteName: nombre,
+      title: nombre,
+      description: `${nombre} — Tienda online. Pedidos por WhatsApp con envío a nivel nacional.`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: nombre,
+      description: `${nombre} — Tienda online. Pedidos por WhatsApp.`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true },
+    },
+  }
 }
 
 export const viewport: Viewport = {

@@ -1,13 +1,15 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
 import { Categoria, Producto } from '@/types'
 import { unstable_noStore as noStore } from 'next/cache'
 
 export async function getCategorias(): Promise<Categoria[]> {
   noStore()
-  const supabase = await createClient()
+  const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
   const { data, error } = await supabase
     .from('categorias')
     .select('*')
+    .eq('tenant_id', tenant.id)
     .eq('activa', true)
     .order('orden', { ascending: true })
   if (error) return []
@@ -21,9 +23,8 @@ export async function getProductos(params?: {
   sort?: string
 }): Promise<Producto[]> {
   noStore()
-  const supabase = await createClient()
+  const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
 
-  // Usa !inner para filtrar por slug en una sola query
   const select = params?.categoriaSlug
     ? '*, categorias!inner(id, nombre, slug)'
     : '*, categorias(id, nombre, slug)'
@@ -34,6 +35,7 @@ export async function getProductos(params?: {
   let query = supabase
     .from('productos')
     .select(select)
+    .eq('tenant_id', tenant.id)
     .eq('visible', true)
     .order('destacado', { ascending: false })
     .order('es_nuevo', { ascending: false })
@@ -58,10 +60,11 @@ export async function getProductos(params?: {
 
 export async function getProductosDestacados(): Promise<Producto[]> {
   noStore()
-  const supabase = await createClient()
+  const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
   const { data } = await supabase
     .from('productos')
     .select('*, categorias(id, nombre, slug)')
+    .eq('tenant_id', tenant.id)
     .eq('visible', true)
     .eq('destacado', true)
     .order('updated_at', { ascending: false })
@@ -70,10 +73,11 @@ export async function getProductosDestacados(): Promise<Producto[]> {
 }
 
 export async function getProductoBySlug(slug: string): Promise<Producto | null> {
-  const supabase = await createClient()
+  const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
   const { data, error } = await supabase
     .from('productos')
     .select('*, categorias(id, nombre, slug)')
+    .eq('tenant_id', tenant.id)
     .eq('slug', slug)
     .single()
 

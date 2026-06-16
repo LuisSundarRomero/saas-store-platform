@@ -1,13 +1,15 @@
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
 import { NavbarWrapper } from '@/components/ui/NavbarWrapper'
 import { Footer } from '@/components/ui/Footer'
 import { AnnouncementBar } from '@/components/ui/AnnouncementBar'
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
+  const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
+
   const [{ data: config }, { data: categorias }] = await Promise.all([
-    supabase.from('config').select('tienda_nombre, footer_descripcion, footer_politica, whatsapp_numero, anuncio_visible, anuncio_texto, anuncio_link, anuncio_expira, footer_info1, footer_info2, footer_info3, footer_info4, footer_email, footer_tagline, redes_instagram, redes_tiktok').single(),
-    supabase.from('categorias').select('nombre, slug').eq('activa', true).order('orden', { ascending: true }),
+    supabase.from('config').select('tienda_nombre, footer_descripcion, footer_politica, whatsapp_numero, anuncio_visible, anuncio_texto, anuncio_link, anuncio_expira, footer_info1, footer_info2, footer_info3, footer_info4, footer_email, footer_tagline, redes_instagram, redes_tiktok').eq('tenant_id', tenant.id).single(),
+    supabase.from('categorias').select('nombre, slug').eq('activa', true).eq('tenant_id', tenant.id).order('orden', { ascending: true }),
   ])
 
   const tiendaNombre   = config?.tienda_nombre      ?? 'Anarchyy.pe'

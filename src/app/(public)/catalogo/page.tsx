@@ -6,7 +6,7 @@ import { SortSelect } from '@/components/catalogo/SortSelect'
 import { SearchBar } from '@/components/catalogo/SearchBar'
 import type { Metadata } from 'next'
 
-export const revalidate = 30
+export const dynamic = 'force-dynamic'
 
 interface Props {
   searchParams: Promise<{ cat?: string; q?: string; sort?: string }>

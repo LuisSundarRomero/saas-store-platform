@@ -7,7 +7,7 @@ import { CategoryChips } from '@/components/catalogo/CategoryChips'
 import { HeroCarousel } from '@/components/home/HeroCarousel'
 import type { Metadata } from 'next'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
@@ -29,9 +29,10 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const { createClient } = await import('@/lib/supabase/server')
-  const supabase = await createClient()
-  const { data: config } = await supabase.from('config').select('*').single()
+  const { createPublicClient } = await import('@/lib/supabase/server')
+  const { getTenant } = await import('@/lib/tenant')
+  const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
+  const { data: config } = await supabase.from('config').select('*').eq('tenant_id', tenant.id).single()
 
   const heroBadge     = config?.hero_badge      ?? '🦇 Restock en preventa'
   const heroTitulo    = config?.hero_titulo     ?? 'Hago lo que quiero vestir'

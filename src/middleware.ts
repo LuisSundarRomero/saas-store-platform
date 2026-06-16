@@ -12,11 +12,10 @@ const supabaseAdmin = createClient(
 )
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next()
   const hostname = request.headers.get('host') || ''
-
-  // ── Detectar subdominio ──────────────────────────────────────
   const isLocalhost = hostname.includes('localhost') || hostname.includes('127.0.0.1')
+
+  // ── 1. Detectar subdominio ───────────────────────────────────
   let tenantSlug: string | null = null
 
   if (!isLocalhost) {
@@ -28,7 +27,42 @@ export async function middleware(request: NextRequest) {
     tenantSlug = request.headers.get('x-tenant-slug') || 'anarchy'
   }
 
-  // ── Supabase client para auth ────────────────────────────────
+  // ── 2. Construir headers del request con datos del tenant ────
+  const requestHeaders = new Headers(request.headers)
+
+  if (tenantSlug) {
+    const { data: tenant } = await supabaseAdmin
+      .from('tenants')
+      .select('id, slug, nombre, color_primario, logo_url, activo')
+      .eq('slug', tenantSlug)
+      .eq('activo', true)
+      .single()
+
+    if (!tenant) {
+      if (isLocalhost) {
+        return new NextResponse(
+          `<h1>Tenant "${tenantSlug}" no encontrado</h1><p>Verifica que la migración se ejecutó correctamente en Supabase.</p>`,
+          { status: 404, headers: { 'Content-Type': 'text/html' } }
+        )
+      }
+      return NextResponse.redirect(`https://${MAIN_DOMAIN}`)
+    }
+
+    // Inyectar en REQUEST headers — los Server Components los leen con headers()
+    requestHeaders.set('x-tenant-id', tenant.id)
+    requestHeaders.set('x-tenant-slug', tenant.slug)
+    requestHeaders.set('x-tenant-nombre', tenant.nombre)
+    requestHeaders.set('x-tenant-color', tenant.color_primario || '#000000')
+    requestHeaders.set('x-tenant-logo', tenant.logo_url || '')
+  }
+
+  // ── 3. Crear respuesta con los headers modificados ───────────
+  // Un solo objeto response que: reenvía headers al Server Component + maneja cookies auth
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
+  })
+
+  // ── 4. Supabase auth client — usa el mismo response para cookies
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -44,38 +78,9 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // ── Resolver tenant desde DB ─────────────────────────────────
-  if (tenantSlug) {
-    const { data: tenant } = await supabaseAdmin
-      .from('tenants')
-      .select('id, slug, nombre, color_primario, logo_url, activo')
-      .eq('slug', tenantSlug)
-      .eq('activo', true)
-      .single()
-
-    if (!tenant) {
-      // En desarrollo: mostrar error en lugar de redirigir a dominio externo
-      if (isLocalhost) {
-        return new NextResponse(
-          `<h1>Tenant "${tenantSlug}" no encontrado</h1><p>Verifica que la migración se ejecutó correctamente en Supabase.</p>`,
-          { status: 404, headers: { 'Content-Type': 'text/html' } }
-        )
-      }
-      return NextResponse.redirect(`https://${MAIN_DOMAIN}`)
-    }
-
-    // Inyectar tenant en headers para que los Server Components lo lean
-    response.headers.set('x-tenant-id', tenant.id)
-    response.headers.set('x-tenant-slug', tenant.slug)
-    response.headers.set('x-tenant-nombre', tenant.nombre)
-    response.headers.set('x-tenant-color', tenant.color_primario || '#000000')
-    response.headers.set('x-tenant-logo', tenant.logo_url || '')
-  }
-
-  // ── Protección de rutas admin ────────────────────────────────
+  // ── 5. Protección de rutas admin ─────────────────────────────
   if (request.nextUrl.pathname.startsWith('/admin')) {
     const { data: { user } } = await supabase.auth.getUser()
-
     if (!user && !request.nextUrl.pathname.startsWith('/admin/login')) {
       return NextResponse.redirect(new URL('/admin/login', request.url))
     }
@@ -86,7 +91,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Aplica a todas las rutas excepto archivos estáticos y _next
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
