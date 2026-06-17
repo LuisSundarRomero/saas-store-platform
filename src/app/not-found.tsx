@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { IconArrowLeft, IconShoppingBag } from '@tabler/icons-react'
 
 export default function NotFound() {
@@ -9,7 +9,7 @@ export default function NotFound() {
       <div className="text-center max-w-sm w-full">
 
         {/* Código */}
-        <p className="text-8xl font-display mb-2" style={{ color: '#E11D2E' }}>404</p>
+        <p className="text-8xl font-display mb-2" style={{ color: 'var(--color-brand)' }}>404</p>
 
         {/* Mensaje */}
         <h1 className="text-xl font-bold text-[#F5F5F2] mb-2">
@@ -24,7 +24,7 @@ export default function NotFound() {
           <Link
             href="/catalogo"
             className="inline-flex items-center justify-center gap-2 text-white font-semibold py-3.5 px-6 rounded-full transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#E11D2E' }}
+            style={{ backgroundColor: 'var(--color-brand)' }}
           >
             <IconShoppingBag size={18} />
             Ver catálogo
@@ -43,3 +43,4 @@ export default function NotFound() {
     </main>
   )
 }
+

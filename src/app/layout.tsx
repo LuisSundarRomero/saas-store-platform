@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from 'next'
+﻿import type { Metadata, Viewport } from 'next'
 import { Anton, Inter } from 'next/font/google'
 import { headers } from 'next/headers'
 import Script from 'next/script'
@@ -63,13 +63,22 @@ export const viewport: Viewport = {
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const { getTenant } = await import('@/lib/tenant')
+  const tenant = await getTenant()
+  const brandColor = tenant.color || '#E11D2E'
+
   return (
-    <html lang="es" className={`${inter.variable} ${anton.variable} h-full dark`} suppressHydrationWarning>
+    <html
+      lang="es"
+      className={`${inter.variable} ${anton.variable} h-full dark`}
+      style={{ '--color-brand': brandColor } as React.CSSProperties}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -102,3 +111,4 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </html>
   )
 }
+

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useTransition } from 'react'
 import Image from 'next/image'
@@ -248,7 +248,7 @@ export function ConfigForm({ config }: Props) {
           <button key={id} type="button" onClick={() => setTab(id)}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap"
             style={tab === id
-              ? { backgroundColor: '#fff', color: '#E11D2E', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }
+              ? { backgroundColor: '#fff', color: 'var(--color-brand)', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }
               : { color: '#9CA3AF' }}>
             <Icon size={15} />
             {label}
@@ -293,7 +293,7 @@ export function ConfigForm({ config }: Props) {
             <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center">
-                  <IconMail size={16} style={{ color: '#E11D2E' }} />
+                  <IconMail size={16} style={{ color: 'var(--color-brand)' }} />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-800">Email de notificaciones</p>
@@ -317,7 +317,7 @@ export function ConfigForm({ config }: Props) {
             <div>
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">Nombre de la tienda</label>
               <input value={tiendaNombre} onChange={(e) => setTiendaNombre(e.target.value)}
-                className={inputCls} placeholder="Anarchyy.pe" />
+                className={inputCls} placeholder="Mi Tienda" />
               <p className="text-xs text-gray-400 mt-1">Aparece en el navbar, footer y admin.</p>
             </div>
             <div>
@@ -345,7 +345,7 @@ export function ConfigForm({ config }: Props) {
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">Razón social</label>
                 <input value={empresaRazonSocial} onChange={(e) => setEmpresaRazonSocial(e.target.value)}
-                  className={inputCls} placeholder="Anarchyy E.I.R.L." />
+                  className={inputCls} placeholder="Mi Empresa S.A.C." />
               </div>
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">RUC</label>
@@ -381,7 +381,7 @@ export function ConfigForm({ config }: Props) {
               <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#FEE2E2' }}>
-                    <IconSpeakerphone size={15} style={{ color: '#E11D2E' }} />
+                    <IconSpeakerphone size={15} style={{ color: 'var(--color-brand)' }} />
                   </div>
                   <p className="text-sm font-semibold text-gray-800">Mensaje del anuncio</p>
                 </div>
@@ -428,11 +428,11 @@ export function ConfigForm({ config }: Props) {
                 </p>
                 {anuncioExpira && (() => {
                   const diff = new Date(anuncioExpira).getTime() - now
-                  if (diff <= 0) return <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">⚠️ Esta fecha ya pasó — el anuncio no se mostrará</p>
+                  if (diff <= 0) return <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">⚠ï¸ Esta fecha ya pasó — el anuncio no se mostrará</p>
                   const h = Math.floor(diff / 3600000)
                   const d = Math.floor(h / 24)
                   const label = d > 0 ? `${d} día${d > 1 ? 's' : ''} y ${h % 24}h` : `${h}h`
-                  return <p className="text-xs text-green-600 bg-green-50 px-3 py-2 rounded-lg">✅ Se mostrará por {label} más</p>
+                  return <p className="text-xs text-green-600 bg-green-50 px-3 py-2 rounded-lg">âœ… Se mostrará por {label} más</p>
                 })()}
               </div>
 
@@ -468,7 +468,7 @@ export function ConfigForm({ config }: Props) {
             {anuncioVisible && anuncioTexto ? (
               <div>
                 <div className="flex items-center justify-between gap-3 px-4 py-3 text-white text-sm font-medium rounded-xl mb-2"
-                  style={{ backgroundColor: '#E11D2E' }}>
+                  style={{ backgroundColor: 'var(--color-brand)' }}>
                   <span className="text-center flex-1 text-xs">{anuncioTexto}</span>
                   {anuncioExpira && new Date(anuncioExpira) > new Date() && (
                     <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0">
@@ -506,7 +506,7 @@ export function ConfigForm({ config }: Props) {
 
             {!heroVisible && (
               <div className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 flex items-center gap-2.5">
-                <span className="text-amber-500 text-base shrink-0">⚠️</span>
+                <span className="text-amber-500 text-base shrink-0">⚠ï¸</span>
                 <p className="text-xs text-amber-700 font-medium">El banner está oculto en el sitio. Actívalo para que los clientes lo vean.</p>
               </div>
             )}
@@ -558,14 +558,14 @@ export function ConfigForm({ config }: Props) {
                         transition: 'transform 0.1s, opacity 0.1s',
                       }}>
                       <div className="relative w-16 h-16 rounded-xl overflow-hidden cursor-grab active:cursor-grabbing"
-                        style={{ border: i === 0 ? '2px solid #E11D2E' : '2px solid #E5E7EB' }}>
+                        style={{ border: i === 0 ? '2px solid var(--color-brand)' : '2px solid #E5E7EB' }}>
                         <Image src={url} alt="" fill className="object-cover pointer-events-none" />
                         <span className="absolute bottom-0 right-0 bg-black/40 text-white rounded-tl-md p-0.5 leading-none">
                           <IconGripVertical size={10} />
                         </span>
                         {i === 0 && (
                           <span className="absolute top-0 left-0 text-[8px] font-bold text-white px-1 rounded-br-md"
-                            style={{ backgroundColor: '#E11D2E' }}>1ª</span>
+                            style={{ backgroundColor: 'var(--color-brand)' }}>1ª</span>
                         )}
                       </div>
                       <button type="button"
@@ -574,7 +574,7 @@ export function ConfigForm({ config }: Props) {
                           setBannerLinks((prev) => prev.filter((_, j) => j !== i))
                         }}
                         className="absolute -top-1 -right-1 w-4 h-4 bg-gray-800 text-white rounded-full text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        ×
+                        Á—
                       </button>
                       <input
                         type="text"
@@ -611,7 +611,7 @@ export function ConfigForm({ config }: Props) {
                   </div>
                   <Switch checked={stripVisible} onChange={setStripVisible} size="sm" />
                 </div>
-                {!stripVisible && <p className="text-xs text-amber-500 bg-amber-50 px-3 py-2 rounded-lg">⚠️ La barra está oculta</p>}
+                {!stripVisible && <p className="text-xs text-amber-500 bg-amber-50 px-3 py-2 rounded-lg">⚠ï¸ La barra está oculta</p>}
                 <div className={`grid grid-cols-1 sm:grid-cols-2 gap-2 ${!stripVisible ? 'opacity-40 pointer-events-none' : ''}`}>
                   {([
                     [stripItem1, setStripItem1],
@@ -659,20 +659,20 @@ export function ConfigForm({ config }: Props) {
                 <div className={`flex flex-col justify-center gap-2 ${heroImagenesVisible ? 'flex-1 min-w-0' : 'text-center max-w-[220px] items-center'}`}>
                   <span className="inline-flex items-center gap-1.5 self-start text-[9px] font-bold tracking-widest uppercase px-2 py-1 rounded-full"
                     style={{ backgroundColor: '#3A1014', color: '#FF6B7A' }}>
-                    <span className="w-1 h-1 rounded-full inline-block" style={{ backgroundColor: '#E11D2E' }} />
+                    <span className="w-1 h-1 rounded-full inline-block" style={{ backgroundColor: 'var(--color-brand)' }} />
                     {heroBadge || '🦇 Badge'}
                   </span>
                   <p className="font-display text-base font-bold leading-tight">
                     {(heroTitulo || 'Título').split(' ').map((word: string, i: number, arr: string[]) => (
                       <span key={i}>
-                        <span style={{ color: i >= Math.floor(arr.length / 2) ? '#E11D2E' : '#F5F5F2' }}>{word}</span>
+                        <span style={{ color: i >= Math.floor(arr.length / 2) ? 'var(--color-brand)' : '#F5F5F2' }}>{word}</span>
                         {i < arr.length - 1 && ' '}
                       </span>
                     ))}
                   </p>
                   <p className="text-[10px] text-[#9A9A9E] leading-relaxed line-clamp-2">{heroSubtitulo}</p>
                   <span className="self-start inline-block text-[10px] font-semibold text-white px-3 py-1.5 rounded-full"
-                    style={{ backgroundColor: '#E11D2E' }}>
+                    style={{ backgroundColor: 'var(--color-brand)' }}>
                     {heroBoton || 'Botón'}
                   </span>
                 </div>
@@ -685,7 +685,7 @@ export function ConfigForm({ config }: Props) {
                     {/* Dots del slider */}
                     <div className="absolute bottom-2 flex items-center gap-1">
                       {Array.from({ length: Math.min(bannerImagenes.length || 3, 6) }).map((_, i) => (
-                        <span key={i} className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: i === 0 ? '#E11D2E' : '#3A3A3E' }} />
+                        <span key={i} className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: i === 0 ? 'var(--color-brand)' : '#3A3A3E' }} />
                       ))}
                     </div>
                   </div>
@@ -751,7 +751,7 @@ export function ConfigForm({ config }: Props) {
                     [footerInfo4, setFooterInfo4, 'Ej: Paga por WhatsApp'],
                   ] as [string, (v: string) => void, string][]).map(([val, setter, ph], i) => (
                     <div key={i} className="flex items-center gap-2">
-                      <span className="text-red-400 font-bold text-sm">•</span>
+                      <span className="text-red-400 font-bold text-sm">â€¢</span>
                       <input value={val} onChange={(e) => setter(e.target.value)}
                         className={inputCls} placeholder={ph} />
                     </div>
@@ -767,24 +767,24 @@ export function ConfigForm({ config }: Props) {
             <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#FEE2E2' }}>
-                  <IconShare size={16} style={{ color: '#E11D2E' }} />
+                  <IconShare size={16} style={{ color: 'var(--color-brand)' }} />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-800">Redes sociales</p>
-                  <p className="text-xs text-gray-400">Íconos que aparecen en el footer</p>
+                  <p className="text-xs text-gray-400">Áconos que aparecen en el footer</p>
                 </div>
               </div>
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-2.5 border-2 rounded-xl px-3.5 py-2.5"
-                  style={{ borderColor: redesInstagram ? '#E11D2E' : '#E5E7EB' }}>
-                  <IconBrandInstagram size={18} className="shrink-0" style={{ color: redesInstagram ? '#E11D2E' : '#9CA3AF' }} />
+                  style={{ borderColor: redesInstagram ? 'var(--color-brand)' : '#E5E7EB' }}>
+                  <IconBrandInstagram size={18} className="shrink-0" style={{ color: redesInstagram ? 'var(--color-brand)' : '#9CA3AF' }} />
                   <input value={redesInstagram} onChange={(e) => setRedesInstagram(e.target.value)}
                     className="flex-1 text-sm text-gray-900 placeholder:text-gray-400 outline-none bg-white"
                     placeholder="https://instagram.com/anarchyy.pe" />
                 </div>
                 <div className="flex items-center gap-2.5 border-2 rounded-xl px-3.5 py-2.5"
-                  style={{ borderColor: redesTiktok ? '#E11D2E' : '#E5E7EB' }}>
-                  <IconBrandTiktok size={18} className="shrink-0" style={{ color: redesTiktok ? '#E11D2E' : '#9CA3AF' }} />
+                  style={{ borderColor: redesTiktok ? 'var(--color-brand)' : '#E5E7EB' }}>
+                  <IconBrandTiktok size={18} className="shrink-0" style={{ color: redesTiktok ? 'var(--color-brand)' : '#9CA3AF' }} />
                   <input value={redesTiktok} onChange={(e) => setRedesTiktok(e.target.value)}
                     className="flex-1 text-sm text-gray-900 placeholder:text-gray-400 outline-none bg-white"
                     placeholder="https://tiktok.com/@anarchyy.pe" />
@@ -803,13 +803,13 @@ export function ConfigForm({ config }: Props) {
               <div className="p-4" style={{ backgroundColor: '#121214' }}>
                 {/* Marca */}
                 <p className="font-display text-base tracking-widest mb-1.5" style={{ color: '#F5F5F2' }}>
-                  {tiendaNombre || 'Anarchyy.pe'}
+                  {tiendaNombre || 'Mi Tienda'}
                 </p>
                 <p className="text-[10px] leading-relaxed mb-2.5 max-w-[220px]" style={{ color: '#9A9A9E' }}>
                   {footerDesc ? footerDesc.slice(0, 70) + (footerDesc.length > 70 ? '…' : '') : 'Descripción de la tienda'}
                 </p>
 
-                {/* Íconos sociales */}
+                {/* Áconos sociales */}
                 <div className="flex items-center gap-1.5 mb-3">
                   {whatsappNumero && (
                     <span className="w-6 h-6 rounded-lg border flex items-center justify-center" style={{ borderColor: '#2C2C30', color: '#9A9A9E', backgroundColor: '#161618' }}>
@@ -844,7 +844,7 @@ export function ConfigForm({ config }: Props) {
                     )}
                     {[footerInfo1, footerInfo2, footerInfo3, footerInfo4].filter(Boolean).map((item: string, i: number) => (
                       <div key={i} className="flex items-start gap-1.5">
-                        <span className="mt-1 w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: '#E11D2E' }} />
+                        <span className="mt-1 w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: 'var(--color-brand)' }} />
                         <p className="text-[10px] leading-snug" style={{ color: '#9A9A9E' }}>{item}</p>
                       </div>
                     ))}
@@ -869,9 +869,9 @@ export function ConfigForm({ config }: Props) {
 
                 {/* Bottom bar */}
                 <div className="flex items-center justify-between gap-2 pt-2.5" style={{ borderTop: '1px solid #2C2C30' }}>
-                  <p className="text-[9px]" style={{ color: '#9A9A9E' }}>© {new Date().getFullYear()} {tiendaNombre || 'Anarchyy.pe'}</p>
+                  <p className="text-[9px]" style={{ color: '#9A9A9E' }}>Â© {new Date().getFullYear()} {tiendaNombre || 'Mi Tienda'}</p>
                   {footerTagline && (
-                    <p className="text-[9px] font-medium text-right" style={{ color: '#E11D2E' }}>{footerTagline}</p>
+                    <p className="text-[9px] font-medium text-right" style={{ color: 'var(--color-brand)' }}>{footerTagline}</p>
                   )}
                 </div>
               </div>
@@ -911,7 +911,7 @@ export function ConfigForm({ config }: Props) {
                   <p className="text-xs text-gray-800 whitespace-pre-wrap leading-relaxed">
                     {template.replace(/\\n/g, '\n')
                       .replace('{orderId}', 'ORD-001')
-                      .replace('{productos}', '• 1x Botas Peluche (Negro)\n  _Talla 37_ — S/ 150')
+                      .replace('{productos}', 'â€¢ 1x Botas Peluche (Negro)\n  _Talla 37_ — S/ 150')
                       .replace('{total}', '150')
                       .replace('{trackingLink}', 'anarchyy.pe/rastrear?order=ORD-001')}
                   </p>
@@ -932,7 +932,7 @@ export function ConfigForm({ config }: Props) {
       <div className="mt-5">
         <button type="submit" disabled={isPending}
           className="w-full sm:w-auto sm:min-w-[200px] font-semibold py-3.5 px-8 rounded-full text-white transition-all disabled:opacity-60 hover:opacity-90 shadow-md"
-          style={{ backgroundColor: saved ? '#10B981' : '#E11D2E', boxShadow: saved ? '0 4px 15px rgba(16,185,129,0.3)' : '0 4px 15px rgba(225,29,46,0.3)' }}>
+          style={{ backgroundColor: saved ? '#10B981' : 'var(--color-brand)', boxShadow: saved ? '0 4px 15px rgba(16,185,129,0.3)' : '0 4px 15px rgba(225,29,46,0.3)' }}>
           {saved ? '¡Guardado!' : isPending ? 'Guardando...' : 'Guardar cambios'}
         </button>
       </div>
@@ -984,7 +984,7 @@ function VisibilityToggle({ label, description, checked, onChange }: VisibilityT
         <div className="w-8 h-8 rounded-xl flex items-center justify-center"
           style={{ backgroundColor: checked ? '#FEE2E2' : '#F3F4F6' }}>
           {checked
-            ? <IconEye size={15} style={{ color: '#E11D2E' }} />
+            ? <IconEye size={15} style={{ color: 'var(--color-brand)' }} />
             : <IconEyeOff size={15} className="text-gray-400" />}
         </div>
         <div>
@@ -996,3 +996,4 @@ function VisibilityToggle({ label, description, checked, onChange }: VisibilityT
     </div>
   )
 }
+

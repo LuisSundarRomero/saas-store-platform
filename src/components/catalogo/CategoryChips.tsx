@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -20,7 +20,7 @@ export function CategoryChips({ categorias }: CategoryChipsProps) {
         className="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all border"
         style={
           !categoriaActual
-            ? { backgroundColor: '#E11D2E', color: '#fff', borderColor: '#E11D2E' }
+            ? { backgroundColor: 'var(--color-brand)', color: '#fff', borderColor: 'var(--color-brand)' }
             : { backgroundColor: '#161618', color: '#9A9A9E', borderColor: '#2C2C30' }
         }
       >
@@ -35,7 +35,7 @@ export function CategoryChips({ categorias }: CategoryChipsProps) {
           className="shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all border"
           style={
             categoriaActual === cat.slug
-              ? { backgroundColor: '#E11D2E', color: '#fff', borderColor: '#E11D2E' }
+              ? { backgroundColor: 'var(--color-brand)', color: '#fff', borderColor: 'var(--color-brand)' }
               : { backgroundColor: '#161618', color: '#9A9A9E', borderColor: '#2C2C30' }
           }
         >
@@ -45,3 +45,4 @@ export function CategoryChips({ categorias }: CategoryChipsProps) {
     </div>
   )
 }
+

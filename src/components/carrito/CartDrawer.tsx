@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { IconX, IconShoppingBag, IconArrowRight, IconCreditCard } from '@tabler/icons-react'
 import Link from 'next/link'
@@ -38,7 +38,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             <span className="font-semibold text-[#F5F5F2]">Mi carrito</span>
             {itemCount > 0 && (
               <span className="text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: '#E11D2E' }}>
+                style={{ backgroundColor: 'var(--color-brand)' }}>
                 {itemCount}
               </span>
             )}
@@ -62,7 +62,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               </div>
               <Link href="/catalogo" onClick={onClose}
                 className="inline-flex items-center gap-1.5 text-sm font-semibold px-5 py-2.5 rounded-full text-white"
-                style={{ backgroundColor: '#E11D2E' }}>
+                style={{ backgroundColor: 'var(--color-brand)' }}>
                 Explorar catálogo <IconArrowRight size={14} />
               </Link>
             </div>
@@ -87,7 +87,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               href="/checkout"
               onClick={onClose}
               className="w-full text-white font-semibold py-3.5 rounded-full flex items-center justify-center gap-2 transition-opacity"
-              style={{ backgroundColor: '#E11D2E', touchAction: 'manipulation' }}
+              style={{ backgroundColor: 'var(--color-brand)', touchAction: 'manipulation' }}
             >
               <IconCreditCard size={20} />
               Ir a pagar · {formatPrice(total())}
@@ -98,3 +98,4 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
     </>
   )
 }
+

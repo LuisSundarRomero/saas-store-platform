@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -105,7 +105,7 @@ export function CatalogoAdminTable({ productos }: Props) {
                   </td>
                   <td className="px-4 py-3 text-gray-400">{p.categorias?.nombre ?? '—'}</td>
                   <td className="px-4 py-3">
-                    <span className="font-semibold" style={{ color: p.precio_antes ? '#E11D2E' : '#1F2937' }}>{formatPrice(p.precio)}</span>
+                    <span className="font-semibold" style={{ color: p.precio_antes ? 'var(--color-brand)' : '#1F2937' }}>{formatPrice(p.precio)}</span>
                     {p.precio_antes && (
                       <span className="text-xs text-gray-400 line-through ml-1">{formatPrice(p.precio_antes)}</span>
                     )}
@@ -174,3 +174,4 @@ export function CatalogoAdminTable({ productos }: Props) {
     </div>
   )
 }
+

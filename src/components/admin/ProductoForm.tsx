@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
@@ -178,7 +178,7 @@ export function ProductoForm({ producto, categorias }: Props) {
             )}
             <button form="producto-form" type="submit" disabled={isPending}
               className="px-5 py-2 text-sm font-semibold text-white rounded-xl transition-opacity hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#E11D2E' }}>
+              style={{ backgroundColor: 'var(--color-brand)' }}>
               {isPending ? 'Guardando...' : 'Guardar'}
             </button>
           </div>
@@ -206,7 +206,7 @@ export function ProductoForm({ producto, categorias }: Props) {
                 <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 mb-3">
                   <Image src={imagenes[0]} alt="" fill sizes="300px" className="object-cover" />
                   <span className="absolute top-2 left-2 text-white text-[10px] font-bold px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: '#E11D2E' }}>
+                    style={{ backgroundColor: 'var(--color-brand)' }}>
                     PRINCIPAL
                   </span>
                 </div>
@@ -241,7 +241,7 @@ export function ProductoForm({ producto, categorias }: Props) {
                       <button type="button"
                         onClick={() => setImagenes((prev) => [prev[i], ...prev.filter((_, j) => j !== i)])}
                         className="relative w-14 h-14 rounded-xl overflow-hidden block cursor-grab active:cursor-grabbing"
-                        style={{ border: i === 0 ? '2px solid #E11D2E' : '2px solid #E5E7EB' }}
+                        style={{ border: i === 0 ? '2px solid var(--color-brand)' : '2px solid #E5E7EB' }}
                         title={i === 0 ? 'Foto principal' : 'Hacer principal'}>
                         <Image src={url} alt="" fill sizes="56px" className="object-cover pointer-events-none" />
                         <span className="absolute bottom-0 right-0 bg-black/40 text-white rounded-tl-md p-0.5 leading-none">
@@ -251,7 +251,7 @@ export function ProductoForm({ producto, categorias }: Props) {
                       <button type="button"
                         onClick={() => setImagenes((prev) => prev.filter((_, j) => j !== i))}
                         className="absolute -top-1 -right-1 w-4 h-4 bg-gray-800 text-white rounded-full text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        ×
+                        Ã—
                       </button>
                     </div>
                   ))}
@@ -363,7 +363,7 @@ export function ProductoForm({ producto, categorias }: Props) {
                       <button key={t} type="button" onClick={() => toggleTalla(t)}
                         className="min-w-[44px] h-10 px-3 rounded-xl text-sm font-semibold transition-all border-2"
                         style={sel
-                          ? { backgroundColor: '#E11D2E', color: '#fff', borderColor: '#E11D2E' }
+                          ? { backgroundColor: 'var(--color-brand)', color: '#fff', borderColor: 'var(--color-brand)' }
                           : { backgroundColor: '#F9FAFB', color: '#6B7280', borderColor: '#E5E7EB' }}>
                         {t}
                       </button>
@@ -383,7 +383,7 @@ export function ProductoForm({ producto, categorias }: Props) {
                       <button key={t} type="button" onClick={() => toggleTalla(t)}
                         className="min-w-[44px] h-10 px-3 rounded-xl text-sm font-semibold transition-all border-2"
                         style={sel
-                          ? { backgroundColor: '#E11D2E', color: '#fff', borderColor: '#E11D2E' }
+                          ? { backgroundColor: 'var(--color-brand)', color: '#fff', borderColor: 'var(--color-brand)' }
                           : { backgroundColor: '#F9FAFB', color: '#6B7280', borderColor: '#E5E7EB' }}>
                         {t}
                       </button>
@@ -451,3 +451,4 @@ export function ProductoForm({ producto, categorias }: Props) {
     </div>
   )
 }
+

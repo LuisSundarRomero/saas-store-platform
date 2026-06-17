@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { IconArrowLeft, IconShieldLock } from '@tabler/icons-react'
 import { createClient } from '@/lib/supabase/server'
 
@@ -9,7 +9,7 @@ export default async function PoliticaPrivacidadPage() {
     .select('tienda_nombre, empresa_razon_social, empresa_ruc, empresa_direccion, whatsapp_numero, footer_email')
     .single()
 
-  const tiendaNombre = config?.tienda_nombre ?? 'Anarchyy.pe'
+  const tiendaNombre = config?.tienda_nombre ?? 'Mi Tienda'
   const razonSocial = config?.empresa_razon_social || tiendaNombre
   const ruc = config?.empresa_ruc ?? ''
   const direccion = config?.empresa_direccion ?? ''
@@ -37,7 +37,7 @@ export default async function PoliticaPrivacidadPage() {
         {/* Intro */}
         <div className="flex items-center gap-3 mb-1">
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#3A1014' }}>
-            <IconShieldLock size={22} style={{ color: '#E11D2E' }} />
+            <IconShieldLock size={22} style={{ color: 'var(--color-brand)' }} />
           </div>
           <p className="text-sm text-[#9A9A9E] leading-relaxed">
             En {tiendaNombre} cuidamos tus datos personales. Esta política explica qué información
@@ -48,7 +48,7 @@ export default async function PoliticaPrivacidadPage() {
         <div className="bg-[#161618] border border-[#2C2C30] rounded-2xl p-5 flex flex-col gap-5 text-sm text-[#C9C9CD] leading-relaxed">
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               1. Qué datos recopilamos
             </p>
             <p>
@@ -65,7 +65,7 @@ export default async function PoliticaPrivacidadPage() {
           </section>
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               2. Para qué los usamos
             </p>
             <p>
@@ -78,7 +78,7 @@ export default async function PoliticaPrivacidadPage() {
           </section>
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               3. Cómo los protegemos
             </p>
             <p>
@@ -91,7 +91,7 @@ export default async function PoliticaPrivacidadPage() {
           </section>
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               4. Cookies y analítica
             </p>
             <p>
@@ -103,7 +103,7 @@ export default async function PoliticaPrivacidadPage() {
           </section>
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               5. Tus derechos
             </p>
             <p>
@@ -116,7 +116,7 @@ export default async function PoliticaPrivacidadPage() {
 
           {(whatsapp || email) && (
             <section>
-              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
                 6. Contacto
               </p>
               <p>
@@ -135,3 +135,4 @@ export default async function PoliticaPrivacidadPage() {
     </main>
   )
 }
+

@@ -1,4 +1,4 @@
-import { IconCheck } from '@tabler/icons-react'
+﻿import { IconCheck } from '@tabler/icons-react'
 
 const PASOS = [
   { numero: 1, label: 'Datos' },
@@ -23,7 +23,7 @@ export function CheckoutStepper({ currentStep }: Props) {
               <div
                 className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors"
                 style={{
-                  backgroundColor: completado || activo ? '#E11D2E' : '#2C2C30',
+                  backgroundColor: completado || activo ? 'var(--color-brand)' : '#2C2C30',
                   color: completado || activo ? '#FFFFFF' : '#9A9A9E',
                 }}
               >
@@ -40,7 +40,7 @@ export function CheckoutStepper({ currentStep }: Props) {
             {i < PASOS.length - 1 && (
               <div
                 className="w-6 sm:w-10 h-px"
-                style={{ backgroundColor: completado ? '#E11D2E' : '#2C2C30' }}
+                style={{ backgroundColor: completado ? 'var(--color-brand)' : '#2C2C30' }}
               />
             )}
           </li>
@@ -49,3 +49,4 @@ export function CheckoutStepper({ currentStep }: Props) {
     </ol>
   )
 }
+

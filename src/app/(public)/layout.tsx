@@ -12,11 +12,11 @@ export default async function PublicLayout({ children }: { children: React.React
     supabase.from('categorias').select('nombre, slug').eq('activa', true).eq('tenant_id', tenant.id).order('orden', { ascending: true }),
   ])
 
-  const tiendaNombre   = config?.tienda_nombre      ?? 'Anarchyy.pe'
+  const tiendaNombre   = config?.tienda_nombre      ?? tenant.nombre
   const footerDesc     = config?.footer_descripcion ?? ''
   const footerPolitica = config?.footer_politica    ?? ''
   const whatsappNumero = config?.whatsapp_numero    ?? ''
-  const footerEmail    = config?.footer_email       ?? 'contacto@anarchyy.pe'
+  const footerEmail    = config?.footer_email       ?? ''
   const footerTagline  = config?.footer_tagline     ?? ''
   const redesInstagram = config?.redes_instagram    ?? ''
   const redesTiktok    = config?.redes_tiktok       ?? ''

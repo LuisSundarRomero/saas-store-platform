@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -52,7 +52,7 @@ export default function CheckoutErrorPage() {
             <p className="text-xs font-semibold text-[#FF6B7A] uppercase tracking-widest mb-1">
               Código de cargo
             </p>
-            <p className="text-lg font-bold break-all" style={{ color: '#E11D2E' }}>
+            <p className="text-lg font-bold break-all" style={{ color: 'var(--color-brand)' }}>
               {charge}
             </p>
             <p className="text-xs text-[#FF6B7A] mt-1">Guárdalo y compártelo con soporte</p>
@@ -77,7 +77,7 @@ export default function CheckoutErrorPage() {
             <Link
               href="/checkout/pago"
               className="w-full py-3.5 rounded-full font-semibold text-white text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#E11D2E' }}
+              style={{ backgroundColor: 'var(--color-brand)' }}
             >
               <IconRefresh size={18} />
               Reintentar pago
@@ -96,3 +96,4 @@ export default function CheckoutErrorPage() {
     </main>
   )
 }
+

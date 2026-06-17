@@ -1,4 +1,4 @@
-import Image from 'next/image'
+﻿import Image from 'next/image'
 import { useCarrito } from '@/store/carrito'
 import { formatPrice } from '@/lib/utils/format'
 
@@ -54,7 +54,7 @@ export function OrderSummary() {
         {descuentoTotal > 0 && (
           <div className="flex justify-between items-center">
             <span className="text-sm text-[#9A9A9E]">Descuento</span>
-            <span className="text-sm font-semibold" style={{ color: '#E11D2E' }}>
+            <span className="text-sm font-semibold" style={{ color: 'var(--color-brand)' }}>
               -{formatPrice(descuentoTotal)}
             </span>
           </div>
@@ -67,3 +67,4 @@ export function OrderSummary() {
     </div>
   )
 }
+

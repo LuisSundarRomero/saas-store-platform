@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -39,7 +39,7 @@ export default function ConfirmacionPage() {
             <p className="text-xs font-semibold text-[#FF6B7A] uppercase tracking-widest mb-1">
               Tu código de pedido
             </p>
-            <p className="text-3xl font-bold" style={{ color: '#E11D2E' }}>
+            <p className="text-3xl font-bold" style={{ color: 'var(--color-brand)' }}>
               #{order}
             </p>
             <p className="text-xs text-[#FF6B7A] mt-1">Guárdalo para rastrear tu pedido</p>
@@ -51,7 +51,7 @@ export default function ConfirmacionPage() {
           {order && (
             <Link href={`/rastrear?order=${order}`}
               className="w-full py-3.5 rounded-full font-semibold text-white text-sm flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#E11D2E' }}>
+              style={{ backgroundColor: 'var(--color-brand)' }}>
               <IconPackage size={18} />
               Rastrear mi pedido
             </Link>
@@ -67,3 +67,4 @@ export default function ConfirmacionPage() {
     </main>
   )
 }
+

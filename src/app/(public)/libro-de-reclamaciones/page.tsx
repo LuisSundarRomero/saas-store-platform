@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import { LibroReclamacionesClient } from '@/components/legal/LibroReclamacionesClient'
 
 export default async function LibroReclamacionesPage() {
@@ -10,7 +10,7 @@ export default async function LibroReclamacionesPage() {
 
   return (
     <LibroReclamacionesClient
-      tiendaNombre={config?.tienda_nombre ?? 'Anarchyy.pe'}
+      tiendaNombre={config?.tienda_nombre ?? 'Mi Tienda'}
       razonSocial={config?.empresa_razon_social ?? ''}
       ruc={config?.empresa_ruc ?? ''}
       direccion={config?.empresa_direccion ?? ''}

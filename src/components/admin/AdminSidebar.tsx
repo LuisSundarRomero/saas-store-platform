@@ -1,27 +1,28 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   IconShoppingCart, IconLayoutGrid, IconChartBar,
-  IconSettings, IconLogout, IconTag, IconBook2
+  IconSettings, IconLogout, IconTag, IconBook2, IconCreditCard
 } from '@tabler/icons-react'
 import { createClient } from '@/lib/supabase/client'
 
 const NAV = [
-  { href: '/admin/pedidos',       label: 'Pedidos',       icon: IconShoppingCart },
-  { href: '/admin/catalogo',      label: 'Catálogo',      icon: IconLayoutGrid },
-  { href: '/admin/categorias',    label: 'Categorías',    icon: IconTag },
-  { href: '/admin/reclamaciones', label: 'Reclamos',      icon: IconBook2 },
-  { href: '/admin/estadisticas',  label: 'Estadísticas',  icon: IconChartBar },
-  { href: '/admin/configuracion', label: 'Config',        icon: IconSettings },
+  { href: '/admin/pedidos',             label: 'Pedidos',      icon: IconShoppingCart, exact: false },
+  { href: '/admin/catalogo',            label: 'Catálogo',     icon: IconLayoutGrid,   exact: false },
+  { href: '/admin/categorias',          label: 'Categorías',   icon: IconTag,          exact: false },
+  { href: '/admin/reclamaciones',       label: 'Reclamos',     icon: IconBook2,        exact: false },
+  { href: '/admin/estadisticas',        label: 'Estadísticas', icon: IconChartBar,     exact: false },
+  { href: '/admin/configuracion/pagos', label: 'Pagos',        icon: IconCreditCard,   exact: true },
+  { href: '/admin/configuracion',       label: 'Config',       icon: IconSettings,     exact: true },
 ]
 
 interface SidebarProps {
   tiendaNombre?: string
 }
 
-export function AdminSidebar({ tiendaNombre = 'Anarchyy.pe' }: SidebarProps) {
+export function AdminSidebar({ tiendaNombre = 'Mi Tienda' }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -39,7 +40,7 @@ export function AdminSidebar({ tiendaNombre = 'Anarchyy.pe' }: SidebarProps) {
 
         {/* Logo */}
         <div className="px-6 py-5 border-b border-gray-100">
-          <span className="font-serif font-bold text-xl" style={{ color: '#E11D2E' }}>
+          <span className="font-serif font-bold text-xl" style={{ color: 'var(--color-brand)' }}>
             {tiendaNombre}
           </span>
           <p className="text-[11px] text-gray-400 mt-0.5 font-medium uppercase tracking-wider">
@@ -49,19 +50,19 @@ export function AdminSidebar({ tiendaNombre = 'Anarchyy.pe' }: SidebarProps) {
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5 overflow-y-auto">
-          {NAV.map(({ href, label, icon: Icon }) => {
-            const active = pathname.startsWith(href)
+          {NAV.map(({ href, label, icon: Icon, exact }) => {
+            const active = exact ? pathname === href : pathname.startsWith(href)
             return (
               <Link key={href} href={href}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
                 style={
                   active
-                    ? { backgroundColor: '#FEE2E2', color: '#E11D2E' }
+                    ? { backgroundColor: '#FEE2E2', color: 'var(--color-brand)' }
                     : { color: '#6B7280' }
                 }
               >
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all"
-                  style={active ? { backgroundColor: '#E11D2E', color: '#fff' } : { backgroundColor: '#F3F4F6', color: '#9CA3AF' }}>
+                  style={active ? { backgroundColor: 'var(--color-brand)', color: '#fff' } : { backgroundColor: '#F3F4F6', color: '#9CA3AF' }}>
                   <Icon size={16} />
                 </div>
                 {label}
@@ -86,7 +87,7 @@ export function AdminSidebar({ tiendaNombre = 'Anarchyy.pe' }: SidebarProps) {
 
       {/* ── TOP BAR mobile ── */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-100 px-4 h-12 flex items-center justify-between">
-        <span className="font-serif font-bold" style={{ color: '#E11D2E' }}>
+        <span className="font-serif font-bold" style={{ color: 'var(--color-brand)' }}>
           {tiendaNombre}
         </span>
         <button onClick={handleLogout}
@@ -98,12 +99,12 @@ export function AdminSidebar({ tiendaNombre = 'Anarchyy.pe' }: SidebarProps) {
 
       {/* ── BOTTOM NAV mobile ── */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 flex">
-        {NAV.map(({ href, label, icon: Icon }) => {
-          const active = pathname.startsWith(href)
+        {NAV.map(({ href, label, icon: Icon, exact }) => {
+          const active = exact ? pathname === href : pathname.startsWith(href)
           return (
             <Link key={href} href={href}
               className="flex-1 flex flex-col items-center justify-center py-2 gap-0.5"
-              style={{ color: active ? '#E11D2E' : '#9ca3af' }}>
+              style={{ color: active ? 'var(--color-brand)' : '#9ca3af' }}>
               <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />
               <span className="text-[9px] font-semibold">{label}</span>
             </Link>
@@ -113,3 +114,4 @@ export function AdminSidebar({ tiendaNombre = 'Anarchyy.pe' }: SidebarProps) {
     </>
   )
 }
+

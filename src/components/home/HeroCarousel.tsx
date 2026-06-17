@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
@@ -90,7 +90,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
                 <span className="h-2 rounded-full transition-all duration-300 block"
                   style={{
                     width: i === active ? '18px' : '8px',
-                    backgroundColor: i === active ? '#E11D2E' : 'rgba(255,255,255,0.4)',
+                    backgroundColor: i === active ? 'var(--color-brand)' : 'rgba(255,255,255,0.4)',
                   }}
                 />
               </button>
@@ -101,3 +101,4 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
     </div>
   )
 }
+

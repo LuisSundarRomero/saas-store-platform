@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -184,7 +184,7 @@ export default function CheckoutInformacionPage() {
                 <button
                   type="submit"
                   className="flex-1 text-white font-semibold py-3.5 rounded-full flex items-center justify-center gap-2 transition-opacity order-1 sm:order-2"
-                  style={{ backgroundColor: '#E11D2E' }}
+                  style={{ backgroundColor: 'var(--color-brand)' }}
                 >
                   Continuar al pago
                   <IconArrowRight size={18} />
@@ -201,3 +201,4 @@ export default function CheckoutInformacionPage() {
     </main>
   )
 }
+

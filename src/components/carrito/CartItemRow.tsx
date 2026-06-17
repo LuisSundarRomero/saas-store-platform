@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Image from 'next/image'
 import { IconMinus, IconPlus, IconTrash } from '@tabler/icons-react'
@@ -61,7 +61,7 @@ export function CartItemRow({ item }: Props) {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold" style={{ color: '#E11D2E' }}>
+            <span className="text-sm font-bold" style={{ color: 'var(--color-brand)' }}>
               {formatPrice(item.precio * item.cantidad)}
             </span>
             <button onClick={handleRemove} className="p-1 text-[#6B6B70] hover:text-red-400 transition-colors">
@@ -73,3 +73,4 @@ export function CartItemRow({ item }: Props) {
     </div>
   )
 }
+

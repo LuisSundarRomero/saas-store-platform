@@ -55,9 +55,9 @@ interface ComprobanteModalInfo {
   orderId: string
 }
 
-interface Props { pedidos: Pedido[] }
+interface Props { pedidos: Pedido[]; tiendaNombre?: string }
 
-export function PedidosTable({ pedidos }: Props) {
+export function PedidosTable({ pedidos, tiendaNombre = 'Mi Tienda' }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [modal, setModal] = useState<ModalInfo | null>(null)
@@ -119,8 +119,8 @@ export function PedidosTable({ pedidos }: Props) {
 
   function buildWhatsAppUrl(info: ModalInfo) {
     const telefono = info.clienteTelefono.replace(/\s/g, '')
-    const trackingUrl = appUrl ? `${appUrl}/rastrear?order=${info.orderId}` : `anarchyy.pe/rastrear?order=${info.orderId}`
-    const mensaje = `Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido *#${info.orderId}* ha sido actualizado:\n\n${ESTADO_EMOJI[info.nuevoEstado]} *${ESTADO_LABEL[info.nuevoEstado]}*\n${ESTADO_MSG[info.nuevoEstado]}\n\nRastrear tu pedido: ${trackingUrl}`
+    const trackingUrl = appUrl ? `${appUrl}/rastrear?order=${info.orderId}` : `${tiendaNombre}/rastrear?order=${info.orderId}`
+    const mensaje = `Hola! Te escribimos de ${tiendaNombre} 🦇\n\nTu pedido *#${info.orderId}* ha sido actualizado:\n\n${ESTADO_EMOJI[info.nuevoEstado]} *${ESTADO_LABEL[info.nuevoEstado]}*\n${ESTADO_MSG[info.nuevoEstado]}\n\nRastrear tu pedido: ${trackingUrl}`
     return `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
   }
 
@@ -141,10 +141,10 @@ export function PedidosTable({ pedidos }: Props) {
           return (
             <div key={p.id}
               className="bg-white rounded-xl border border-gray-100 p-4"
-              style={p.estado === 'pendiente' ? { borderLeft: '3px solid #E11D2E' } : {}}>
+              style={p.estado === 'pendiente' ? { borderLeft: '3px solid var(--color-brand)' } : {}}>
               <div className="flex items-start justify-between mb-2">
                 <Link href={`/admin/pedidos/${p.order_id}`}
-                  className="font-bold text-base" style={{ color: '#E11D2E' }}>
+                  className="font-bold text-base" style={{ color: 'var(--color-brand)' }}>
                   #{p.order_id}
                 </Link>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full capitalize"
@@ -154,7 +154,7 @@ export function PedidosTable({ pedidos }: Props) {
               </div>
               <p className="text-sm text-gray-500 mb-1">📱 {p.cliente_telefono}</p>
               <div className="flex items-center justify-between mt-3">
-                <span className="font-bold" style={{ color: '#E11D2E' }}>{formatPrice(p.total)}</span>
+                <span className="font-bold" style={{ color: 'var(--color-brand)' }}>{formatPrice(p.total)}</span>
                 <select
                   value={p.estado}
                   onChange={(e) => handleEstado(p.id, e.target.value as EstadoPedido, p.order_id, p.cliente_telefono)}
@@ -193,15 +193,15 @@ export function PedidosTable({ pedidos }: Props) {
                 const badge = BADGE[p.estado as EstadoPedido]
                 return (
                   <tr key={p.id} className="hover:bg-gray-50 transition-colors"
-                    style={p.estado === 'pendiente' ? { borderLeft: '2px solid #E11D2E' } : {}}>
+                    style={p.estado === 'pendiente' ? { borderLeft: '2px solid var(--color-brand)' } : {}}>
                     <td className="px-4 py-3">
                       <Link href={`/admin/pedidos/${p.order_id}`}
-                        className="font-semibold hover:underline" style={{ color: '#E11D2E' }}>
+                        className="font-semibold hover:underline" style={{ color: 'var(--color-brand)' }}>
                         #{p.order_id}
                       </Link>
                     </td>
                     <td className="px-4 py-3 text-gray-500">{p.cliente_telefono}</td>
-                    <td className="px-4 py-3 font-semibold" style={{ color: '#E11D2E' }}>{formatPrice(p.total)}</td>
+                    <td className="px-4 py-3 font-semibold" style={{ color: 'var(--color-brand)' }}>{formatPrice(p.total)}</td>
                     <td className="px-4 py-3">
                       <span className="px-2.5 py-1 rounded-full text-xs font-semibold capitalize"
                         style={{ backgroundColor: badge.bg, color: badge.color }}>
@@ -298,7 +298,7 @@ export function PedidosTable({ pedidos }: Props) {
                 onClick={() => handleGuardarComprobante(false)}
                 disabled={isPending}
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-semibold text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-                style={{ backgroundColor: '#E11D2E' }}
+                style={{ backgroundColor: 'var(--color-brand)' }}
               >
                 <IconCheck size={16} />
                 {isPending ? 'Guardando...' : 'Guardar estado'}
@@ -343,7 +343,7 @@ export function PedidosTable({ pedidos }: Props) {
               <div className="rounded-xl p-3" style={{ backgroundColor: '#ECE5DD' }}>
                 <div className="bg-white rounded-xl px-4 py-3 shadow-sm">
                   <p className="text-xs text-gray-800 whitespace-pre-wrap leading-relaxed">
-                    {`Hola! Te escribimos de Anarchyy.pe 🦇\n\nTu pedido #${modal.orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[modal.nuevoEstado]} ${ESTADO_LABEL[modal.nuevoEstado]}\n${ESTADO_MSG[modal.nuevoEstado]}\n\nRastrear: ${appUrl || 'anarchyy.pe'}/rastrear?order=${modal.orderId}`}
+                    {`Hola! Te escribimos de ${tiendaNombre} 🦇\n\nTu pedido #${modal.orderId} ha sido actualizado:\n\n${ESTADO_EMOJI[modal.nuevoEstado]} ${ESTADO_LABEL[modal.nuevoEstado]}\n${ESTADO_MSG[modal.nuevoEstado]}\n\nRastrear: ${appUrl || '${tiendaNombre}'}/rastrear?order=${modal.orderId}`}
                   </p>
                   <p className="text-[10px] text-gray-400 text-right mt-1">✓✓</p>
                 </div>
@@ -376,3 +376,4 @@ export function PedidosTable({ pedidos }: Props) {
     </>
   )
 }
+
