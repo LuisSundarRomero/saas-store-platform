@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { IconArrowLeft, IconFileText } from '@tabler/icons-react'
 import { createClient } from '@/lib/supabase/server'
 
@@ -9,7 +9,7 @@ export default async function TerminosPage() {
     .select('tienda_nombre, empresa_razon_social, empresa_ruc, empresa_direccion, whatsapp_numero, footer_email')
     .single()
 
-  const tiendaNombre = config?.tienda_nombre ?? 'Anarchyy.pe'
+  const tiendaNombre = config?.tienda_nombre ?? 'Mi Tienda'
   const razonSocial = config?.empresa_razon_social || tiendaNombre
   const ruc = config?.empresa_ruc ?? ''
   const direccion = config?.empresa_direccion ?? ''
@@ -37,7 +37,7 @@ export default async function TerminosPage() {
         {/* Intro */}
         <div className="flex items-center gap-3 mb-1">
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#3A1014' }}>
-            <IconFileText size={22} style={{ color: '#E11D2E' }} />
+            <IconFileText size={22} style={{ color: 'var(--color-brand)' }} />
           </div>
           <p className="text-sm text-[#9A9A9E] leading-relaxed">
             Al realizar una compra en {tiendaNombre} aceptas los siguientes términos y condiciones.
@@ -48,7 +48,7 @@ export default async function TerminosPage() {
         <div className="bg-[#161618] border border-[#2C2C30] rounded-2xl p-5 flex flex-col gap-5 text-sm text-[#C9C9CD] leading-relaxed">
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               1. Cómo funciona la compra
             </p>
             <p>
@@ -61,7 +61,7 @@ export default async function TerminosPage() {
           </section>
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               2. Métodos de pago
             </p>
             <p>
@@ -73,7 +73,7 @@ export default async function TerminosPage() {
           </section>
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               3. Tiempos de entrega
             </p>
             <p>
@@ -87,7 +87,7 @@ export default async function TerminosPage() {
           </section>
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               4. Responsabilidad del vendedor
             </p>
             <p>
@@ -103,7 +103,7 @@ export default async function TerminosPage() {
           </section>
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               5. Uso de la plataforma
             </p>
             <p>
@@ -117,7 +117,7 @@ export default async function TerminosPage() {
           </section>
 
           <section>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
               6. Reclamos
             </p>
             <p>
@@ -130,7 +130,7 @@ export default async function TerminosPage() {
 
           {(whatsapp || email) && (
             <section>
-              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#E11D2E' }}>
+              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
                 7. Contacto
               </p>
               <p>
@@ -149,3 +149,4 @@ export default async function TerminosPage() {
     </main>
   )
 }
+

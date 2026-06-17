@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @theme {
   /* Brand — Anarchy: lujo oscuro / dark streetwear */
@@ -58,11 +58,12 @@ body {
 }
 
 .btn-brand {
-  background-color: #E11D2E;
+  background-color: var(--color-brand);
   color: #fff;
   font-weight: 600;
   border-radius: 9999px;
   transition: background-color 0.15s;
 }
-.btn-brand:hover { background-color: #A3121F; }
+.btn-brand:hover { background-color: color-mix(in srgb, var(--color-brand) 70%, black); }
 .btn-brand:disabled { opacity: 0.6; }
+

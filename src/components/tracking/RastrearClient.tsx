@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useTransition } from 'react'
 import Link from 'next/link'
@@ -101,7 +101,7 @@ export function RastrearClient({ orderId, whatsappNumero }: Props) {
           <div className="flex justify-center mb-3 sm:mb-5">
             <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center"
               style={{ backgroundColor: '#3A1014' }}>
-              <IconPackage size={24} style={{ color: '#E11D2E' }} />
+              <IconPackage size={24} style={{ color: 'var(--color-brand)' }} />
             </div>
           </div>
 
@@ -134,7 +134,7 @@ export function RastrearClient({ orderId, whatsappNumero }: Props) {
                   onKeyDown={(e) => e.key === 'Enter' && handleVerificar()}
                   className="w-full border-2 rounded-2xl px-4 py-3 text-sm outline-none text-center font-mono uppercase text-[#F5F5F2] bg-[#1F1F22] transition-colors"
                   style={{
-                    borderColor: error ? '#EF4444' : codigo.trim() ? '#E11D2E' : '#2C2C30',
+                    borderColor: error ? '#EF4444' : codigo.trim() ? 'var(--color-brand)' : '#2C2C30',
                   }}
                 />
               )}
@@ -153,7 +153,7 @@ export function RastrearClient({ orderId, whatsappNumero }: Props) {
                 onKeyDown={(e) => e.key === 'Enter' && handleVerificar()}
                 className="w-full border-2 rounded-2xl px-4 py-3 text-sm outline-none text-center font-mono text-[#F5F5F2] bg-[#1F1F22] transition-colors"
                 style={{
-                  borderColor: error ? '#EF4444' : telefono.length >= 9 ? '#E11D2E' : '#2C2C30',
+                  borderColor: error ? '#EF4444' : telefono.length >= 9 ? 'var(--color-brand)' : '#2C2C30',
                 }}
               />
             </div>
@@ -167,7 +167,7 @@ export function RastrearClient({ orderId, whatsappNumero }: Props) {
               onClick={handleVerificar}
               disabled={isPending || !telefono.trim() || (!locked && !codigo.trim())}
               className="w-full text-white font-semibold py-3.5 rounded-full transition-opacity hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#E11D2E' }}
+              style={{ backgroundColor: 'var(--color-brand)' }}
             >
               {isPending ? 'Verificando...' : 'Ver mi pedido →'}
             </button>
@@ -180,7 +180,7 @@ export function RastrearClient({ orderId, whatsappNumero }: Props) {
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold"
-              style={{ color: '#E11D2E' }}
+              style={{ color: 'var(--color-brand)' }}
             >
               Escríbenos por WhatsApp
             </a>
@@ -246,10 +246,10 @@ export function RastrearClient({ orderId, whatsappNumero }: Props) {
                         {item.color}
                       </span>
                     )}
-                    <span className="text-[11px] text-[#6B6B70]">× {item.cantidad}</span>
+                    <span className="text-[11px] text-[#6B6B70]">Ã— {item.cantidad}</span>
                   </div>
                 </div>
-                <span className="text-sm font-bold shrink-0" style={{ color: '#E11D2E' }}>
+                <span className="text-sm font-bold shrink-0" style={{ color: 'var(--color-brand)' }}>
                   {formatPrice(item.subtotal)}
                 </span>
               </div>
@@ -257,7 +257,7 @@ export function RastrearClient({ orderId, whatsappNumero }: Props) {
           </div>
           <div className="flex justify-between items-center pt-4 mt-3 border-t border-[#2C2C30]">
             <span className="text-sm font-semibold text-[#9A9A9E]">Total</span>
-            <span className="text-lg font-bold" style={{ color: '#E11D2E' }}>{formatPrice(pedido.total)}</span>
+            <span className="text-lg font-bold" style={{ color: 'var(--color-brand)' }}>{formatPrice(pedido.total)}</span>
           </div>
         </div>
 
@@ -280,3 +280,4 @@ export function RastrearClient({ orderId, whatsappNumero }: Props) {
     </main>
   )
 }
+

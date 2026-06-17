@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -57,7 +57,7 @@ export function CatalogoBuscador({ defaultQ = '', categorias, currentCat, curren
         </div>
         <button type="submit"
           className="px-3 py-2 text-sm font-semibold text-white rounded-xl"
-          style={{ backgroundColor: '#E11D2E' }}>
+          style={{ backgroundColor: 'var(--color-brand)' }}>
           Buscar
         </button>
       </form>
@@ -79,7 +79,7 @@ export function CatalogoBuscador({ defaultQ = '', categorias, currentCat, curren
             onClick={() => router.push(buildUrl({ filtro: f.value }))}
             className="shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
             style={(currentFiltro ?? '') === f.value
-              ? { backgroundColor: '#E11D2E', color: '#fff' }
+              ? { backgroundColor: 'var(--color-brand)', color: '#fff' }
               : { backgroundColor: '#F9FAFB', color: '#6B7280', border: '1px solid #E5E7EB' }}>
             {f.label}
           </button>
@@ -88,3 +88,4 @@ export function CatalogoBuscador({ defaultQ = '', categorias, currentCat, curren
     </div>
   )
 }
+

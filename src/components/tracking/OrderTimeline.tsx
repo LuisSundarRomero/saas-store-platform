@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { IconClock, IconPackage, IconTruck, IconCircleCheck, IconCreditCard } from '@tabler/icons-react'
 import { EstadoPedido } from '@/types'
@@ -58,7 +58,7 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
                   backgroundColor: completado
                     ? '#0F2A18'
                     : activo
-                    ? '#E11D2E'
+                    ? 'var(--color-brand)'
                     : '#1F1F22',
                   color: completado
                     ? '#22C55E'
@@ -112,3 +112,4 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
     </div>
   )
 }
+

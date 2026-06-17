@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+﻿import { Fragment } from 'react'
 import { getReclamaciones } from '@/lib/actions/reclamaciones'
 import { ReclamacionesTable } from '@/components/admin/ReclamacionesTable'
 import { ReclamacionesBuscador } from '@/components/admin/ReclamacionesBuscador'
@@ -33,7 +33,7 @@ export default async function ReclamacionesPage({ searchParams }: Props) {
   const totalPaginas = Math.ceil(totalFiltrados / POR_PAGINA)
 
   const stats = [
-    { label: 'Total',     value: todos.length, sub: 'reclamaciones', color: '#E11D2E', bg: '#FEE2E2' },
+    { label: 'Total',     value: todos.length, sub: 'reclamaciones', color: 'var(--color-brand)', bg: '#FEE2E2' },
     { label: 'Pendientes', value: pendientes,   sub: 'por atender',    color: '#D97706', bg: '#FEF3C7' },
     { label: 'Atendidos',  value: atendidos,    sub: 'respondidos',    color: '#059669', bg: '#D1FAE5' },
     { label: 'Este mes',   value: esteMes,      sub: 'recibidos',      color: '#6366F1', bg: '#EDE9FE' },
@@ -80,7 +80,7 @@ export default async function ReclamacionesPage({ searchParams }: Props) {
               className="shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all capitalize"
               style={
                 (estado ?? 'todos') === e
-                  ? { backgroundColor: '#E11D2E', color: '#fff' }
+                  ? { backgroundColor: 'var(--color-brand)', color: '#fff' }
                   : { backgroundColor: '#F9FAFB', color: '#6B7280', border: '1px solid #E5E7EB' }
               }>
               {e === 'todos' ? 'Todos' : e}
@@ -124,7 +124,7 @@ export default async function ReclamacionesPage({ searchParams }: Props) {
                   <Link href={buildUrl({ page: String(p) })}
                     className="w-9 h-9 flex items-center justify-center text-sm font-semibold rounded-xl transition-colors"
                     style={p === page
-                      ? { backgroundColor: '#E11D2E', color: '#fff' }
+                      ? { backgroundColor: 'var(--color-brand)', color: '#fff' }
                       : { border: '1px solid #E5E7EB', color: '#6B7280' }}>
                     {p}
                   </Link>
@@ -142,3 +142,4 @@ export default async function ReclamacionesPage({ searchParams }: Props) {
     </div>
   )
 }
+

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
 import { AdminSidebar } from '@/components/admin/AdminSidebar'
 
 export default async function ProtectedLayout({
@@ -12,8 +13,9 @@ export default async function ProtectedLayout({
 
   if (!user) redirect('/admin/login')
 
-  const { data: config } = await supabase.from('config').select('tienda_nombre').single()
-  const tiendaNombre = config?.tienda_nombre ?? 'Anarchyy.pe'
+  const tenant = await getTenant()
+  const { data: config } = await supabase.from('config').select('tienda_nombre').eq('tenant_id', tenant.id).single()
+  const tiendaNombre = config?.tienda_nombre ?? tenant.nombre
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">

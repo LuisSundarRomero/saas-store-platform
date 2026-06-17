@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
@@ -6,7 +6,7 @@ import { IconArrowLeft, IconBook2, IconCheck, IconBrandWhatsapp, IconPrinter } f
 import { TipoBien, TipoDocumento, TipoReclamacion } from '@/types'
 import { crearReclamo } from '@/lib/actions/reclamaciones'
 
-const inputCls = "w-full border-2 rounded-2xl px-4 py-3 text-sm outline-none text-[#F5F5F2] bg-[#1F1F22] border-[#2C2C30] focus:border-[#E11D2E] transition-colors placeholder:text-[#6B6B70]"
+const inputCls = "w-full border-2 rounded-2xl px-4 py-3 text-sm outline-none text-[#F5F5F2] bg-[#1F1F22] border-[#2C2C30] focus:border-[var(--color-brand)] transition-colors placeholder:text-[#6B6B70]"
 const labelCls = "text-xs font-semibold text-[#6B6B70] uppercase tracking-wide px-1 block mb-1.5"
 
 interface Props {
@@ -102,8 +102,8 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
 
           <div className="bg-[#1F1F22] border border-[#2C2C30] rounded-xl p-4 text-left flex flex-col gap-2 mb-5">
             <div className="flex justify-between">
-              <span className="text-xs text-[#6B6B70]">N° de reclamación</span>
-              <span className="text-sm font-bold" style={{ color: '#E11D2E' }}>#{String(numero).padStart(4, '0')}</span>
+              <span className="text-xs text-[#6B6B70]">NÂ° de reclamación</span>
+              <span className="text-sm font-bold" style={{ color: 'var(--color-brand)' }}>#{String(numero).padStart(4, '0')}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-xs text-[#6B6B70]">Fecha</span>
@@ -128,7 +128,7 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
             <button
               onClick={() => window.print()}
               className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-semibold text-sm text-white transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#E11D2E' }}
+              style={{ backgroundColor: 'var(--color-brand)' }}
             >
               <IconPrinter size={16} />
               Imprimir constancia
@@ -161,7 +161,7 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
         {/* Intro */}
         <div className="flex items-center gap-3 mb-1">
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#3A1014' }}>
-            <IconBook2 size={22} style={{ color: '#E11D2E' }} />
+            <IconBook2 size={22} style={{ color: 'var(--color-brand)' }} />
           </div>
           <p className="text-sm text-[#9A9A9E] leading-relaxed">
             Conforme al Código de Protección y Defensa del Consumidor, este establecimiento
@@ -173,7 +173,7 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
 
           {/* I. Identificación del establecimiento */}
           <div className="bg-[#161618] border border-[#2C2C30] rounded-2xl p-5">
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--color-brand)' }}>
               I. Identificación del establecimiento
             </p>
             <div className="flex flex-col gap-1 text-sm text-[#F5F5F2]">
@@ -185,7 +185,7 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
 
           {/* II. Identificación del consumidor */}
           <div className="bg-[#161618] border border-[#2C2C30] rounded-2xl p-5 flex flex-col gap-3">
-            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--color-brand)' }}>
               II. Identificación del consumidor reclamante
             </p>
 
@@ -227,7 +227,7 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
 
             <label className="flex items-center gap-2 cursor-pointer mt-1">
               <input type="checkbox" checked={esMenor} onChange={(e) => setEsMenor(e.target.checked)}
-                className="w-4 h-4 rounded accent-[#E11D2E]" />
+                className="w-4 h-4 rounded accent-[var(--color-brand)]" />
               <span className="text-sm text-[#9A9A9E]">Soy menor de edad</span>
             </label>
 
@@ -241,7 +241,7 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
 
           {/* III. Identificación del bien contratado */}
           <div className="bg-[#161618] border border-[#2C2C30] rounded-2xl p-5 flex flex-col gap-3">
-            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--color-brand)' }}>
               III. Identificación del bien contratado
             </p>
 
@@ -255,7 +255,7 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
               </div>
               <div>
                 <label className={labelCls}>Monto reclamado (opcional)</label>
-                <div className="flex items-center border-2 rounded-2xl overflow-hidden border-[#2C2C30] focus-within:border-[#E11D2E]">
+                <div className="flex items-center border-2 rounded-2xl overflow-hidden border-[#2C2C30] focus-within:border-[var(--color-brand)]">
                   <span className="px-3 text-sm text-[#6B6B70] font-mono">S/</span>
                   <input type="number" min="0" step="0.01" value={montoReclamado} onChange={(e) => setMontoReclamado(e.target.value)}
                     className="flex-1 px-2 py-3 text-sm text-[#F5F5F2] outline-none bg-[#1F1F22] placeholder:text-[#6B6B70]" placeholder="0.00" />
@@ -272,20 +272,20 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
 
           {/* IV. Detalle de la reclamación */}
           <div className="bg-[#161618] border border-[#2C2C30] rounded-2xl p-5 flex flex-col gap-3">
-            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#E11D2E' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--color-brand)' }}>
               IV. Detalle de la reclamación
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button type="button" onClick={() => setTipo('reclamo')}
                 className="text-left rounded-xl p-3 border-2 transition-colors"
-                style={tipo === 'reclamo' ? { borderColor: '#E11D2E', backgroundColor: '#3A1014' } : { borderColor: '#2C2C30' }}>
+                style={tipo === 'reclamo' ? { borderColor: 'var(--color-brand)', backgroundColor: '#3A1014' } : { borderColor: '#2C2C30' }}>
                 <p className="text-sm font-semibold text-[#F5F5F2]">Reclamo</p>
                 <p className="text-xs text-[#9A9A9E] mt-0.5">Disconformidad relacionada al producto o servicio.</p>
               </button>
               <button type="button" onClick={() => setTipo('queja')}
                 className="text-left rounded-xl p-3 border-2 transition-colors"
-                style={tipo === 'queja' ? { borderColor: '#E11D2E', backgroundColor: '#3A1014' } : { borderColor: '#2C2C30' }}>
+                style={tipo === 'queja' ? { borderColor: 'var(--color-brand)', backgroundColor: '#3A1014' } : { borderColor: '#2C2C30' }}>
                 <p className="text-sm font-semibold text-[#F5F5F2]">Queja</p>
                 <p className="text-xs text-[#9A9A9E] mt-0.5">Disconformidad con la atención al público.</p>
               </button>
@@ -310,7 +310,7 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
 
           <button type="submit" disabled={isPending}
             className="w-full text-white font-semibold py-3.5 rounded-full transition-opacity hover:opacity-90 disabled:opacity-50"
-            style={{ backgroundColor: '#E11D2E' }}>
+            style={{ backgroundColor: 'var(--color-brand)' }}>
             {isPending ? 'Enviando...' : 'Enviar reclamación'}
           </button>
 
@@ -326,3 +326,4 @@ export function LibroReclamacionesClient({ tiendaNombre, razonSocial, ruc, direc
     </main>
   )
 }
+

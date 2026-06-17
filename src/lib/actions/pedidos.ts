@@ -3,6 +3,7 @@
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
 import { CartItem } from '@/types'
 import { enviarEmailNuevoPedido } from '@/lib/utils/email'
+import { getTenant } from '@/lib/tenant'
 
 // Cliente admin con service role — bypasea RLS solo para operaciones de servidor
 function getAdminClient() {
@@ -86,8 +87,17 @@ function findDeclineMessage(cargo: { decline_code?: string; merchant_message?: s
 
 export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Promise<CrearPedidoConCulqiResult> {
   const admin = getAdminClient()
+  const tenant = await getTenant()
 
   const total = input.items.reduce((sum, i) => sum + i.precio * i.cantidad, 0)
+
+  // Leer llaves Culqi del tenant (fallback a env vars para desarrollo)
+  const { data: tenantData } = await admin
+    .from('tenants')
+    .select('culqi_secret_key, culqi_public_key')
+    .eq('id', tenant.id)
+    .single()
+  const culqiSecretKey = tenantData?.culqi_secret_key ?? process.env.CULQI_SECRET_KEY ?? ''
 
   // Intentar con la función de Supabase (secuencia atómica)
   let orderId: string
@@ -109,14 +119,14 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.CULQI_SECRET_KEY}`,
+        Authorization: `Bearer ${culqiSecretKey}`,
       },
       body: JSON.stringify({
         amount: total,
         currency_code: 'PEN',
         email: input.clienteEmail,
         source_id: input.culqiToken,
-        description: `Pedido ${orderId} — Anarchyy.pe`,
+        description: `Pedido ${orderId}`,
         metadata: { order_id: orderId },
       }),
     })
@@ -170,6 +180,7 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
     .insert({
       id: pedidoId,
       order_id: orderId,
+      tenant_id: tenant.id,
       cliente_nombre: input.clienteNombre,
       cliente_telefono: input.clienteTelefono.replace(/\s/g, ''),
       cliente_email: input.clienteEmail,
@@ -193,6 +204,7 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
   // Insertar items con admin
   const itemsData = input.items.map((i) => ({
     pedido_id: pedidoId,
+    tenant_id: tenant.id,
     producto_id: i.productoId,
     nombre: i.nombre,
     precio: i.precio,
@@ -207,10 +219,11 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
   // Config de la tienda
   const { data: config } = await admin
     .from('config')
-    .select('email_notificaciones')
+    .select('email_notificaciones, tienda_nombre')
+    .eq('tenant_id', tenant.id)
     .single()
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://anarchyy.pe'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
   const trackingUrl = `${appUrl}/rastrear?order=${orderId}`
 
   // Enviar email de notificación (en background, no bloquea el checkout)
@@ -222,6 +235,7 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
       items: input.items,
       total,
       trackingUrl,
+      tiendaNombre: config.tienda_nombre ?? undefined,
     }).catch((err) => console.error('[email]', err.message))
   }
 

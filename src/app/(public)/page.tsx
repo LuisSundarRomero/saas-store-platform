@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+﻿import { Suspense } from 'react'
 import Link from 'next/link'
 import { IconBrandWhatsapp } from '@tabler/icons-react'
 import { getProductos, getProductosDestacados, getCategorias } from '@/lib/actions/productos'
@@ -7,31 +7,35 @@ import { CategoryChips } from '@/components/catalogo/CategoryChips'
 import { HeroCarousel } from '@/components/home/HeroCarousel'
 import type { Metadata } from 'next'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
-  description: 'Ropa streetwear oscura de edición limitada: hoodies, cargos y poleras. Hago lo que quiero vestir. Envíos a nivel nacional · Pide por WhatsApp.',
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
-    description: 'Ropa streetwear oscura de edición limitada: hoodies, cargos y poleras.',
-    url: '/',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Anarchyy.pe — Lujo oscuro / Dark Streetwear',
-    description: 'Ropa streetwear oscura de edición limitada: hoodies, cargos y poleras.',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const { getTenant } = await import('@/lib/tenant')
+  const tenant = await getTenant()
+  const nombre = tenant.nombre || 'Mi Tienda'
+  return {
+    title: nombre,
+    description: `Tienda online de ${nombre}. Envíos a nivel nacional.`,
+    alternates: { canonical: '/' },
+    openGraph: {
+      title: nombre,
+      description: `Tienda online de ${nombre}. Envíos a nivel nacional.`,
+      url: '/',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: nombre,
+      description: `Tienda online de ${nombre}. Envíos a nivel nacional.`,
+    },
+  }
 }
 
 export default async function HomePage() {
-  const { createClient } = await import('@/lib/supabase/server')
-  const supabase = await createClient()
-  const { data: config } = await supabase.from('config').select('*').single()
+  const { createPublicClient } = await import('@/lib/supabase/server')
+  const { getTenant } = await import('@/lib/tenant')
+  const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
+  const { data: config } = await supabase.from('config').select('*').eq('tenant_id', tenant.id).single()
 
   const heroBadge     = config?.hero_badge      ?? '🦇 Restock en preventa'
   const heroTitulo    = config?.hero_titulo     ?? 'Hago lo que quiero vestir'
@@ -62,7 +66,8 @@ export default async function HomePage() {
         .filter((p) => p.imagenes?.[0])
         .map((p) => ({ src: p.imagenes[0], href: `/catalogo/${p.slug}`, alt: p.nombre }))
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://anarchyy.pe'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
+  const tiendaNombreJson = config?.tienda_nombre ?? tenant.nombre
   const sameAs = [
     config?.redes_instagram,
     config?.redes_tiktok,
@@ -75,7 +80,7 @@ export default async function HomePage() {
       {
         '@type': 'Organization',
         '@id': `${appUrl}/#organization`,
-        name: config?.tienda_nombre ?? 'Anarchyy.pe',
+        name: tiendaNombreJson,
         url: appUrl,
         logo: `${appUrl}/favicon-96x96.png`,
         ...(sameAs.length > 0 && { sameAs }),
@@ -84,7 +89,7 @@ export default async function HomePage() {
         '@type': 'WebSite',
         '@id': `${appUrl}/#website`,
         url: appUrl,
-        name: config?.tienda_nombre ?? 'Anarchyy.pe',
+        name: tiendaNombreJson,
         publisher: { '@id': `${appUrl}/#organization` },
       },
     ],
@@ -108,7 +113,7 @@ export default async function HomePage() {
                 {/* Badge */}
                 <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase mb-4"
                   style={{ backgroundColor: '#3A1014', color: '#FF6B7A' }}>
-                  <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: '#E11D2E' }} />
+                  <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: 'var(--color-brand)' }} />
                   {heroBadge}
                 </span>
 
@@ -118,7 +123,7 @@ export default async function HomePage() {
                   {heroTitulo.split(' ').map((word: string, i: number, arr: string[]) => (
                     <span key={i}>
                       <span style={{
-                        color: i >= Math.floor(arr.length / 2) ? '#E11D2E' : '#F5F5F2',
+                        color: i >= Math.floor(arr.length / 2) ? 'var(--color-brand)' : '#F5F5F2',
                       }}>
                         {word}
                       </span>
@@ -134,12 +139,12 @@ export default async function HomePage() {
                 <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-4 lg:mb-8">
                   <Link href="/catalogo"
                     className="inline-flex items-center gap-2 text-white font-semibold px-6 py-3 rounded-full text-sm transition-all hover:opacity-90"
-                    style={{ backgroundColor: '#E11D2E', boxShadow: '0 4px 20px rgba(225,29,46,0.35)' }}>
+                    style={{ backgroundColor: 'var(--color-brand)', boxShadow: '0 4px 20px rgba(225,29,46,0.35)' }}>
                     {heroBoton}
                   </Link>
                   {whatsapp && (
                     <a href={`https://wa.me/${whatsapp.replace(/\s/g, '')}`} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 font-medium px-6 py-3 rounded-full text-sm border text-[#9A9A9E] hover:border-[#E11D2E] hover:text-[#F5F5F2] transition-colors"
+                      className="inline-flex items-center gap-2 font-medium px-6 py-3 rounded-full text-sm border text-[#9A9A9E] hover:border-[var(--color-brand)] hover:text-[#F5F5F2] transition-colors"
                       style={{ borderColor: '#2C2C30' }}>
                       <IconBrandWhatsapp size={16} /> Escríbenos
                     </a>
@@ -175,7 +180,7 @@ export default async function HomePage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ── CATEGORÍAS ── */}
+        {/* ── CATEGORÃAS ── */}
         {categorias.length > 0 && (
           <section className="pt-10">
             <div className="mb-4">
@@ -203,7 +208,7 @@ export default async function HomePage() {
             {/* Ver todo — debajo de la sección */}
             <div className="mt-8 flex justify-center">
               <Link href="/catalogo"
-                className="inline-flex items-center gap-2 text-sm font-semibold px-7 py-3 rounded-full border-2 transition-all hover:border-[#E11D2E] hover:text-[#F5F5F2]"
+                className="inline-flex items-center gap-2 text-sm font-semibold px-7 py-3 rounded-full border-2 transition-all hover:border-[var(--color-brand)] hover:text-[#F5F5F2]"
                 style={{ borderColor: '#2C2C30', color: '#9A9A9E' }}>
                 Ver toda la colección →
               </Link>
@@ -215,3 +220,4 @@ export default async function HomePage() {
     </main>
   )
 }
+

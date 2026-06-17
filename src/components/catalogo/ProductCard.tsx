@@ -1,4 +1,4 @@
-import Image from 'next/image'
+﻿import Image from 'next/image'
 import Link from 'next/link'
 import { IconSkull } from '@tabler/icons-react'
 import { Producto } from '@/types'
@@ -22,7 +22,7 @@ export function ProductCard({ producto }: ProductCardProps) {
     <Link href={`/catalogo/${producto.slug}`} className="group flex flex-col transition-transform duration-300 hover:-translate-y-1">
 
       {/* Imagen */}
-      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#1F1F22] mb-3 ring-1 ring-transparent transition-all duration-300 group-hover:ring-[#E11D2E]/40 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
+      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#1F1F22] mb-3 ring-1 ring-transparent transition-all duration-300 group-hover:ring-[var(--color-brand)]/40 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
         {imagen ? (
           <>
             <Image
@@ -49,7 +49,7 @@ export function ProductCard({ producto }: ProductCardProps) {
         {/* Badge descuento — izquierda */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
           {descuento && (
-            <span className="text-white text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#E11D2E' }}>
+            <span className="text-white text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: 'var(--color-brand)' }}>
               -{descuento}%
             </span>
           )}
@@ -86,7 +86,7 @@ export function ProductCard({ producto }: ProductCardProps) {
           {producto.nombre}
         </p>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold" style={{ color: producto.precio_antes ? '#E11D2E' : '#F5F5F2' }}>
+          <span className="text-sm font-bold" style={{ color: producto.precio_antes ? 'var(--color-brand)' : '#F5F5F2' }}>
             {formatPrice(producto.precio)}
           </span>
           {producto.precio_antes && (
@@ -100,3 +100,4 @@ export function ProductCard({ producto }: ProductCardProps) {
     </Link>
   )
 }
+

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -49,9 +49,10 @@ export function PedidosBuscador({ defaultValue = '', estado }: Props) {
       </div>
       <button type="submit"
         className="px-4 py-2 text-sm font-semibold text-white rounded-xl transition-opacity hover:opacity-90"
-        style={{ backgroundColor: '#E11D2E' }}>
+        style={{ backgroundColor: 'var(--color-brand)' }}>
         Buscar
       </button>
     </form>
   )
 }
+

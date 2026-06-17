@@ -1,9 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
 import { ConfigForm } from '@/components/admin/ConfigForm'
 
 export default async function ConfiguracionPage() {
-  const supabase = await createClient()
-  const { data: config } = await supabase.from('config').select('*').single()
+  const [supabase, tenant] = await Promise.all([createClient(), getTenant()])
+  const { data: config } = await supabase.from('config').select('*').eq('tenant_id', tenant.id).single()
 
   return (
     <div className="p-4 sm:p-6 max-w-[1400px] mx-auto">

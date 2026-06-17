@@ -1,4 +1,4 @@
-import { getPedidos } from '@/lib/actions/admin'
+﻿import { getPedidos } from '@/lib/actions/admin'
 import { PedidosTable } from '@/components/admin/PedidosTable'
 import { PedidosBuscador } from '@/components/admin/PedidosBuscador'
 import { formatPrice } from '@/lib/utils/format'
@@ -14,6 +14,12 @@ interface Props {
 export default async function PedidosPage({ searchParams }: Props) {
   const { estado, q, page: pageStr } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? '1'))
+
+  const { createClient } = await import('@/lib/supabase/server')
+  const { getTenant } = await import('@/lib/tenant')
+  const [supabase, tenant] = await Promise.all([createClient(), getTenant()])
+  const { data: config } = await supabase.from('config').select('tienda_nombre').eq('tenant_id', tenant.id).single()
+  const tiendaNombre = config?.tienda_nombre ?? tenant.nombre
 
   const [todos, pedidosPagina] = await Promise.all([
     getPedidos(),
@@ -31,7 +37,7 @@ export default async function PedidosPage({ searchParams }: Props) {
   const totalPaginas = Math.ceil(totalFiltrados / POR_PAGINA)
 
   const stats = [
-    { label: 'Pedidos hoy',  value: hoy.length,           sub: 'nuevos',       color: '#E11D2E', bg: '#FEE2E2' },
+    { label: 'Pedidos hoy',  value: hoy.length,           sub: 'nuevos',       color: 'var(--color-brand)', bg: '#FEE2E2' },
     { label: 'Pendientes',   value: pendientes,             sub: 'sin atender',  color: '#D97706', bg: '#FEF3C7' },
     { label: 'Ingresos hoy', value: formatPrice(totalHoy), sub: 'total del día', color: '#059669', bg: '#D1FAE5' },
     { label: 'Entregados',   value: entregados,             sub: 'completados',  color: '#6366F1', bg: '#EDE9FE' },
@@ -78,7 +84,7 @@ export default async function PedidosPage({ searchParams }: Props) {
               className="shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all capitalize"
               style={
                 (estado ?? 'todos') === e
-                  ? { backgroundColor: '#E11D2E', color: '#fff' }
+                  ? { backgroundColor: 'var(--color-brand)', color: '#fff' }
                   : { backgroundColor: '#F9FAFB', color: '#6B7280', border: '1px solid #E5E7EB' }
               }>
               {e === 'todos' ? 'Todos' : e.replace('_', ' ')}
@@ -98,7 +104,7 @@ export default async function PedidosPage({ searchParams }: Props) {
         </p>
       )}
 
-      <PedidosTable pedidos={pedidosPagina} />
+      <PedidosTable pedidos={pedidosPagina} tiendaNombre={tiendaNombre} />
 
       {/* Paginación */}
       {totalPaginas > 1 && (
@@ -123,7 +129,7 @@ export default async function PedidosPage({ searchParams }: Props) {
                   <Link key={p} href={buildUrl({ page: String(p) })}
                     className="w-9 h-9 flex items-center justify-center text-sm font-semibold rounded-xl transition-colors"
                     style={p === page
-                      ? { backgroundColor: '#E11D2E', color: '#fff' }
+                      ? { backgroundColor: 'var(--color-brand)', color: '#fff' }
                       : { border: '1px solid #E5E7EB', color: '#6B7280' }}>
                     {p}
                   </Link>
@@ -141,3 +147,4 @@ export default async function PedidosPage({ searchParams }: Props) {
     </div>
   )
 }
+

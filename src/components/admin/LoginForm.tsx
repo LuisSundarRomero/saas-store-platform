@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useTransition, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
@@ -100,7 +100,7 @@ export function LoginForm() {
             type={showPw ? 'text' : 'password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
+            placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
             required
             autoComplete="current-password"
             className="w-full pl-10 pr-11 py-3.5 rounded-2xl border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 bg-gray-50 focus:bg-white focus:border-red-400 focus:outline-none transition-colors autofill:[-webkit-text-fill-color:#111827] autofill:[box-shadow:0_0_0_1000px_#F9FAFB_inset]"
@@ -122,7 +122,7 @@ export function LoginForm() {
       {/* Error */}
       {error && (
         <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 px-4 py-3 rounded-2xl">
-          <span>⚠️</span> {error}
+          <span>⚠ï¸</span> {error}
         </div>
       )}
 
@@ -132,7 +132,7 @@ export function LoginForm() {
         disabled={isPending}
         className="w-full font-semibold py-4 rounded-2xl text-white text-sm transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-60 mt-1"
         style={{
-          backgroundColor: '#E11D2E',
+          backgroundColor: 'var(--color-brand)',
           boxShadow: '0 4px 20px rgba(225,29,46,0.25)',
         }}
       >
@@ -141,3 +141,4 @@ export function LoginForm() {
     </form>
   )
 }
+

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Fragment, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
@@ -104,7 +104,7 @@ export function ReclamacionesTable({ reclamaciones }: Props) {
             onClick={() => handleResponder(r.id)}
             disabled={isPending || !respuesta.trim()}
             className="mt-2 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-            style={{ backgroundColor: '#E11D2E' }}
+            style={{ backgroundColor: 'var(--color-brand)' }}
           >
             <IconCheck size={15} />
             {isPending ? 'Guardando...' : 'Guardar respuesta'}
@@ -127,10 +127,10 @@ export function ReclamacionesTable({ reclamaciones }: Props) {
           const open = expandedId === r.id
           return (
             <div key={r.id} className="bg-white rounded-xl border border-gray-100 p-4"
-              style={r.estado === 'pendiente' ? { borderLeft: '3px solid #E11D2E' } : {}}>
+              style={r.estado === 'pendiente' ? { borderLeft: '3px solid var(--color-brand)' } : {}}>
               <button onClick={() => toggle(r)} className="w-full text-left">
                 <div className="flex items-start justify-between mb-1">
-                  <span className="font-bold text-base" style={{ color: '#E11D2E' }}>
+                  <span className="font-bold text-base" style={{ color: 'var(--color-brand)' }}>
                     #{String(r.numero).padStart(4, '0')}
                   </span>
                   <div className="flex items-center gap-1.5">
@@ -160,7 +160,7 @@ export function ReclamacionesTable({ reclamaciones }: Props) {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="text-left px-4 py-3 font-semibold text-gray-400">N°</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-400">NÂ°</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-400">Consumidor</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-400">Tipo</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-400">Estado</th>
@@ -177,8 +177,8 @@ export function ReclamacionesTable({ reclamaciones }: Props) {
                   <Fragment key={r.id}>
                     <tr className="hover:bg-gray-50 transition-colors cursor-pointer"
                       onClick={() => toggle(r)}
-                      style={r.estado === 'pendiente' ? { borderLeft: '2px solid #E11D2E' } : {}}>
-                      <td className="px-4 py-3 font-semibold" style={{ color: '#E11D2E' }}>#{String(r.numero).padStart(4, '0')}</td>
+                      style={r.estado === 'pendiente' ? { borderLeft: '2px solid var(--color-brand)' } : {}}>
+                      <td className="px-4 py-3 font-semibold" style={{ color: 'var(--color-brand)' }}>#{String(r.numero).padStart(4, '0')}</td>
                       <td className="px-4 py-3 text-gray-700">{r.consumidor_nombre}</td>
                       <td className="px-4 py-3">
                         <span className="px-2.5 py-1 rounded-full text-xs font-semibold capitalize" style={{ backgroundColor: tipoBadge.bg, color: tipoBadge.color }}>
@@ -212,3 +212,4 @@ export function ReclamacionesTable({ reclamaciones }: Props) {
     </>
   )
 }
+

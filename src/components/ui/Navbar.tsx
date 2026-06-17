@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useSyncExternalStore } from 'react'
 import Link from 'next/link'
@@ -18,7 +18,7 @@ function useMounted() {
   return useSyncExternalStore(subscribeNoop, () => true, () => false)
 }
 
-export function Navbar({ tiendaNombre = 'Anarchyy.pe' }: NavbarProps) {
+export function Navbar({ tiendaNombre = 'Mi Tienda' }: NavbarProps) {
   const mounted = useMounted()
   const itemCount = useCarrito((s) => s.itemCount())
   const isOpen   = useCarrito((s) => s.isOpen)
@@ -62,7 +62,7 @@ export function Navbar({ tiendaNombre = 'Anarchyy.pe' }: NavbarProps) {
               {count > 0 && (
                 <span
                   className="absolute -top-0.5 -right-0.5 text-white text-[10px] font-bold min-w-[17px] h-[17px] rounded-full flex items-center justify-center px-1"
-                  style={{ backgroundColor: '#E11D2E' }}
+                  style={{ backgroundColor: 'var(--color-brand)' }}
                 >
                   {count}
                 </span>
@@ -76,3 +76,4 @@ export function Navbar({ tiendaNombre = 'Anarchyy.pe' }: NavbarProps) {
     </>
   )
 }
+

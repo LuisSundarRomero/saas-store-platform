@@ -1,4 +1,4 @@
-import { LoginForm } from '@/components/admin/LoginForm'
+﻿import { LoginForm } from '@/components/admin/LoginForm'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function LoginPage() {
@@ -21,7 +21,7 @@ export default async function LoginPage() {
           >
             <span className="text-2xl">🦇</span>
           </div>
-          <h1 className="font-display text-3xl" style={{ color: '#E11D2E' }}>
+          <h1 className="font-display text-3xl" style={{ color: 'var(--color-brand)' }}>
             {tiendaNombre}
           </h1>
           <p className="text-xs text-gray-400 mt-1">Panel de administración</p>
@@ -42,3 +42,4 @@ export default async function LoginPage() {
     </main>
   )
 }
+

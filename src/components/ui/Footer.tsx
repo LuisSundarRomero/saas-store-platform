@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { IconBrandWhatsapp, IconMail, IconBrandInstagram, IconBrandTiktok } from '@tabler/icons-react'
 
 interface Categoria { nombre: string; slug: string }
@@ -17,7 +17,7 @@ interface Props {
 }
 
 export function Footer({
-  tiendaNombre = 'Anarchyy.pe',
+  tiendaNombre = 'Mi Tienda',
   descripcion = 'Lujo oscuro / Essence of Dark Fashion. Piezas streetwear de edición limitada — hago lo que quiero vestir.',
   politica = '',
   whatsapp = '',
@@ -55,13 +55,13 @@ export function Footer({
               )}
               {email && (
                 <a href={`mailto:${email}`}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-[#2C2C30] text-[#9A9A9E] hover:border-[#E11D2E] hover:text-[#E11D2E] transition-all bg-[#161618]">
+                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-[#2C2C30] text-[#9A9A9E] hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] transition-all bg-[#161618]">
                   <IconMail size={16} />
                 </a>
               )}
               {instagram && (
                 <a href={instagram} target="_blank" rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-[#2C2C30] text-[#9A9A9E] hover:border-[#E11D2E] hover:text-[#E11D2E] transition-all bg-[#161618]">
+                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-[#2C2C30] text-[#9A9A9E] hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] transition-all bg-[#161618]">
                   <IconBrandInstagram size={16} />
                 </a>
               )}
@@ -80,13 +80,13 @@ export function Footer({
             <div className="flex flex-col gap-2.5">
               <Link href="/catalogo"
                 className="text-sm text-[#9A9A9E] hover:text-[#F5F5F2] transition-colors flex items-center gap-2 group">
-                <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: '#E11D2E' }} />
+                <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: 'var(--color-brand)' }} />
                 Todos los productos
               </Link>
               {categorias.map((cat) => (
                 <Link key={cat.slug} href={`/catalogo?cat=${cat.slug}`}
                   className="text-sm text-[#9A9A9E] hover:text-[#F5F5F2] transition-colors flex items-center gap-2 group capitalize">
-                  <span className="w-1 h-1 rounded-full shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: '#E11D2E' }} />
+                  <span className="w-1 h-1 rounded-full shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: 'var(--color-brand)' }} />
                   {cat.nombre}
                 </Link>
               ))}
@@ -104,7 +104,7 @@ export function Footer({
               )}
               {infoItems.map((item, i) => (
                 <div key={i} className="flex items-start gap-2">
-                  <span className="mt-1.5 w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: '#E11D2E' }} />
+                  <span className="mt-1.5 w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: 'var(--color-brand)' }} />
                   <p className="text-sm text-[#9A9A9E] leading-snug">{item}</p>
                 </div>
               ))}
@@ -123,7 +123,7 @@ export function Footer({
               )}
               {email && (
                 <a href={`mailto:${email}`}
-                  className="text-sm text-[#9A9A9E] hover:text-[#E11D2E] transition-colors flex items-center gap-2">
+                  className="text-sm text-[#9A9A9E] hover:text-[var(--color-brand)] transition-colors flex items-center gap-2">
                   <IconMail size={15} className="shrink-0" /> {email}
                 </a>
               )}
@@ -135,7 +135,7 @@ export function Footer({
       {/* Bottom bar */}
       <div className="border-t border-[#2C2C30] bg-[#121214]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-[#9A9A9E] order-1">© {year} {tiendaNombre} — Todos los derechos reservados</p>
+          <p className="text-xs text-[#9A9A9E] order-1">Â© {year} {tiendaNombre} — Todos los derechos reservados</p>
 
           <div className="flex items-center gap-x-5 gap-y-2 flex-wrap justify-center order-3 sm:order-2">
             <Link href="/libro-de-reclamaciones"
@@ -153,10 +153,11 @@ export function Footer({
           </div>
 
           {tagline && (
-            <p className="text-xs font-medium order-2 sm:order-3" style={{ color: '#E11D2E' }}>{tagline}</p>
+            <p className="text-xs font-medium order-2 sm:order-3" style={{ color: 'var(--color-brand)' }}>{tagline}</p>
           )}
         </div>
       </div>
     </footer>
   )
 }
+

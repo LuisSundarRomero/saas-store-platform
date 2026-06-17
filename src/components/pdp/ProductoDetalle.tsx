@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
@@ -156,7 +156,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
                   )}
                   {descuento && (
                     <div className="absolute top-3 right-3">
-                      <span className="text-white text-xs font-bold px-2.5 py-1 rounded-full" style={{ backgroundColor: '#E11D2E' }}>
+                      <span className="text-white text-xs font-bold px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-brand)' }}>
                         -{descuento}%
                       </span>
                     </div>
@@ -173,7 +173,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
                         key={i}
                         onClick={() => setImagenActual(i)}
                         className="shrink-0 w-14 h-14 rounded-xl overflow-hidden transition-all"
-                        style={{ border: i === imagenActual ? '2px solid #E11D2E' : '2px solid transparent', opacity: i === imagenActual ? 1 : 0.6 }}
+                        style={{ border: i === imagenActual ? '2px solid var(--color-brand)' : '2px solid transparent', opacity: i === imagenActual ? 1 : 0.6 }}
                       >
                         <Image src={img} alt="" width={56} height={56} className="object-cover w-full h-full" />
                       </button>
@@ -202,7 +202,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
 
             {/* Precio */}
             <div className="flex items-center gap-3 mb-5">
-              <span className="text-2xl font-bold" style={{ color: producto.precio_antes ? '#E11D2E' : '#F5F5F2' }}>
+              <span className="text-2xl font-bold" style={{ color: producto.precio_antes ? 'var(--color-brand)' : '#F5F5F2' }}>
                 {formatPrice(producto.precio)}
               </span>
               {producto.precio_antes && (
@@ -237,9 +237,9 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
                         title={tallaAgotada ? 'Talla agotada' : undefined}
                         className="min-w-[52px] min-h-[52px] px-4 rounded-xl border-2 text-sm font-semibold transition-colors"
                         style={{
-                          backgroundColor: sel ? '#E11D2E' : '#161618',
+                          backgroundColor: sel ? 'var(--color-brand)' : '#161618',
                           color: tallaAgotada ? '#4A4A4E' : sel ? '#fff' : '#F5F5F2',
-                          borderColor: sel ? '#E11D2E' : '#2C2C30',
+                          borderColor: sel ? 'var(--color-brand)' : '#2C2C30',
                           textDecoration: tallaAgotada ? 'line-through' : 'none',
                           opacity: tallaAgotada ? 0.5 : 1,
                           touchAction: 'manipulation',
@@ -279,9 +279,9 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
                         title={colorAgotado ? 'Color agotado' : undefined}
                         className="min-h-[52px] px-5 rounded-xl border-2 text-sm font-semibold capitalize transition-colors"
                         style={{
-                          backgroundColor: sel ? '#E11D2E' : '#161618',
+                          backgroundColor: sel ? 'var(--color-brand)' : '#161618',
                           color: colorAgotado ? '#4A4A4E' : sel ? '#fff' : '#F5F5F2',
-                          borderColor: sel ? '#E11D2E' : '#2C2C30',
+                          borderColor: sel ? 'var(--color-brand)' : '#2C2C30',
                           textDecoration: colorAgotado ? 'line-through' : 'none',
                           opacity: colorAgotado ? 0.5 : 1,
                           touchAction: 'manipulation',
@@ -386,7 +386,7 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
                 <span key={i} className="h-1.5 rounded-full transition-all duration-300 block"
                   style={{
                     width: i === imagenActual ? '18px' : '6px',
-                    backgroundColor: i === imagenActual ? '#E11D2E' : 'rgba(255,255,255,0.4)',
+                    backgroundColor: i === imagenActual ? 'var(--color-brand)' : 'rgba(255,255,255,0.4)',
                   }}
                 />
               ))}
@@ -419,7 +419,7 @@ function BtnAgregar({ agotado, agregado, onClick }: BtnProps) {
       onClick={onClick}
       className="w-full py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 transition-all text-sm"
       style={{
-        backgroundColor: agregado ? '#22C55E' : '#E11D2E',
+        backgroundColor: agregado ? '#22C55E' : 'var(--color-brand)',
         color: '#fff',
         boxShadow: agregado ? '0 4px 20px rgba(34,197,94,0.3)' : '0 4px 20px rgba(225,29,46,0.3)',
         touchAction: 'manipulation',
@@ -432,3 +432,4 @@ function BtnAgregar({ agotado, agregado, onClick }: BtnProps) {
     </button>
   )
 }
+

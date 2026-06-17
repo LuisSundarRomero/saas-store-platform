@@ -1,9 +1,12 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
 import { getProductoBySlug } from '@/lib/actions/productos'
 import { ProductoDetalle } from '@/components/pdp/ProductoDetalle'
 import { formatPrice } from '@/lib/utils/format'
+
+export const dynamic = 'force-dynamic'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -11,18 +14,19 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const producto = await getProductoBySlug(slug)
+  const [producto, tenant] = await Promise.all([getProductoBySlug(slug), getTenant()])
   if (!producto) return {}
+  const nombre = tenant.nombre || 'Mi Tienda'
   const imagen = producto.imagenes?.[0]
   return {
-    title: `${producto.nombre} — Anarchyy.pe`,
-    description: producto.descripcion ?? `${producto.nombre} · ${formatPrice(producto.precio)} · Ropa streetwear oscura de edición limitada`,
+    title: `${producto.nombre} — ${nombre}`,
+    description: producto.descripcion ?? `${producto.nombre} · ${formatPrice(producto.precio)}`,
     alternates: {
       canonical: `/catalogo/${producto.slug}`,
     },
     openGraph: {
       title: producto.nombre,
-      description: `${formatPrice(producto.precio)} — ${producto.descripcion ?? 'Ropa streetwear oscura de edición limitada · Anarchyy.pe'}`,
+      description: `${formatPrice(producto.precio)} — ${producto.descripcion ?? producto.nombre}`,
       images: imagen ? [{ url: imagen, width: 800, height: 800, alt: producto.nombre }] : [],
       type: 'website',
     },
@@ -36,28 +40,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductoPage({ params }: Props) {
   const { slug } = await params
-  const producto = await getProductoBySlug(slug)
+  const [producto, supabase, tenant] = await Promise.all([
+    getProductoBySlug(slug),
+    createPublicClient(),
+    getTenant(),
+  ])
   if (!producto) notFound()
 
-  const supabase = await createClient()
   const { data: config } = await supabase
     .from('config')
-    .select('whatsapp_numero')
+    .select('whatsapp_numero, tienda_nombre')
+    .eq('tenant_id', tenant.id)
     .single()
 
   const whatsappNumero = (config?.whatsapp_numero ?? '').replace(/\s/g, '')
+  const tiendaNombre = config?.tienda_nombre ?? tenant.nombre
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://anarchyy.pe'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
   const agotado = producto.stock !== null && producto.stock === 0
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: producto.nombre,
-    description: producto.descripcion ?? `${producto.nombre} — Ropa streetwear oscura de edición limitada`,
+    description: producto.descripcion ?? producto.nombre,
     image: producto.imagenes ?? [],
     url: `${appUrl}/catalogo/${producto.slug}`,
-    brand: { '@type': 'Brand', name: 'Anarchyy' },
+    brand: { '@type': 'Brand', name: tiendaNombre },
     offers: {
       '@type': 'Offer',
       priceCurrency: 'PEN',
@@ -65,7 +74,7 @@ export default async function ProductoPage({ params }: Props) {
       availability: agotado
         ? 'https://schema.org/OutOfStock'
         : 'https://schema.org/InStock',
-      seller: { '@type': 'Organization', name: 'Anarchyy.pe' },
+      seller: { '@type': 'Organization', name: tiendaNombre },
     },
   }
 

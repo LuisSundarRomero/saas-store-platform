@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -62,7 +62,7 @@ export function AnnouncementBar({ texto, link, expira }: Props) {
 
   return (
     <div className="relative flex items-center justify-center gap-3 px-10 py-2.5 text-white text-sm font-medium"
-      style={{ backgroundColor: '#E11D2E' }}>
+      style={{ backgroundColor: 'var(--color-brand)' }}>
 
       {link
         ? <Link href={link} className="hover:underline underline-offset-2">{contenido}</Link>
@@ -81,3 +81,4 @@ export function AnnouncementBar({ texto, link, expira }: Props) {
     </div>
   )
 }
+

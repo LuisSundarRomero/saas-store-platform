@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
@@ -223,7 +223,7 @@ export function CategoriasManager({ categorias: inicial }: Props) {
       {!showNew && (
         <button onClick={() => setShowNew(true)}
           className="flex items-center gap-2 text-sm font-semibold text-white px-5 py-2.5 rounded-full self-start transition-opacity hover:opacity-90 shadow-sm"
-          style={{ backgroundColor: '#E11D2E', boxShadow: '0 2px 12px rgba(225,29,46,0.25)' }}>
+          style={{ backgroundColor: 'var(--color-brand)', boxShadow: '0 2px 12px rgba(225,29,46,0.25)' }}>
           <IconPlus size={15} />
           Nueva categoría
         </button>
@@ -231,3 +231,4 @@ export function CategoriasManager({ categorias: inicial }: Props) {
     </div>
   )
 }
+
