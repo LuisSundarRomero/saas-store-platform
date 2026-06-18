@@ -18,7 +18,7 @@ export default async function RastrearPage({ searchParams }: Props) {
   return (
     <RastrearClient
       orderId={order}
-      whatsappNumero={config?.whatsapp_numero ?? process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ''}
+      whatsappNumero={config?.whatsapp_numero ?? ''}
     />
   )
 }
