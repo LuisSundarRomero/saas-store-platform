@@ -97,7 +97,7 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
     .select('culqi_secret_key, culqi_public_key')
     .eq('id', tenant.id)
     .single()
-  const culqiSecretKey = tenantData?.culqi_secret_key ?? process.env.CULQI_SECRET_KEY ?? ''
+  const culqiSecretKey = tenantData?.culqi_secret_key ?? ''
 
   // Intentar con la función de Supabase (secuencia atómica)
   let orderId: string
