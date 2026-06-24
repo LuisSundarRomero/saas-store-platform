@@ -28,3 +28,11 @@ export function createPublicClient() {
     { global: { fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }) } }
   )
 }
+
+// Cliente admin con service role — bypassa RLS, solo usar en server actions/pages
+export function createAdminClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}

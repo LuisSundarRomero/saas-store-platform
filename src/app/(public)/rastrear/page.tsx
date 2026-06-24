@@ -8,11 +8,13 @@ interface Props {
 export default async function RastrearPage({ searchParams }: Props) {
   const { order } = await searchParams
 
-  // config tiene RLS pública — no necesita admin client
-  const supabase = await createClient()
-  const { data: config } = await supabase
-    .from('config')
+  const { createAdminClient } = await import('@/lib/supabase/server')
+  const { getTenant } = await import('@/lib/tenant')
+  const tenant = await getTenant()
+  const { data: config } = await createAdminClient()
+    .from('config_tienda')
     .select('whatsapp_numero')
+    .eq('tenant_id', tenant.id)
     .single()
 
   return (

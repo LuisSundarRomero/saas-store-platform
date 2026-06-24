@@ -1,41 +1,49 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 @theme {
-  /* Brand — Anarchy: lujo oscuro / dark streetwear */
-  --color-brand:          #E11D2E;
-  --color-brand-light:    #3A1014;
-  --color-brand-dark:     #A3121F;
+  /* Brand — sobreescrito inline por layout.tsx según tenant */
+  --color-brand: #E11D2E;
 
-  /* Fondo y superficies */
-  --color-bg:             #1F1F22;
-  --color-surface:        #161618;
-  --color-surface-2:      #1F1F22;
-  --color-border:         #2C2C30;
-
-  /* Texto */
-  --color-ink:            #F5F5F2;
-  --color-muted:          #9A9A9E;
-
-  /* Semanticos (ajustados a fondo oscuro) */
-  --color-warning:        #F59E0B;
-  --color-warning-bg:     #3A2A0A;
-  --color-ok:             #22C55E;
-  --color-ok-bg:          #0F2A18;
-  --color-info:           #60A5FA;
-  --color-info-bg:        #11203A;
-  --color-danger:         #EF4444;
-  --color-danger-bg:      #3A1313;
-
-  /* Fuentes */
+  /* Fuentes — sobreescritas inline por layout.tsx según tenant */
   --font-sans:    var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-display), Impact, ui-sans-serif, sans-serif;
+}
+
+/* ── Tokens de tema (runtime) — sobreescritos por [data-theme] ── */
+:root {
+  --color-bg:          #1F1F22;
+  --color-surface:     #161618;
+  --color-surface-alt: #121214;
+  --color-border:      #2C2C30;
+  --color-ink:         #F5F5F2;
+  --color-muted:       #9A9A9E;
+  --color-brand-bg:    #3A1014;
+  --color-brand-text:  #FF6B7A;
+  --color-brand-glow:  rgba(225,29,46,0.35);
+  --font-display-transform: uppercase;
+  --font-display-spacing:   0.04em;
+}
+
+/* ── Tema claro (coquette / fashion femenino) ── */
+[data-theme="light"] {
+  --color-bg:          #FFFAF9;
+  --color-surface:     #FFF5F8;
+  --color-surface-alt: #FEF0F4;
+  --color-border:      #FBCFE8;
+  --color-ink:         #1A1A1A;
+  --color-muted:       #9CA3AF;
+  --color-brand-bg:    #FCE7F3;
+  --color-brand-text:  #BE185D;
+  --color-brand-glow:  rgba(240,98,146,0.25);
+  --font-display-transform: none;
+  --font-display-spacing:   -0.01em;
 }
 
 * { box-sizing: border-box; }
 
 body {
-  background-color: #1F1F22;
-  color: #F5F5F2;
+  background-color: var(--color-bg);
+  color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   font-size: 15px;
@@ -45,8 +53,8 @@ body {
 /* Tipografía de impacto — títulos, drops, CTAs grandes */
 .font-display {
   font-family: var(--font-display);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  text-transform: var(--font-display-transform);
+  letter-spacing: var(--font-display-spacing);
 }
 
 @keyframes shake {
@@ -67,3 +75,21 @@ body {
 .btn-brand:hover { background-color: color-mix(in srgb, var(--color-brand) 70%, black); }
 .btn-brand:disabled { opacity: 0.6; }
 
+/* Botón WhatsApp — hover con CSS vars para funcionar en Server Components */
+.whatsapp-btn {
+  border-color: var(--color-border);
+  color: var(--color-muted);
+}
+.whatsapp-btn:hover {
+  border-color: var(--color-brand);
+  color: var(--color-ink);
+}
+
+.ver-coleccion {
+  border-color: var(--color-border);
+  color: var(--color-muted);
+}
+.ver-coleccion:hover {
+  border-color: var(--color-brand);
+  color: var(--color-ink);
+}

@@ -47,14 +47,15 @@ export default async function ProductoPage({ params }: Props) {
   ])
   if (!producto) notFound()
 
-  const { data: config } = await supabase
-    .from('config')
+  const { createAdminClient } = await import('@/lib/supabase/server')
+  const { data: ct } = await createAdminClient()
+    .from('config_tienda')
     .select('whatsapp_numero, tienda_nombre')
     .eq('tenant_id', tenant.id)
     .single()
 
-  const whatsappNumero = (config?.whatsapp_numero ?? '').replace(/\s/g, '')
-  const tiendaNombre = config?.tienda_nombre ?? tenant.nombre
+  const whatsappNumero = (ct?.whatsapp_numero ?? '').replace(/\s/g, '')
+  const tiendaNombre = ct?.tienda_nombre ?? tenant.nombre
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
   const agotado = producto.stock !== null && producto.stock === 0

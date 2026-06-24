@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { IconArrowLeft, IconUpload, IconGripVertical } from '@tabler/icons-react'
-import { createClient } from '@/lib/supabase/client'
-import { deleteProducto } from '@/lib/actions/admin'
+import { useImageUpload } from '@/hooks/useImageUpload'
+import { crearProducto, actualizarProducto, deleteProducto } from '@/lib/actions/admin'
 import { Switch } from '@/components/ui/Switch'
 import type { Producto } from '@/types'
 
@@ -32,7 +32,14 @@ export function ProductoForm({ producto, categorias }: Props) {
   const [tallas, setTallas] = useState<string[]>(producto?.tallas ?? [])
   const [colores, setColores] = useState<string>(producto?.colores?.join(', ') ?? '')
   const [stockActivo, setStockActivo] = useState(producto?.stock !== null)
-  const [stock, setStock] = useState(producto?.stock?.toString() ?? '0')
+  const [stock, setStock] = useState(
+    // Si había tallas con stock, reconstruimos el total original; si no, el campo directo
+    producto?.stock !== null && producto?.stock !== undefined
+      ? (Object.keys(producto?.stock_tallas ?? {}).length > 0
+          ? String(Object.values(producto.stock_tallas!).reduce((a: number, b: number) => a + b, 0))
+          : producto.stock.toString())
+      : '0'
+  )
   const [stockTallas, setStockTallas] = useState<Record<string, string>>(
     Object.fromEntries(Object.entries(producto?.stock_tallas ?? {}).map(([k, v]) => [k, String(v)]))
   )
@@ -41,19 +48,27 @@ export function ProductoForm({ producto, categorias }: Props) {
   )
   const [visible, setVisible] = useState(producto?.visible ?? true)
   const [imagenes, setImagenes] = useState<string[]>(producto?.imagenes ?? [])
-  const [uploading, setUploading] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState('')
-  const [uploadError, setUploadError] = useState('')
+  const { uploading, progress: uploadProgress, error: uploadError, upload } = useImageUpload()
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [overIndex, setOverIndex] = useState<number | null>(null)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState('')
+
+  // Cuando hay tallas y stock activo, el stock total = suma de stock_tallas (no editable)
+  const stockTallasTotal = stockActivo && tallas.length > 0
+    ? tallas.reduce((sum, t) => sum + (parseInt(stockTallas[t] ?? '0') || 0), 0)
+    : null
 
   function toggleTalla(t: string) {
     setTallas((prev) => prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t])
   }
 
   const coloresArray = colores.split(',').map((c) => c.trim()).filter(Boolean)
+
+  // Cuando hay colores (sin tallas) y stock activo, el stock total = suma de stock_colores (no editable)
+  const stockColoresTotal = stockActivo && coloresArray.length > 0 && tallas.length === 0
+    ? coloresArray.reduce((sum, c) => sum + (parseInt(stockColores[c] ?? '0') || 0), 0)
+    : null
 
   function handleDrop(targetIndex: number) {
     if (dragIndex === null || dragIndex === targetIndex) {
@@ -72,35 +87,9 @@ export function ProductoForm({ producto, categorias }: Props) {
   }
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files
-    if (!files?.length) return
-    setUploadError('')
-    setUploading(true)
-    const supabase = createClient()
-    const urls: string[] = []
-    const disponibles = 5 - imagenes.length
-    const aSubir = Array.from(files).slice(0, disponibles)
-
-    for (let i = 0; i < aSubir.length; i++) {
-      const file = aSubir[i]
-      setUploadProgress(`Subiendo ${i + 1} de ${aSubir.length}...`)
-      if (file.size > 5 * 1024 * 1024) {
-        setUploadError(`"${file.name}" supera los 5MB`)
-        continue
-      }
-      const ext = file.name.split('.').pop()
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-      const { error } = await supabase.storage.from('productos').upload(path, file, { cacheControl: '3600', upsert: false })
-      if (error) {
-        setUploadError(`Error subiendo "${file.name}"`)
-      } else {
-        const { data } = supabase.storage.from('productos').getPublicUrl(path)
-        urls.push(data.publicUrl)
-      }
-    }
+    if (!e.target.files?.length) return
+    const urls = await upload(e.target.files, imagenes.length, 5)
     setImagenes((prev) => [...prev, ...urls])
-    setUploading(false)
-    setUploadProgress('')
     e.target.value = ''
   }
 
@@ -108,7 +97,21 @@ export function ProductoForm({ producto, categorias }: Props) {
     e.preventDefault()
     setError('')
     startTransition(async () => {
-      const supabase = createClient()
+      const stockTallasData = stockActivo && tallas.length > 0
+        ? Object.fromEntries(tallas.map((t) => [t, parseInt(stockTallas[t] ?? '0') || 0]))
+        : {}
+      // Stock total: suma de tallas → suma de colores → input manual
+      const stockColoresData = stockActivo
+        ? Object.fromEntries(coloresArray.map((c) => [c, parseInt(stockColores[c] ?? '0') || 0]))
+        : {}
+      const stockTotal = !stockActivo
+        ? null
+        : tallas.length > 0
+          ? Object.values(stockTallasData).reduce((a, b) => a + b, 0)
+          : coloresArray.length > 0
+            ? Object.values(stockColoresData).reduce((a, b) => a + b, 0)
+            : parseInt(stock) || 0
+
       const data = {
         nombre,
         descripcion: descripcion || null,
@@ -118,25 +121,22 @@ export function ProductoForm({ producto, categorias }: Props) {
         imagenes,
         tallas,
         colores: coloresArray,
-        stock: stockActivo ? parseInt(stock) : null,
-        stock_tallas: stockActivo
-          ? Object.fromEntries(tallas.map((t) => [t, parseInt(stockTallas[t] ?? '0') || 0]))
-          : {},
-        stock_colores: stockActivo
-          ? Object.fromEntries(coloresArray.map((c) => [c, parseInt(stockColores[c] ?? '0') || 0]))
-          : {},
+        stock: stockTotal,
+        stock_tallas: stockTallasData,
+        stock_colores: stockColoresData,
         visible,
         slug: nombre.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
       }
-      if (isNew) {
-        const { error } = await supabase.from('productos').insert(data)
-        if (error) { setError(error.message); return }
-      } else {
-        const { error } = await supabase.from('productos').update(data).eq('id', producto.id)
-        if (error) { setError(error.message); return }
+      try {
+        if (isNew) {
+          await crearProducto(data)
+        } else {
+          await actualizarProducto(producto.id, data)
+        }
+        router.push('/admin/catalogo')
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error al guardar')
       }
-      router.push('/admin/catalogo')
-      router.refresh()
     })
   }
 
@@ -286,11 +286,25 @@ export function ProductoForm({ producto, categorias }: Props) {
                 <Switch checked={stockActivo} onChange={setStockActivo} />
               </div>
               {stockActivo && (
-                <div className="flex items-center gap-3">
-                  <label className="text-sm text-gray-500 shrink-0">Cantidad:</label>
-                  <input type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)}
-                    className={`${inputCls} text-center font-mono`} placeholder="0" />
-                </div>
+                tallas.length > 0 ? (
+                  <div className="flex items-center gap-2.5 py-0.5">
+                    <label className="text-sm text-gray-500 shrink-0">Stock total:</label>
+                    <span className="text-sm font-mono font-bold text-gray-800">{stockTallasTotal} uds</span>
+                    <span className="text-xs text-gray-400">(suma de tallas)</span>
+                  </div>
+                ) : coloresArray.length > 0 ? (
+                  <div className="flex items-center gap-2.5 py-0.5">
+                    <label className="text-sm text-gray-500 shrink-0">Stock total:</label>
+                    <span className="text-sm font-mono font-bold text-gray-800">{stockColoresTotal} uds</span>
+                    <span className="text-xs text-gray-400">(suma de colores)</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <label className="text-sm text-gray-500 shrink-0">Cantidad:</label>
+                    <input type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)}
+                      className={`${inputCls} text-center font-mono`} placeholder="0" />
+                  </div>
+                )
               )}
             </div>
           </div>

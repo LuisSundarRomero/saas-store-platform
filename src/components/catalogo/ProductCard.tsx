@@ -1,4 +1,4 @@
-﻿import Image from 'next/image'
+import Image from 'next/image'
 import Link from 'next/link'
 import { IconSkull } from '@tabler/icons-react'
 import { Producto } from '@/types'
@@ -22,7 +22,7 @@ export function ProductCard({ producto }: ProductCardProps) {
     <Link href={`/catalogo/${producto.slug}`} className="group flex flex-col transition-transform duration-300 hover:-translate-y-1">
 
       {/* Imagen */}
-      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#1F1F22] mb-3 ring-1 ring-transparent transition-all duration-300 group-hover:ring-[var(--color-brand)]/40 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
+      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[var(--color-surface)] mb-3 ring-1 ring-transparent transition-all duration-300 group-hover:ring-[var(--color-brand)]/40 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)]">
         {imagen ? (
           <>
             <Image
@@ -43,10 +43,10 @@ export function ProductCard({ producto }: ProductCardProps) {
             )}
           </>
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-[#3A3A3E] text-4xl">🖤</div>
+          <div className="absolute inset-0 flex items-center justify-center text-[var(--color-border)] text-4xl">🖤</div>
         )}
 
-        {/* Badge descuento — izquierda */}
+        {/* Badge descuento */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
           {descuento && (
             <span className="text-white text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: 'var(--color-brand)' }}>
@@ -61,36 +61,38 @@ export function ProductCard({ producto }: ProductCardProps) {
           )}
         </div>
 
-        {/* Badge NUEVO — derecha */}
+        {/* Badge NUEVO */}
         {nuevo && (
           <div className="absolute top-2.5 right-2.5">
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#F5F5F2', color: '#1F1F22' }}>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+              style={{ backgroundColor: 'var(--color-ink)', color: 'var(--color-bg)' }}>
               NUEVO
             </span>
           </div>
         )}
 
         {agotado && (
-          <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center gap-2">
-            <IconSkull size={28} stroke={1.5} style={{ color: '#6B6B70' }} />
-            <span className="text-[10px] font-semibold px-4 py-1.5 rounded-full" style={{ backgroundColor: '#1F1F22', color: '#9A9A9E' }}>
+          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-2">
+            <IconSkull size={28} stroke={1.5} style={{ color: 'var(--color-muted)' }} />
+            <span className="text-[10px] font-semibold px-4 py-1.5 rounded-full"
+              style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-muted)' }}>
               Agotado
             </span>
           </div>
         )}
       </div>
 
-      {/* Info — limpio y directo */}
+      {/* Info */}
       <div className="flex flex-col gap-1 px-0.5">
-        <p className="text-sm font-medium text-[#F5F5F2] line-clamp-2 leading-snug">
+        <p className="text-sm font-medium text-[var(--color-ink)] line-clamp-2 leading-snug">
           {producto.nombre}
         </p>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold" style={{ color: producto.precio_antes ? 'var(--color-brand)' : '#F5F5F2' }}>
+          <span className="text-sm font-bold" style={{ color: producto.precio_antes ? 'var(--color-brand)' : 'var(--color-ink)' }}>
             {formatPrice(producto.precio)}
           </span>
           {producto.precio_antes && (
-            <span className="text-xs text-[#6B6B70] line-through">
+            <span className="text-xs text-[var(--color-muted)] line-through">
               {formatPrice(producto.precio_antes)}
             </span>
           )}
@@ -100,4 +102,3 @@ export function ProductCard({ producto }: ProductCardProps) {
     </Link>
   )
 }
-

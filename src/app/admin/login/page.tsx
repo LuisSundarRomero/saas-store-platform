@@ -1,10 +1,11 @@
 ﻿import { LoginForm } from '@/components/admin/LoginForm'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
 
 export default async function LoginPage() {
-  const supabase = await createClient()
-  const { data: config } = await supabase.from('config').select('tienda_nombre').single()
-  const tiendaNombre = config?.tienda_nombre ?? 'Panel admin'
+  const tenant = await getTenant()
+  const { data: ct } = await createAdminClient().from('config_tienda').select('tienda_nombre').eq('tenant_id', tenant.id).single()
+  const tiendaNombre = ct?.tienda_nombre ?? tenant.nombre
 
   return (
     <main

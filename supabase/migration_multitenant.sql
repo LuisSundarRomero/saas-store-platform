@@ -349,6 +349,22 @@ SET plan_id = (SELECT id FROM planes WHERE nombre = 'pro')
 WHERE slug = 'anarchy';
 
 
+-- ─── 12. ELIMINAR CONSTRAINT SINGLETON DE CONFIG ────────────
+-- config_singleton_unique fue creado para el setup mono-tenant original.
+-- En multi-tenant cada tenant tiene su propia fila → la constraint rompe INSERTs.
+
+ALTER TABLE config DROP CONSTRAINT IF EXISTS config_singleton_unique;
+ALTER TABLE config DROP COLUMN IF EXISTS singleton;
+
+
+-- ─── 13. FUENTES POR TENANT ──────────────────────────────────
+-- Permite que cada tenant tenga su propia tipografía (Google Fonts).
+-- Vacío = usa las fuentes por defecto del sistema (Anton / Inter).
+
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS font_display TEXT DEFAULT '';
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS font_body    TEXT DEFAULT '';
+
+
 -- ─── FIN ─────────────────────────────────────────────────────
 -- Verificar con:
 -- SELECT tablename FROM pg_tables WHERE schemaname = 'public';

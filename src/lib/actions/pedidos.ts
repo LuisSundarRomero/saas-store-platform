@@ -216,10 +216,15 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
 
   await admin.from('pedido_items').insert(itemsData)
 
+  // Descontar stock de cada producto (en background; no bloquea el checkout si falla)
+  descontarStockPedido(admin, tenant.id, input.items).catch((err) =>
+    console.error('[crearPedidoConCulqi] error actualizando stock:', err)
+  )
+
   // Config de la tienda
   const { data: config } = await admin
-    .from('config')
-    .select('email_notificaciones, tienda_nombre')
+    .from('config_tienda')
+    .select('email_notif, tienda_nombre')
     .eq('tenant_id', tenant.id)
     .single()
 
@@ -227,9 +232,9 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
   const trackingUrl = `${appUrl}/rastrear?order=${orderId}`
 
   // Enviar email de notificación (en background, no bloquea el checkout)
-  if (config?.email_notificaciones) {
+  if (config?.email_notif) {
     enviarEmailNuevoPedido({
-      to: config.email_notificaciones,
+      to: config.email_notif,
       orderId,
       clienteTelefono: input.clienteTelefono,
       items: input.items,
@@ -240,6 +245,131 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
   }
 
   return { success: true, orderId }
+}
+
+interface CrearPedidoWhatsAppInput {
+  items: CartItem[]
+  clienteNombre: string
+  clienteTelefono: string
+  clienteEmail: string
+  clienteDireccion: string
+}
+
+type CrearPedidoWhatsAppResult =
+  | { success: true; orderId: string; whatsappUrl: string }
+  | { success: false; error: string }
+
+export async function crearPedidoWhatsApp(input: CrearPedidoWhatsAppInput): Promise<CrearPedidoWhatsAppResult> {
+  const admin = getAdminClient()
+  const tenant = await getTenant()
+
+  const total = input.items.reduce((sum, i) => sum + i.precio * i.cantidad, 0)
+
+  let orderId: string
+  const { data: rpcData } = await admin.rpc('next_order_id')
+  if (rpcData) {
+    orderId = rpcData as string
+  } else {
+    const ts = Date.now().toString(36).toUpperCase().slice(-5)
+    const rand = Math.random().toString(36).slice(2, 4).toUpperCase()
+    orderId = `ORD-${ts}${rand}`
+  }
+
+  const pedidoId = crypto.randomUUID()
+
+  const { error: pedidoError } = await admin.from('pedidos').insert({
+    id: pedidoId,
+    order_id: orderId,
+    tenant_id: tenant.id,
+    cliente_nombre: input.clienteNombre,
+    cliente_telefono: input.clienteTelefono.replace(/\s/g, ''),
+    cliente_email: input.clienteEmail,
+    cliente_direccion: input.clienteDireccion,
+    total,
+    estado: 'pendiente',
+    metodo_pago: 'whatsapp',
+  })
+
+  if (pedidoError) {
+    console.error('[crearPedidoWhatsApp] error inserting pedido:', pedidoError.message)
+    return { success: false, error: 'No pudimos registrar tu pedido. Intenta nuevamente.' }
+  }
+
+  const itemsData = input.items.map((i) => ({
+    pedido_id: pedidoId,
+    tenant_id: tenant.id,
+    producto_id: i.productoId,
+    nombre: i.nombre,
+    precio: i.precio,
+    talla: i.talla || null,
+    color: i.color || null,
+    cantidad: i.cantidad,
+    subtotal: i.precio * i.cantidad,
+  }))
+
+  await admin.from('pedido_items').insert(itemsData)
+
+  const { data: config } = await admin
+    .from('config_tienda')
+    .select('whatsapp_numero, tienda_nombre, email_notif')
+    .eq('tenant_id', tenant.id)
+    .single()
+
+  const { data: msgConfig } = await admin
+    .from('config_mensajes')
+    .select('whatsapp_template')
+    .eq('tenant_id', tenant.id)
+    .single()
+
+  const numero = (config?.whatsapp_numero ?? '').replace(/\D/g, '')
+
+  const lineasItems = input.items
+    .map((i) => {
+      const extras = [i.talla, i.color].filter(Boolean).join(', ')
+      return `• ${i.nombre}${extras ? ` (${extras})` : ''} x${i.cantidad} — S/${(i.precio * i.cantidad / 100).toFixed(2)}`
+    })
+    .join('\n')
+
+  const totalSoles = (total / 100).toFixed(2)
+
+  let mensaje = msgConfig?.whatsapp_template ?? ''
+  if (mensaje) {
+    mensaje = mensaje
+      .replace(/{order_id}/g, orderId)
+      .replace(/{nombre}/g, input.clienteNombre)
+      .replace(/{direccion}/g, input.clienteDireccion)
+      .replace(/{items}/g, lineasItems)
+      .replace(/{total}/g, `S/${totalSoles}`)
+  } else {
+    mensaje =
+      `Hola! Quiero confirmar mi pedido *${orderId}*\n\n` +
+      `*Datos:*\n` +
+      `Nombre: ${input.clienteNombre}\n` +
+      `Dirección: ${input.clienteDireccion}\n\n` +
+      `*Productos:*\n${lineasItems}\n\n` +
+      `*Total: S/${totalSoles}*`
+  }
+
+  const whatsappUrl = numero
+    ? `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`
+    : `https://wa.me/?text=${encodeURIComponent(mensaje)}`
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
+  const trackingUrl = `${appUrl}/rastrear?order=${orderId}`
+
+  if (config?.email_notif) {
+    enviarEmailNuevoPedido({
+      to: config.email_notif,
+      orderId,
+      clienteTelefono: input.clienteTelefono,
+      items: input.items,
+      total,
+      trackingUrl,
+      tiendaNombre: config.tienda_nombre ?? undefined,
+    }).catch((err) => console.error('[email]', err.message))
+  }
+
+  return { success: true, orderId, whatsappUrl }
 }
 
 export async function verificarPedido(orderId: string, telefono: string) {

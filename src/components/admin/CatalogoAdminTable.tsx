@@ -3,11 +3,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useTransition } from 'react'
-import { IconEdit } from '@tabler/icons-react'
+import { IconEdit, IconTrash } from '@tabler/icons-react'
 import { Switch } from '@/components/ui/Switch'
 import { useRouter } from 'next/navigation'
 import { formatPrice } from '@/lib/utils/format'
-import { toggleVisibilidadProducto, toggleDestacadoProducto, toggleEsNuevoProducto } from '@/lib/actions/admin'
+import { toggleVisibilidadProducto, toggleDestacadoProducto, toggleEsNuevoProducto, deleteProducto } from '@/lib/actions/admin'
 import { IconStar, IconSparkles } from '@tabler/icons-react'
 import type { Producto } from '@/types'
 
@@ -36,6 +36,14 @@ export function CatalogoAdminTable({ productos }: Props) {
       } catch (e) {
         alert('Error: ' + (e instanceof Error ? e.message : String(e)))
       }
+    })
+  }
+
+  function handleEliminar(id: string, nombre: string) {
+    if (!confirm(`¿Eliminar "${nombre}"? Esta acción no se puede deshacer.`)) return
+    startTransition(async () => {
+      await deleteProducto(id)
+      router.refresh()
     })
   }
 
@@ -161,9 +169,17 @@ export function CatalogoAdminTable({ productos }: Props) {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <Link href={`/admin/catalogo/${p.id}`} className="p-1.5 hover:bg-gray-100 rounded-lg inline-flex text-gray-400 hover:text-gray-700 transition-colors">
-                      <IconEdit size={16} />
-                    </Link>
+                    <div className="flex items-center gap-1">
+                      <Link href={`/admin/catalogo/${p.id}`} className="p-1.5 hover:bg-gray-100 rounded-lg inline-flex text-gray-400 hover:text-gray-700 transition-colors">
+                        <IconEdit size={16} />
+                      </Link>
+                      <button
+                        onClick={() => handleEliminar(p.id, p.nombre)}
+                        disabled={isPending}
+                        className="p-1.5 hover:bg-red-50 rounded-lg inline-flex text-gray-300 hover:text-red-500 transition-colors disabled:opacity-40">
+                        <IconTrash size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               )

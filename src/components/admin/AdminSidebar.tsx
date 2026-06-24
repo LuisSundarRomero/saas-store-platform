@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -14,17 +14,20 @@ const NAV = [
   { href: '/admin/categorias',          label: 'Categorías',   icon: IconTag,          exact: false },
   { href: '/admin/reclamaciones',       label: 'Reclamos',     icon: IconBook2,        exact: false },
   { href: '/admin/estadisticas',        label: 'Estadísticas', icon: IconChartBar,     exact: false },
-  { href: '/admin/configuracion/pagos', label: 'Pagos',        icon: IconCreditCard,   exact: true },
+  { href: '/admin/configuracion/pagos', label: 'Pagos',        icon: IconCreditCard,   exact: true, proOnly: true },
   { href: '/admin/configuracion',       label: 'Config',       icon: IconSettings,     exact: true },
 ]
 
 interface SidebarProps {
   tiendaNombre?: string
+  planPro?: boolean
 }
 
-export function AdminSidebar({ tiendaNombre = 'Mi Tienda' }: SidebarProps) {
+export function AdminSidebar({ tiendaNombre = 'Mi Tienda', planPro = false }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
+
+  const nav = NAV.filter(item => !item.proOnly || planPro)
 
   async function handleLogout() {
     const supabase = createClient()
@@ -50,7 +53,7 @@ export function AdminSidebar({ tiendaNombre = 'Mi Tienda' }: SidebarProps) {
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5 overflow-y-auto">
-          {NAV.map(({ href, label, icon: Icon, exact }) => {
+          {nav.map(({ href, label, icon: Icon, exact }) => {
             const active = exact ? pathname === href : pathname.startsWith(href)
             return (
               <Link key={href} href={href}
@@ -99,7 +102,7 @@ export function AdminSidebar({ tiendaNombre = 'Mi Tienda' }: SidebarProps) {
 
       {/* ── BOTTOM NAV mobile ── */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 flex">
-        {NAV.map(({ href, label, icon: Icon, exact }) => {
+        {nav.map(({ href, label, icon: Icon, exact }) => {
           const active = exact ? pathname === href : pathname.startsWith(href)
           return (
             <Link key={href} href={href}
@@ -114,4 +117,3 @@ export function AdminSidebar({ tiendaNombre = 'Mi Tienda' }: SidebarProps) {
     </>
   )
 }
-

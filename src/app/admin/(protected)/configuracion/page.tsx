@@ -1,10 +1,14 @@
-import { createClient } from '@/lib/supabase/server'
-import { getTenant } from '@/lib/tenant'
+import { getConfigTienda, getConfigAnuncio, getConfigBanner, getConfigFooter, getConfigMensajes } from '@/lib/actions/admin'
 import { ConfigForm } from '@/components/admin/ConfigForm'
 
 export default async function ConfiguracionPage() {
-  const [supabase, tenant] = await Promise.all([createClient(), getTenant()])
-  const { data: config } = await supabase.from('config').select('*').eq('tenant_id', tenant.id).single()
+  const [tienda, anuncio, banner, footer, mensajes] = await Promise.all([
+    getConfigTienda(),
+    getConfigAnuncio(),
+    getConfigBanner(),
+    getConfigFooter(),
+    getConfigMensajes(),
+  ])
 
   return (
     <div className="p-4 sm:p-6 max-w-[1400px] mx-auto">
@@ -12,7 +16,13 @@ export default async function ConfiguracionPage() {
         <h1 className="text-2xl font-bold text-gray-900">Configuración</h1>
         <p className="text-sm text-gray-400 mt-0.5">Ajustes generales de la tienda</p>
       </div>
-      <ConfigForm config={config} />
+      <ConfigForm
+        tienda={tienda}
+        anuncio={anuncio}
+        banner={banner}
+        footer={footer}
+        mensajes={mensajes}
+      />
     </div>
   )
 }

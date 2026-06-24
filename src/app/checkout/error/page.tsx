@@ -11,7 +11,7 @@ export default async function CheckoutErrorPage() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
   const { data: config } = await admin
-    .from('config')
+    .from('config_tienda')
     .select('whatsapp_numero')
     .eq('tenant_id', tenant.id)
     .single()

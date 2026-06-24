@@ -1,20 +1,22 @@
 ﻿import Link from 'next/link'
 import { IconArrowLeft, IconFileText } from '@tabler/icons-react'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
 
 export default async function TerminosPage() {
-  const supabase = await createClient()
-  const { data: config } = await supabase
-    .from('config')
-    .select('tienda_nombre, empresa_razon_social, empresa_ruc, empresa_direccion, whatsapp_numero, footer_email')
-    .single()
+  const tenant = await getTenant()
+  const admin = createAdminClient()
+  const [{ data: ct }, { data: cf }] = await Promise.all([
+    admin.from('config_tienda').select('tienda_nombre, empresa_razon, empresa_ruc, empresa_dir, whatsapp_numero').eq('tenant_id', tenant.id).single(),
+    admin.from('config_footer').select('email').eq('tenant_id', tenant.id).single(),
+  ])
 
-  const tiendaNombre = config?.tienda_nombre ?? 'Mi Tienda'
-  const razonSocial = config?.empresa_razon_social || tiendaNombre
-  const ruc = config?.empresa_ruc ?? ''
-  const direccion = config?.empresa_direccion ?? ''
-  const whatsapp = config?.whatsapp_numero ?? ''
-  const email = config?.footer_email ?? ''
+  const tiendaNombre = ct?.tienda_nombre ?? tenant.nombre
+  const razonSocial  = ct?.empresa_razon || tiendaNombre
+  const ruc          = ct?.empresa_ruc ?? ''
+  const direccion    = ct?.empresa_dir  ?? ''
+  const whatsapp     = ct?.whatsapp_numero ?? ''
+  const email        = cf?.email ?? ''
 
   const hoy = new Date()
   const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']

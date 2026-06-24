@@ -24,7 +24,19 @@ export async function middleware(request: NextRequest) {
       tenantSlug = subdomain
     }
   } else {
-    tenantSlug = request.headers.get('x-tenant-slug') || 'anarchy'
+    // En localhost, detectar subdominio si existe (ej: demo.localhost:3000)
+    const parts = hostname.split('.')
+    const firstPart = parts[0]
+    if (
+      parts.length > 1 &&
+      !firstPart.includes('localhost') &&
+      !firstPart.includes('127') &&
+      !RESERVED_SLUGS.includes(firstPart)
+    ) {
+      tenantSlug = firstPart
+    } else {
+      tenantSlug = request.headers.get('x-tenant-slug') || 'anarchy'
+    }
   }
 
   // ── 2. Construir headers del request con datos del tenant ────
@@ -33,7 +45,7 @@ export async function middleware(request: NextRequest) {
   if (tenantSlug) {
     const { data: tenant } = await supabaseAdmin
       .from('tenants')
-      .select('id, slug, nombre, color_primario, logo_url, activo')
+      .select('id, slug, nombre, color_primario, logo_url, activo, font_display, font_body, theme, planes!plan_id(nombre)')
       .eq('slug', tenantSlug)
       .eq('activo', true)
       .single()
@@ -54,6 +66,12 @@ export async function middleware(request: NextRequest) {
     requestHeaders.set('x-tenant-nombre', tenant.nombre)
     requestHeaders.set('x-tenant-color', tenant.color_primario || '#000000')
     requestHeaders.set('x-tenant-logo', tenant.logo_url || '')
+    requestHeaders.set('x-tenant-font-display', tenant.font_display || '')
+    requestHeaders.set('x-tenant-font-body', tenant.font_body || '')
+    requestHeaders.set('x-tenant-theme', tenant.theme || 'dark')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const planNombre = (tenant as any).planes?.nombre ?? ''
+    requestHeaders.set('x-tenant-plan', planNombre)
   }
 
   // ── 3. Crear respuesta con los headers modificados ───────────

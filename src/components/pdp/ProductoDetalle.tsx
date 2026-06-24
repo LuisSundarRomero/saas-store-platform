@@ -1,13 +1,13 @@
 ﻿'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
-import { IconArrowLeft, IconShoppingBag, IconCheck, IconBrandWhatsapp, IconX, IconZoomIn, IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
+import { IconArrowLeft, IconShoppingBag, IconCheck, IconBrandWhatsapp } from '@tabler/icons-react'
 import { Producto } from '@/types'
 import { formatPrice } from '@/lib/utils/format'
 import { useCarrito } from '@/store/carrito'
 import { pushEvent } from '@/lib/utils/gtm'
+import { ImageSlider } from '@/components/ui/ImageSlider'
 
 interface Props {
   producto: Producto
@@ -15,7 +15,6 @@ interface Props {
 }
 
 export function ProductoDetalle({ producto, whatsappNumero }: Props) {
-  const [imagenActual, setImagenActual] = useState(0)
   const [tallaSeleccionada, setTallaSeleccionada] = useState<string | null>(
     producto.tallas.length === 1 ? producto.tallas[0] : null
   )
@@ -24,24 +23,8 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
   )
   const [agregado, setAgregado] = useState(false)
   const [shakeField, setShakeField] = useState<'talla' | 'color' | null>(null)
-  const [lightboxOpen, setLightboxOpen] = useState(false)
   const addItem  = useCarrito((s) => s.addItem)
   const openCart = useCarrito((s) => s.openCart)
-
-  useEffect(() => {
-    if (!lightboxOpen) return
-    document.body.style.overflow = 'hidden'
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') setLightboxOpen(false)
-      if (e.key === 'ArrowLeft') setImagenActual((i) => (i - 1 + producto.imagenes.length) % producto.imagenes.length)
-      if (e.key === 'ArrowRight') setImagenActual((i) => (i + 1) % producto.imagenes.length)
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.body.style.overflow = ''
-      window.removeEventListener('keydown', onKeyDown)
-    }
-  }, [lightboxOpen, producto.imagenes.length])
 
   const agotado = producto.stock !== null && producto.stock === 0
   const stockBajo = producto.stock !== null && producto.stock > 0 && producto.stock <= 5
@@ -115,10 +98,14 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#1F1F22]">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-bg)' }}>
       {/* Back */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
-        <Link href="/catalogo" className="inline-flex items-center gap-1 text-sm text-[#9A9A9E] hover:text-[#F5F5F2] transition-colors">
+        <Link href="/catalogo" className="inline-flex items-center gap-1 text-sm transition-colors"
+          style={{ color: 'var(--color-muted)' }}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-ink)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-muted)')}>
+
           <IconArrowLeft size={16} />
           Volver al catálogo
         </Link>
@@ -131,58 +118,15 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
           {/* Galería */}
           <div className="mb-4 lg:mb-0">
             {producto.imagenes.length > 0 ? (
-              <>
-                {/* Mobile: imagen cuadrada para dejar espacio al selector */}
-                <button
-                  type="button"
-                  onClick={() => setLightboxOpen(true)}
-                  aria-label="Ver imagen en tamaño completo"
-                  className="group relative aspect-square lg:aspect-[4/5] bg-[#1F1F22] lg:rounded-2xl overflow-hidden w-full cursor-zoom-in"
-                >
-                  <Image
-                    src={producto.imagenes[imagenActual]}
-                    alt={producto.nombre}
-                    fill
-                    className="object-cover"
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
-                  {stockBajo && (
-                    <div className="absolute top-3 left-3">
-                      <span className="bg-amber-400 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                        Últimas {producto.stock}
-                      </span>
-                    </div>
-                  )}
-                  {descuento && (
-                    <div className="absolute top-3 right-3">
-                      <span className="text-white text-xs font-bold px-2.5 py-1 rounded-full" style={{ backgroundColor: 'var(--color-brand)' }}>
-                        -{descuento}%
-                      </span>
-                    </div>
-                  )}
-                  <span className="absolute bottom-3 right-3 flex items-center justify-center w-9 h-9 rounded-full text-white opacity-80 group-hover:opacity-100 transition-opacity"
-                    style={{ backgroundColor: 'rgba(18,18,20,0.55)', backdropFilter: 'blur(4px)' }}>
-                    <IconZoomIn size={18} />
-                  </span>
-                </button>
-                {producto.imagenes.length > 1 && (
-                  <div className="flex gap-2 mt-2 px-4 lg:px-0 overflow-x-auto">
-                    {producto.imagenes.map((img, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setImagenActual(i)}
-                        className="shrink-0 w-14 h-14 rounded-xl overflow-hidden transition-all"
-                        style={{ border: i === imagenActual ? '2px solid var(--color-brand)' : '2px solid transparent', opacity: i === imagenActual ? 1 : 0.6 }}
-                      >
-                        <Image src={img} alt="" width={56} height={56} className="object-cover w-full h-full" />
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </>
+              <ImageSlider
+                mode="product"
+                slides={producto.imagenes.map((src) => ({ src, alt: producto.nombre }))}
+                discountBadge={descuento ?? undefined}
+                stockBadge={stockBajo ? (producto.stock ?? undefined) : undefined}
+              />
             ) : (
-              <div className="aspect-square lg:aspect-[4/5] bg-[#1F1F22] lg:rounded-2xl flex items-center justify-center text-[#3A3A3E] text-5xl">
+              <div className="aspect-square lg:aspect-[4/5] lg:rounded-2xl flex items-center justify-center text-5xl"
+                style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-border)' }}>
                 🖤
               </div>
             )}
@@ -191,22 +135,22 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
           {/* Info */}
           <div className="flex flex-col px-4 lg:px-0">
             {producto.categorias && (
-              <p className="text-xs font-semibold tracking-widest uppercase text-[#9A9A9E] mb-2">
+              <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: 'var(--color-muted)' }}>
                 {producto.categorias.nombre}
               </p>
             )}
 
-            <h1 className="text-2xl sm:text-3xl font-semibold text-[#F5F5F2] leading-tight mb-3">
+            <h1 className="text-2xl sm:text-3xl font-semibold leading-tight mb-3" style={{ color: 'var(--color-ink)' }}>
               {producto.nombre}
             </h1>
 
             {/* Precio */}
             <div className="flex items-center gap-3 mb-5">
-              <span className="text-2xl font-bold" style={{ color: producto.precio_antes ? 'var(--color-brand)' : '#F5F5F2' }}>
+              <span className="text-2xl font-bold" style={{ color: producto.precio_antes ? 'var(--color-brand)' : 'var(--color-ink)' }}>
                 {formatPrice(producto.precio)}
               </span>
               {producto.precio_antes && (
-                <span className="text-lg text-[#6B6B70] line-through">
+                <span className="text-lg line-through" style={{ color: 'var(--color-muted)' }}>
                   {formatPrice(producto.precio_antes)}
                 </span>
               )}
@@ -215,12 +159,12 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
             {/* Tallas — ANTES de la descripción para que estén visible en mobile */}
             {necesitaTalla && (
               <div id="selector-talla" className="mb-5">
-                <p className="text-sm font-semibold text-[#F5F5F2] mb-3">
+                <p className="text-sm font-semibold mb-3" style={{ color: 'var(--color-ink)' }}>
                   Talla {tallaSeleccionada
-                    ? <span className="font-normal text-[#9A9A9E]">— {tallaSeleccionada}</span>
+                    ? <span className="font-normal" style={{ color: 'var(--color-muted)' }}>— {tallaSeleccionada}</span>
                     : shakeField === 'talla'
                       ? <span className="font-normal text-red-400 text-xs ml-1 animate-pulse">← Selecciona una talla</span>
-                      : <span className="font-normal text-[#6B6B70] text-xs ml-1">Selecciona una</span>
+                      : <span className="font-normal text-xs ml-1" style={{ color: 'var(--color-muted)' }}>Selecciona una</span>
                   }
                 </p>
                 <div className={`flex flex-wrap gap-2 ${shakeField === 'talla' ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}
@@ -237,9 +181,9 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
                         title={tallaAgotada ? 'Talla agotada' : undefined}
                         className="min-w-[52px] min-h-[52px] px-4 rounded-xl border-2 text-sm font-semibold transition-colors"
                         style={{
-                          backgroundColor: sel ? 'var(--color-brand)' : '#161618',
-                          color: tallaAgotada ? '#4A4A4E' : sel ? '#fff' : '#F5F5F2',
-                          borderColor: sel ? 'var(--color-brand)' : '#2C2C30',
+                          backgroundColor: sel ? 'var(--color-brand)' : 'var(--color-surface)',
+                          color: tallaAgotada ? 'var(--color-muted)' : sel ? '#fff' : 'var(--color-ink)',
+                          borderColor: sel ? 'var(--color-brand)' : 'var(--color-border)',
                           textDecoration: tallaAgotada ? 'line-through' : 'none',
                           opacity: tallaAgotada ? 0.5 : 1,
                           touchAction: 'manipulation',
@@ -257,12 +201,12 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
             {/* Colores */}
             {necesitaColor && (
               <div id="selector-color" className="mb-5">
-                <p className="text-sm font-semibold text-[#F5F5F2] mb-3">
+                <p className="text-sm font-semibold mb-3" style={{ color: 'var(--color-ink)' }}>
                   Color {colorSeleccionado
-                    ? <span className="font-normal text-[#9A9A9E] capitalize">— {colorSeleccionado}</span>
+                    ? <span className="font-normal capitalize" style={{ color: 'var(--color-muted)' }}>— {colorSeleccionado}</span>
                     : shakeField === 'color'
                       ? <span className="font-normal text-red-400 text-xs ml-1 animate-pulse">← Selecciona un color</span>
-                      : <span className="font-normal text-[#6B6B70] text-xs ml-1">Selecciona uno</span>
+                      : <span className="font-normal text-xs ml-1" style={{ color: 'var(--color-muted)' }}>Selecciona uno</span>
                   }
                 </p>
                 <div className={`flex flex-wrap gap-2 ${shakeField === 'color' ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}
@@ -279,9 +223,9 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
                         title={colorAgotado ? 'Color agotado' : undefined}
                         className="min-h-[52px] px-5 rounded-xl border-2 text-sm font-semibold capitalize transition-colors"
                         style={{
-                          backgroundColor: sel ? 'var(--color-brand)' : '#161618',
-                          color: colorAgotado ? '#4A4A4E' : sel ? '#fff' : '#F5F5F2',
-                          borderColor: sel ? 'var(--color-brand)' : '#2C2C30',
+                          backgroundColor: sel ? 'var(--color-brand)' : 'var(--color-surface)',
+                          color: colorAgotado ? 'var(--color-muted)' : sel ? '#fff' : 'var(--color-ink)',
+                          borderColor: sel ? 'var(--color-brand)' : 'var(--color-border)',
                           textDecoration: colorAgotado ? 'line-through' : 'none',
                           opacity: colorAgotado ? 0.5 : 1,
                           touchAction: 'manipulation',
@@ -298,16 +242,17 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
 
             {/* Descripción — al final para no desplazar los selectores */}
             {producto.descripcion && (
-              <div className="border-t border-[#2C2C30] pt-4 mb-5">
-                <p className="text-xs font-bold uppercase tracking-widest text-[#9A9A9E] mb-2">Descripción</p>
-                <p className="text-[#9A9A9E] text-sm leading-relaxed whitespace-pre-line">{producto.descripcion}</p>
+              <div className="border-t pt-4 mb-5" style={{ borderColor: 'var(--color-border)' }}>
+                <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-muted)' }}>Descripción</p>
+                <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--color-muted)' }}>{producto.descripcion}</p>
               </div>
             )}
 
             {/* CTA */}
             <div className="flex flex-col gap-3 mt-4 pb-24 lg:pb-10">
               {/* Agregar al carrito — fijo en mobile, inline en desktop */}
-              <div className="fixed bottom-0 inset-x-0 z-30 p-4 bg-[#1F1F22] border-t border-[#2C2C30] lg:static lg:p-0 lg:border-0 lg:bg-transparent">
+              <div className="fixed bottom-0 inset-x-0 z-30 p-4 border-t lg:static lg:p-0 lg:border-transparent"
+                style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
                 <div className="max-w-6xl mx-auto lg:max-w-none">
                   <BtnAgregar
                     agotado={agotado}
@@ -331,69 +276,6 @@ export function ProductoDetalle({ producto, whatsappNumero }: Props) {
         </div>
       </div>
 
-      {/* Lightbox — imagen en tamaño completo */}
-      {lightboxOpen && producto.imagenes.length > 0 && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
-          onClick={() => setLightboxOpen(false)}
-        >
-          <button
-            type="button"
-            onClick={() => setLightboxOpen(false)}
-            aria-label="Cerrar"
-            className="absolute top-4 right-4 flex items-center justify-center w-10 h-10 rounded-full text-white hover:opacity-80 transition-opacity"
-            style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-          >
-            <IconX size={22} />
-          </button>
-
-          {producto.imagenes.length > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); setImagenActual((i) => (i - 1 + producto.imagenes.length) % producto.imagenes.length) }}
-                aria-label="Imagen anterior"
-                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-white hover:opacity-80 transition-opacity"
-                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-              >
-                <IconChevronLeft size={22} />
-              </button>
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); setImagenActual((i) => (i + 1) % producto.imagenes.length) }}
-                aria-label="Imagen siguiente"
-                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-white hover:opacity-80 transition-opacity"
-                style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-              >
-                <IconChevronRight size={22} />
-              </button>
-            </>
-          )}
-
-          <div className="relative w-full h-full max-w-5xl max-h-[85vh] m-4" onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={producto.imagenes[imagenActual]}
-              alt={producto.nombre}
-              fill
-              className="object-contain"
-              sizes="100vw"
-            />
-          </div>
-
-          {producto.imagenes.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
-              {producto.imagenes.map((_, i) => (
-                <span key={i} className="h-1.5 rounded-full transition-all duration-300 block"
-                  style={{
-                    width: i === imagenActual ? '18px' : '6px',
-                    backgroundColor: i === imagenActual ? 'var(--color-brand)' : 'rgba(255,255,255,0.4)',
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
     </div>
   )
 }
@@ -407,7 +289,8 @@ interface BtnProps {
 function BtnAgregar({ agotado, agregado, onClick }: BtnProps) {
   if (agotado) {
     return (
-      <button disabled className="w-full py-3.5 rounded-full bg-[#1F1F22] text-[#6B6B70] font-semibold cursor-not-allowed text-sm">
+      <button disabled className="w-full py-3.5 rounded-full font-semibold cursor-not-allowed text-sm"
+        style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-muted)' }}>
         Agotado
       </button>
     )
@@ -421,7 +304,7 @@ function BtnAgregar({ agotado, agregado, onClick }: BtnProps) {
       style={{
         backgroundColor: agregado ? '#22C55E' : 'var(--color-brand)',
         color: '#fff',
-        boxShadow: agregado ? '0 4px 20px rgba(34,197,94,0.3)' : '0 4px 20px rgba(225,29,46,0.3)',
+        boxShadow: agregado ? '0 4px 20px rgba(34,197,94,0.3)' : '0 4px 20px var(--color-brand-glow)',
         touchAction: 'manipulation',
       }}
     >

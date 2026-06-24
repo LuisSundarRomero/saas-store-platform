@@ -21,7 +21,7 @@ export function CategoryChips({ categorias }: CategoryChipsProps) {
         style={
           !categoriaActual
             ? { backgroundColor: 'var(--color-brand)', color: '#fff', borderColor: 'var(--color-brand)' }
-            : { backgroundColor: '#161618', color: '#9A9A9E', borderColor: '#2C2C30' }
+            : { backgroundColor: 'var(--color-surface)', color: 'var(--color-muted)', borderColor: 'var(--color-border)' }
         }
       >
         Todo
@@ -36,7 +36,7 @@ export function CategoryChips({ categorias }: CategoryChipsProps) {
           style={
             categoriaActual === cat.slug
               ? { backgroundColor: 'var(--color-brand)', color: '#fff', borderColor: 'var(--color-brand)' }
-              : { backgroundColor: '#161618', color: '#9A9A9E', borderColor: '#2C2C30' }
+              : { backgroundColor: 'var(--color-surface)', color: 'var(--color-muted)', borderColor: 'var(--color-border)' }
           }
         >
           {cat.nombre}

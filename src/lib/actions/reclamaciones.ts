@@ -2,6 +2,7 @@
 
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
 import { EstadoReclamacion, TipoBien, TipoDocumento, TipoReclamacion } from '@/types'
 
 // Cliente admin con service role — bypasea RLS para el envío público del formulario
@@ -34,10 +35,12 @@ type CrearReclamoResult =
 
 export async function crearReclamo(input: CrearReclamoInput): Promise<CrearReclamoResult> {
   const admin = getAdminClient()
+  const tenant = await getTenant()
 
   const { data, error } = await admin
     .from('libro_reclamaciones')
     .insert({
+      tenant_id: tenant.id,
       consumidor_nombre: input.consumidorNombre,
       consumidor_domicilio: input.consumidorDomicilio,
       consumidor_tipo_doc: input.consumidorTipoDoc,
