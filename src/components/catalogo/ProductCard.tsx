@@ -6,9 +6,10 @@ import { formatPrice } from '@/lib/utils/format'
 
 interface ProductCardProps {
   producto: Producto
+  priority?: boolean
 }
 
-export function ProductCard({ producto }: ProductCardProps) {
+export function ProductCard({ producto, priority = false }: ProductCardProps) {
   const agotado  = producto.stock !== null && producto.stock === 0
   const stockBajo = producto.stock !== null && producto.stock > 0 && producto.stock <= 5
   const imagen   = producto.imagenes?.[0]
@@ -29,6 +30,7 @@ export function ProductCard({ producto }: ProductCardProps) {
               src={imagen}
               alt={producto.nombre}
               fill
+              priority={priority}
               className={`object-cover transition-opacity duration-500 ${imagen2 ? 'group-hover:opacity-0' : 'group-hover:scale-105 transition-transform duration-500'}`}
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />

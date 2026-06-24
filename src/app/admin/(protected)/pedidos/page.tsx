@@ -1,5 +1,7 @@
-﻿import { Fragment } from 'react'
-import { getPedidos } from '@/lib/actions/admin'
+import { Fragment } from 'react'
+import { getPedidos, getPedidosCount } from '@/lib/actions/admin'
+import { getTenant } from '@/lib/tenant'
+import { createAdminClient } from '@/lib/supabase/server'
 import { PedidosTable } from '@/components/admin/PedidosTable'
 import { PedidosBuscador } from '@/components/admin/PedidosBuscador'
 import { formatPrice } from '@/lib/utils/format'
@@ -16,26 +18,20 @@ export default async function PedidosPage({ searchParams }: Props) {
   const { estado, q, page: pageStr } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? '1'))
 
-  const { createClient } = await import('@/lib/supabase/server')
-  const { getTenant } = await import('@/lib/tenant')
-  const { createAdminClient } = await import('@/lib/supabase/server')
   const tenant = await getTenant()
   const { data: ct } = await createAdminClient().from('config_tienda').select('tienda_nombre').eq('tenant_id', tenant.id).single()
   const tiendaNombre = ct?.tienda_nombre ?? tenant.nombre
 
-  const [todos, pedidosPagina] = await Promise.all([
+  const [todos, pedidosPagina, totalFiltrados] = await Promise.all([
     getPedidos(),
     getPedidos({ estado, search: q, limit: POR_PAGINA, offset: (page - 1) * POR_PAGINA }),
+    getPedidosCount({ estado, search: q }),
   ])
 
   const pendientes = todos.filter((p) => p.estado === 'pendiente').length
   const hoy        = todos.filter((p) => new Date(p.created_at).toDateString() === new Date().toDateString())
   const totalHoy   = hoy.reduce((s, p) => s + p.total, 0)
   const entregados = todos.filter((p) => p.estado === 'entregado').length
-
-  // Total para paginación (con filtros)
-  const pedidosFiltrados = await getPedidos({ estado, search: q })
-  const totalFiltrados = pedidosFiltrados.length
   const totalPaginas = Math.ceil(totalFiltrados / POR_PAGINA)
 
   const stats = [
@@ -94,11 +90,9 @@ export default async function PedidosPage({ searchParams }: Props) {
           ))}
         </div>
 
-        {/* Buscador por código */}
         <PedidosBuscador defaultValue={q} estado={estado} />
       </div>
 
-      {/* Info resultados */}
       {q && (
         <p className="text-sm text-gray-500 mb-3">
           {totalFiltrados} resultado{totalFiltrados !== 1 ? 's' : ''} para <strong>&quot;{q}&quot;</strong>
@@ -149,4 +143,3 @@ export default async function PedidosPage({ searchParams }: Props) {
     </div>
   )
 }
-

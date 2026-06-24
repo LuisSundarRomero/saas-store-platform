@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { IconShoppingBag, IconPackage } from '@tabler/icons-react'
 import { useCarrito } from '@/store/carrito'
 import { CartDrawer } from '@/components/carrito/CartDrawer'
@@ -39,11 +40,13 @@ export function Navbar({ tiendaNombre = 'Mi Tienda', logoUrl, planBasico, whatsa
 
           <Link href="/" className="shrink-0 flex items-center" aria-label={tiendaNombre}>
             {logoUrl ? (
-              <img
+              <Image
                 src={logoUrl}
                 alt={tiendaNombre}
+                width={140}
+                height={32}
                 className="h-8 w-auto object-contain"
-                style={{ maxWidth: '140px' }}
+                priority
               />
             ) : (
               <span className="font-display text-xl" style={{ color: 'var(--color-ink)' }}>
