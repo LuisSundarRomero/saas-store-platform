@@ -2,6 +2,18 @@
 import { IconArrowLeft, IconFileText } from '@tabler/icons-react'
 import { createAdminClient } from '@/lib/supabase/server'
 import { getTenant } from '@/lib/tenant'
+import type { Metadata } from 'next'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const tenant = await getTenant()
+  const nombre = tenant.nombre || 'Mi Tienda'
+  return {
+    title: 'Términos y Condiciones',
+    description: `Términos y condiciones de compra de ${nombre}. Política de envíos, devoluciones y garantías.`,
+    alternates: { canonical: '/terminos-y-condiciones' },
+    robots: { index: true, follow: false },
+  }
+}
 
 export default async function TerminosPage() {
   const tenant = await getTenant()

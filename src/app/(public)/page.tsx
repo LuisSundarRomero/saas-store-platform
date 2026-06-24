@@ -13,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { getTenant } = await import('@/lib/tenant')
   const tenant = await getTenant()
   const nombre = tenant.nombre || 'Mi Tienda'
+  const ogImages = tenant.logo ? [{ url: tenant.logo, alt: nombre }] : []
   return {
     title: nombre,
     description: `Tienda online de ${nombre}. Envíos a nivel nacional.`,
@@ -22,11 +23,13 @@ export async function generateMetadata(): Promise<Metadata> {
       description: `Tienda online de ${nombre}. Envíos a nivel nacional.`,
       url: '/',
       type: 'website',
+      images: ogImages,
     },
     twitter: {
       card: 'summary_large_image',
       title: nombre,
       description: `Tienda online de ${nombre}. Envíos a nivel nacional.`,
+      images: tenant.logo ? [tenant.logo] : [],
     },
   }
 }

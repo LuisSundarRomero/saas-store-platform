@@ -1,5 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { RastrearClient } from '@/components/tracking/RastrearClient'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Rastrear Pedido',
+  description: 'Consulta el estado de tu pedido ingresando tu número de orden.',
+  alternates: { canonical: '/rastrear' },
+  robots: { index: false, follow: false },
+}
 
 interface Props {
   searchParams: Promise<{ order?: string }>

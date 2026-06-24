@@ -17,6 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const { getTenant } = await import('@/lib/tenant')
   const tenant = await getTenant()
   const nombre = tenant.nombre || 'Mi Tienda'
+  const ogImages = tenant.logo ? [{ url: tenant.logo, alt: nombre }] : []
 
   if (cat) {
     const categorias = await getCategorias()
@@ -49,19 +50,19 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title: 'Catálogo',
     description: `Explora toda la colección de ${nombre}. Envíos a nivel nacional.`,
-    alternates: {
-      canonical: '/catalogo',
-    },
+    alternates: { canonical: '/catalogo' },
     openGraph: {
       title: `Catálogo — ${nombre}`,
       description: `Explora toda la colección de ${nombre}. Envíos a nivel nacional.`,
       url: '/catalogo',
       type: 'website',
+      images: ogImages,
     },
     twitter: {
       card: 'summary_large_image',
       title: `Catálogo — ${nombre}`,
       description: `Explora toda la colección de ${nombre}. Envíos a nivel nacional.`,
+      images: tenant.logo ? [tenant.logo] : [],
     },
   }
 }

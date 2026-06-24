@@ -2,6 +2,18 @@
 import { IconArrowLeft, IconShieldLock } from '@tabler/icons-react'
 import { createAdminClient } from '@/lib/supabase/server'
 import { getTenant } from '@/lib/tenant'
+import type { Metadata } from 'next'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const tenant = await getTenant()
+  const nombre = tenant.nombre || 'Mi Tienda'
+  return {
+    title: 'Política de Privacidad',
+    description: `Conoce cómo ${nombre} protege y gestiona tus datos personales.`,
+    alternates: { canonical: '/politica-de-privacidad' },
+    robots: { index: true, follow: false },
+  }
+}
 
 export default async function PoliticaPrivacidadPage() {
   const tenant = await getTenant()
