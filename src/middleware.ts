@@ -42,6 +42,11 @@ export async function middleware(request: NextRequest) {
   // ── 2. Construir headers del request con datos del tenant ────
   const requestHeaders = new Headers(request.headers)
 
+  // Dominio raíz sin subdominio → landing de venta del SaaS
+  if (!tenantSlug && !isLocalhost) {
+    requestHeaders.set('x-is-platform', 'true')
+  }
+
   if (tenantSlug) {
     const { data: tenant } = await supabaseAdmin
       .from('tenants')

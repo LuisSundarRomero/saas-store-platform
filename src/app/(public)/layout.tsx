@@ -1,3 +1,4 @@
+import { headers } from 'next/headers'
 import { createAdminClient } from '@/lib/supabase/server'
 import { getTenant, esPlanPro } from '@/lib/tenant'
 import { NavbarWrapper } from '@/components/ui/NavbarWrapper'
@@ -5,6 +6,10 @@ import { Footer } from '@/components/ui/Footer'
 import { AnnouncementBar } from '@/components/ui/AnnouncementBar'
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
+  const h = await headers()
+  // Dominio raíz sin tenant — la landing tiene su propio nav/footer
+  if (h.get('x-is-platform') === 'true') return <>{children}</>
+
   const tenant = await getTenant()
   const admin  = createAdminClient()
 

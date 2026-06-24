@@ -35,31 +35,33 @@ export default async function PoliticaPrivacidadPage() {
   const fecha = `${hoy.getDate()} de ${meses[hoy.getMonth()]} de ${hoy.getFullYear()}`
 
   return (
-    <main className="min-h-screen bg-[#1F1F22]">
+    <main className="min-h-screen bg-[var(--color-bg)]">
 
       {/* Header */}
-      <div className="bg-[#1F1F22]/95 backdrop-blur border-b border-[#2C2C30] px-4 py-3.5 flex items-center gap-3 sticky top-0 z-10">
+      <div className="backdrop-blur border-b px-4 py-3.5 flex items-center gap-3 sticky top-0 z-10"
+        style={{ backgroundColor: 'color-mix(in srgb, var(--color-bg) 95%, transparent)', borderColor: 'var(--color-border)' }}>
         <Link href="/"
-          className="p-1.5 rounded-full hover:bg-[#161618] transition-colors text-[#9A9A9E]">
+          className="p-1.5 rounded-full hover:bg-[var(--color-surface)] transition-colors text-[var(--color-muted)]">
           <IconArrowLeft size={18} />
         </Link>
-        <p className="font-bold text-[#F5F5F2] text-sm">Política de privacidad</p>
+        <p className="font-bold text-[var(--color-ink)] text-sm">Política de privacidad</p>
       </div>
 
       <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-4">
 
         {/* Intro */}
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#3A1014' }}>
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--color-brand-bg)' }}>
             <IconShieldLock size={22} style={{ color: 'var(--color-brand)' }} />
           </div>
-          <p className="text-sm text-[#9A9A9E] leading-relaxed">
+          <p className="text-sm text-[var(--color-muted)] leading-relaxed">
             En {tiendaNombre} cuidamos tus datos personales. Esta política explica qué información
             recopilamos, para qué la usamos y cómo la protegemos.
           </p>
         </div>
 
-        <div className="bg-[#161618] border border-[#2C2C30] rounded-2xl p-5 flex flex-col gap-5 text-sm text-[#C9C9CD] leading-relaxed">
+        <div className="border rounded-2xl p-5 flex flex-col gap-5 text-sm leading-relaxed"
+          style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)', color: 'var(--color-ink)' }}>
 
           <section>
             <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
@@ -68,7 +70,7 @@ export default async function PoliticaPrivacidadPage() {
             <p>
               Para procesar tu pedido recopilamos: nombre, correo electrónico, número de teléfono y
               dirección de entrega. Si presentas un reclamo a través del{' '}
-              <Link href="/libro-de-reclamaciones" className="underline" style={{ color: '#F5F5F2' }}>
+              <Link href="/libro-de-reclamaciones" className="underline" style={{ color: 'var(--color-ink)' }}>
                 Libro de Reclamaciones
               </Link>
               , también solicitamos tu número de DNI, como exige la normativa de protección al
@@ -141,7 +143,7 @@ export default async function PoliticaPrivacidadPage() {
             </section>
           )}
 
-          <p className="text-xs text-[#6B6B70] pt-2 border-t border-[#2C2C30]">
+          <p className="text-xs pt-2 border-t" style={{ color: 'var(--color-muted)', borderColor: 'var(--color-border)' }}>
             Última actualización: {fecha}
           </p>
         </div>

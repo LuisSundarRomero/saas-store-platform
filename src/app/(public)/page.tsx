@@ -1,15 +1,24 @@
 ﻿import { Suspense } from 'react'
 import Link from 'next/link'
+import { headers } from 'next/headers'
 import { getProductos, getProductosDestacados, getCategorias } from '@/lib/actions/productos'
 import { ProductCard } from '@/components/catalogo/ProductCard'
 import { CategoryChips } from '@/components/catalogo/CategoryChips'
 import { HeroCarousel } from '@/components/home/HeroCarousel'
 import { WhatsAppButton } from '@/components/home/WhatsAppButton'
+import { PlatformLanding } from '@/components/platform/PlatformLanding'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
+  const h = await headers()
+  if (h.get('x-is-platform') === 'true') {
+    return {
+      title: 'Contahorro — Crea tu tienda online',
+      description: 'Plataforma SaaS para tiendas de ropa online en Perú. Recibe pedidos por WhatsApp o tarjeta. Desde S/69/mes.',
+    }
+  }
   const { getTenant } = await import('@/lib/tenant')
   const tenant = await getTenant()
   const nombre = tenant.nombre || 'Mi Tienda'
@@ -35,6 +44,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
+  const h = await headers()
+  if (h.get('x-is-platform') === 'true') return <PlatformLanding />
+
   const { createPublicClient } = await import('@/lib/supabase/server')
   const { getTenant } = await import('@/lib/tenant')
   const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
