@@ -3,34 +3,37 @@
 import { useState } from 'react'
 import {
   IconBuildingStore, IconSettings, IconPhoto,
-  IconLayoutBottombar, IconBrandWhatsapp,
+  IconLayoutBottombar, IconBrandWhatsapp, IconUsers,
 } from '@tabler/icons-react'
 import { TiendaTab } from './config/TiendaTab'
 import { AnuncioTab } from './config/AnuncioTab'
 import { BannerTab } from './config/BannerTab'
 import { FooterTab } from './config/FooterTab'
 import { MensajesTab } from './config/MensajesTab'
-import type { ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes } from '@/types'
+import { NosotrosTab } from './config/NosotrosTab'
+import type { ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes, ConfigNosotros } from '@/types'
 
-type TabId = 'tienda' | 'anuncio' | 'banner' | 'footer' | 'mensajes'
+type TabId = 'tienda' | 'anuncio' | 'banner' | 'nosotros' | 'footer' | 'mensajes'
 
 const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
-  { id: 'tienda',   label: 'Tienda',   icon: IconBuildingStore },
-  { id: 'anuncio',  label: 'Anuncio',  icon: IconSettings },
-  { id: 'banner',   label: 'Banner',   icon: IconPhoto },
-  { id: 'footer',   label: 'Footer',   icon: IconLayoutBottombar },
-  { id: 'mensajes', label: 'Mensajes', icon: IconBrandWhatsapp },
+  { id: 'tienda',    label: 'Tienda',    icon: IconBuildingStore },
+  { id: 'anuncio',   label: 'Anuncio',   icon: IconSettings },
+  { id: 'banner',    label: 'Banner',    icon: IconPhoto },
+  { id: 'nosotros',  label: 'Nosotros',  icon: IconUsers },
+  { id: 'footer',    label: 'Footer',    icon: IconLayoutBottombar },
+  { id: 'mensajes',  label: 'Mensajes',  icon: IconBrandWhatsapp },
 ]
 
 interface Props {
-  tienda:   ConfigTienda   | null
-  anuncio:  ConfigAnuncio  | null
-  banner:   ConfigBanner   | null
-  footer:   ConfigFooter   | null
-  mensajes: ConfigMensajes | null
+  tienda:    ConfigTienda    | null
+  anuncio:   ConfigAnuncio   | null
+  banner:    ConfigBanner    | null
+  nosotros:  ConfigNosotros  | null
+  footer:    ConfigFooter    | null
+  mensajes:  ConfigMensajes  | null
 }
 
-export function ConfigForm({ tienda, anuncio, banner, footer, mensajes }: Props) {
+export function ConfigForm({ tienda, anuncio, banner, nosotros, footer, mensajes }: Props) {
   const [tab, setTab] = useState<TabId>('tienda')
 
   return (
@@ -56,17 +59,18 @@ export function ConfigForm({ tienda, anuncio, banner, footer, mensajes }: Props)
       </div>
 
       {/* Tab content — cada tab gestiona su propio estado y guardado */}
-      {tab === 'tienda'   && <TiendaTab tienda={tienda} />}
-      {tab === 'anuncio'  && <AnuncioTab anuncio={anuncio} />}
-      {tab === 'banner'   && <BannerTab banner={banner} />}
-      {tab === 'footer'   && (
+      {tab === 'tienda'    && <TiendaTab tienda={tienda} />}
+      {tab === 'anuncio'   && <AnuncioTab anuncio={anuncio} />}
+      {tab === 'banner'    && <BannerTab banner={banner} />}
+      {tab === 'nosotros'  && <NosotrosTab nosotros={nosotros} />}
+      {tab === 'footer'    && (
         <FooterTab
           footer={footer}
           tiendaNombre={tienda?.tienda_nombre}
           whatsappNumero={tienda?.whatsapp_numero}
         />
       )}
-      {tab === 'mensajes' && <MensajesTab mensajes={mensajes} />}
+      {tab === 'mensajes'  && <MensajesTab mensajes={mensajes} />}
     </div>
   )
 }

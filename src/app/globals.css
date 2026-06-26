@@ -39,6 +39,21 @@
   --font-display-spacing:   -0.01em;
 }
 
+/* ── Tema cálido (cuero / artesanal / lujo terroso) ── */
+[data-theme="warm"] {
+  --color-bg:          #faf6f2;
+  --color-surface:     #f2e9df;
+  --color-surface-alt: #e8ddd4;
+  --color-border:      #cdbeb5;
+  --color-ink:         #412413;
+  --color-muted:       #978478;
+  --color-brand-bg:    rgba(101,81,68,0.10);
+  --color-brand-text:  #46220c;
+  --color-brand-glow:  rgba(101,81,68,0.22);
+  --font-display-transform: none;
+  --font-display-spacing:   -0.025em;
+}
+
 * { box-sizing: border-box; }
 
 body {

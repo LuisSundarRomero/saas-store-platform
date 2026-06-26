@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { NextResponse, type NextRequest } from 'next/server'
 
 const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'contahorro.com'
-const RESERVED_SLUGS = ['www', 'sass', 'app', 'api']
+const RESERVED_SLUGS = ['www', 'sass', 'app', 'api', 'superadmin']
 
 // Cliente admin para resolver tenants — bypasa RLS, solo se usa en servidor
 const supabaseAdmin = createClient(
@@ -106,6 +106,17 @@ export async function middleware(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user && !request.nextUrl.pathname.startsWith('/admin/login')) {
       return NextResponse.redirect(new URL('/admin/login', request.url))
+    }
+  }
+
+  // ── 6. Protección de rutas superadmin ────────────────────────
+  if (request.nextUrl.pathname.startsWith('/superadmin')) {
+    if (!request.nextUrl.pathname.startsWith('/superadmin/login')) {
+      const key = request.cookies.get('sa_key')?.value
+      const expected = process.env.SUPERADMIN_KEY
+      if (!expected || key !== expected) {
+        return NextResponse.redirect(new URL('/superadmin/login', request.url))
+      }
     }
   }
 

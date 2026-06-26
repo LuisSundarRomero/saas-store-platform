@@ -119,6 +119,7 @@ export interface ConfigBanner {
   strip_item2: string
   strip_item3: string
   strip_item4: string
+  categorias_sidebar: boolean
 }
 
 export interface ConfigFooter {
@@ -138,6 +139,15 @@ export interface ConfigFooter {
 export interface ConfigMensajes {
   tenant_id?: string
   whatsapp_template: string
+}
+
+export interface ConfigNosotros {
+  tenant_id?: string
+  visible: boolean
+  titulo: string
+  subtitulo: string
+  descripcion: string
+  imagen_url: string | null
 }
 
 export type TipoDocumento = 'DNI' | 'CE' | 'Pasaporte'

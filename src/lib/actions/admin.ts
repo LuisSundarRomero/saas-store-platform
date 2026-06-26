@@ -2,10 +2,10 @@
 
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { getTenant } from '@/lib/tenant'
-import type { EstadoPedido, ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes } from '@/types'
+import type { EstadoPedido, ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes, ConfigNosotros } from '@/types'
 
 // Re-export so existing imports from '@/lib/actions/admin' still work
-export type { ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes } from '@/types'
+export type { ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes, ConfigNosotros } from '@/types'
 
 export async function getPedidos(filtros?: {
   estado?: string
@@ -247,6 +247,7 @@ export async function getConfigAnuncio()  { return readConfig<ConfigAnuncio>('co
 export async function getConfigBanner()   { return readConfig<ConfigBanner>('config_banner') }
 export async function getConfigFooter()   { return readConfig<ConfigFooter>('config_footer') }
 export async function getConfigMensajes() { return readConfig<ConfigMensajes>('config_mensajes') }
+export async function getConfigNosotros() { return readConfig<ConfigNosotros>('config_nosotros') }
 
 // ─── Config: escrituras (una por tab) ───────────────────────
 
@@ -255,4 +256,5 @@ export async function guardarConfigAnuncio(data: Partial<ConfigAnuncio>) { retur
 export async function guardarConfigBanner(data: Partial<ConfigBanner>)   { return upsertConfig('config_banner', data) }
 export async function guardarConfigFooter(data: Partial<ConfigFooter>)   { return upsertConfig('config_footer', data) }
 export async function guardarConfigMensajes(data: Partial<ConfigMensajes>) { return upsertConfig('config_mensajes', data) }
+export async function guardarConfigNosotros(data: Partial<ConfigNosotros>) { return upsertConfig('config_nosotros', data) }
 

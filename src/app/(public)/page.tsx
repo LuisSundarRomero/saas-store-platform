@@ -6,6 +6,7 @@ import { ProductCard } from '@/components/catalogo/ProductCard'
 import { CategoryChips } from '@/components/catalogo/CategoryChips'
 import { HeroCarousel } from '@/components/home/HeroCarousel'
 import { WhatsAppButton } from '@/components/home/WhatsAppButton'
+import { NosotrosSection } from '@/components/home/NosotrosSection'
 import { PlatformLanding } from '@/components/platform/PlatformLanding'
 import type { Metadata } from 'next'
 
@@ -52,9 +53,10 @@ export default async function HomePage() {
   const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
   const { createAdminClient } = await import('@/lib/supabase/server')
   const admin = createAdminClient()
-  const [{ data: cb }, { data: ct }] = await Promise.all([
+  const [{ data: cb }, { data: ct }, { data: cn }] = await Promise.all([
     admin.from('config_banner').select('*').eq('tenant_id', tenant.id).single(),
     admin.from('config_tienda').select('whatsapp_numero, tienda_nombre').eq('tenant_id', tenant.id).single(),
+    admin.from('config_nosotros').select('*').eq('tenant_id', tenant.id).single(),
   ])
 
   const heroBadge            = cb?.hero_badge        ?? ''
@@ -67,7 +69,7 @@ export default async function HomePage() {
   const stripItems           = [cb?.strip_item1, cb?.strip_item2, cb?.strip_item3, cb?.strip_item4].filter(Boolean) as string[]
   const whatsapp             = ct?.whatsapp_numero   ?? ''
 
-  const [novedades, destacados, categorias] = await Promise.all([
+  const [{ productos: novedades }, destacados, categorias] = await Promise.all([
     getProductos({ limit: 12 }),
     getProductosDestacados(),
     getCategorias(),
@@ -119,7 +121,7 @@ export default async function HomePage() {
       {heroVisible && (
         <section className="relative overflow-hidden" style={{ backgroundColor: 'var(--color-surface-alt)' }}>
           <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-            <div className={`grid grid-cols-1 gap-6 lg:gap-8 items-center py-6 sm:py-8 lg:py-10 ${tenant.slug === 'kuttsu' ? 'lg:grid-cols-[0.75fr_1.35fr]' : 'lg:grid-cols-[0.65fr_1.35fr]'}`}>
+            <div className={`grid grid-cols-1 gap-6 lg:gap-8 items-center py-6 sm:py-8 lg:py-10 ${tenant.slug === 'kuttsu' || tenant.slug === 'toscanoleather' ? 'lg:grid-cols-[0.85fr_1.35fr]' : 'lg:grid-cols-[0.65fr_1.35fr]'}`}>
 
               {/* ── Texto ── */}
               <div className="order-2 lg:order-1 lg:pr-4 flex flex-col items-center text-center lg:items-start lg:text-left">
@@ -226,6 +228,11 @@ export default async function HomePage() {
         )}
 
       </div>
+
+      {/* ── NOSOTROS ── */}
+      {cn?.visible && (
+        <NosotrosSection config={cn} />
+      )}
     </main>
   )
 }

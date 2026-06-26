@@ -7,9 +7,10 @@ import './globals.css'
 export async function generateViewport(): Promise<Viewport> {
   const h = await headers()
   const color = h.get('x-tenant-color') ?? '#121214'
+  const theme = h.get('x-tenant-theme') ?? 'dark'
   return {
     themeColor: color,
-    colorScheme: 'dark',
+    colorScheme: theme === 'dark' ? 'dark' : 'light',
   }
 }
 

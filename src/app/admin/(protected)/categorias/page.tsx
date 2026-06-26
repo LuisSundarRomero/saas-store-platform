@@ -1,9 +1,14 @@
 import { getCategorias } from '@/lib/actions/admin'
+import { getConfigBanner } from '@/lib/actions/admin'
 import { CategoriasManager } from '@/components/admin/CategoriasManager'
+import { CategoriasSidebarToggle } from '@/components/admin/CategoriasSidebarToggle'
 import type { Categoria } from '@/types'
 
 export default async function CategoriasPage() {
-  const categorias: Categoria[] = await getCategorias()
+  const [categorias, configBanner]: [Categoria[], { categorias_sidebar?: boolean } | null] = await Promise.all([
+    getCategorias(),
+    getConfigBanner(),
+  ])
   const activas = categorias.filter((c) => c.activa).length
 
   return (
@@ -19,8 +24,12 @@ export default async function CategoriasPage() {
         {/* Lista de categorías */}
         <CategoriasManager categorias={categorias} />
 
-        {/* Panel de ayuda */}
+        {/* Panel derecho */}
         <div className="flex flex-col gap-4">
+
+          {/* Toggle sidebar */}
+          <CategoriasSidebarToggle enabled={configBanner?.categorias_sidebar ?? false} />
+
           <div className="bg-white rounded-2xl border border-gray-100 p-5">
             <h3 className="font-semibold text-gray-800 mb-3">¿Cómo funcionan?</h3>
             <div className="flex flex-col gap-3 text-sm text-gray-500">
