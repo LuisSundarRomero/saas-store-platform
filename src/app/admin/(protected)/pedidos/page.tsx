@@ -1,7 +1,9 @@
-﻿import { getPedidos } from '@/lib/actions/admin'
+﻿import { getPedidos, getPedidosCount } from '@/lib/actions/admin'
 import { PedidosTable } from '@/components/admin/PedidosTable'
 import { PedidosBuscador } from '@/components/admin/PedidosBuscador'
 import { formatPrice } from '@/lib/utils/format'
+import { createClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
 import Link from 'next/link'
 
 const ESTADOS = ['todos', 'pendiente', 'empaquetado', 'en_camino', 'entregado']
@@ -15,25 +17,20 @@ export default async function PedidosPage({ searchParams }: Props) {
   const { estado, q, page: pageStr } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? '1'))
 
-  const { createClient } = await import('@/lib/supabase/server')
-  const { getTenant } = await import('@/lib/tenant')
   const [supabase, tenant] = await Promise.all([createClient(), getTenant()])
   const { data: config } = await supabase.from('config').select('tienda_nombre').eq('tenant_id', tenant.id).single()
   const tiendaNombre = config?.tienda_nombre ?? tenant.nombre
 
-  const [todos, pedidosPagina] = await Promise.all([
+  const [todos, pedidosPagina, totalFiltrados] = await Promise.all([
     getPedidos(),
     getPedidos({ estado, search: q, limit: POR_PAGINA, offset: (page - 1) * POR_PAGINA }),
+    getPedidosCount({ estado, search: q }),
   ])
 
   const pendientes = todos.filter((p) => p.estado === 'pendiente').length
   const hoy        = todos.filter((p) => new Date(p.created_at).toDateString() === new Date().toDateString())
   const totalHoy   = hoy.reduce((s, p) => s + p.total, 0)
   const entregados = todos.filter((p) => p.estado === 'entregado').length
-
-  // Total para paginación (con filtros)
-  const pedidosFiltrados = await getPedidos({ estado, search: q })
-  const totalFiltrados = pedidosFiltrados.length
   const totalPaginas = Math.ceil(totalFiltrados / POR_PAGINA)
 
   const stats = [

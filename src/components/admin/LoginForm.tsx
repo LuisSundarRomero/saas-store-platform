@@ -100,18 +100,19 @@ export function LoginForm() {
             type={showPw ? 'text' : 'password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+            placeholder="Tu contraseña"
             required
             autoComplete="current-password"
-            className="w-full pl-10 pr-11 py-3.5 rounded-2xl border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 bg-gray-50 focus:bg-white focus:border-red-400 focus:outline-none transition-colors autofill:[-webkit-text-fill-color:#111827] autofill:[box-shadow:0_0_0_1000px_#F9FAFB_inset]"
+            className="w-full pl-10 pr-11 py-3.5 rounded-2xl border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 bg-gray-50 focus:bg-white focus:border-red-400 focus:outline-none transition-all duration-200 autofill:[-webkit-text-fill-color:#111827] autofill:[box-shadow:0_0_0_1000px_#F9FAFB_inset]"
           />
           <button
             type="button"
             onClick={() => setShowPw((v) => !v)}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+            aria-label={showPw ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-50 transition-all duration-150"
             tabIndex={-1}
           >
-            {showPw ? <IconEyeOff size={17} /> : <IconEye size={17} />}
+            {showPw ? <IconEyeOff size={16} /> : <IconEye size={16} />}
           </button>
         </div>
       </div>

@@ -13,12 +13,17 @@ const supabaseAdmin = createClient(
 
 export async function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || ''
-  const isLocalhost = hostname.includes('localhost') || hostname.includes('127.0.0.1')
+  const isSubdomainLocalhost = hostname.endsWith('.localhost') || hostname.endsWith('.localhost:3000')
+  const isRawLocalhost = hostname === 'localhost' || hostname === 'localhost:3000' || hostname.startsWith('127.0.0.1')
+  const isLocalhost = isRawLocalhost || isSubdomainLocalhost
 
   // ── 1. Detectar subdominio ───────────────────────────────────
   let tenantSlug: string | null = null
 
-  if (!isLocalhost) {
+  if (isSubdomainLocalhost) {
+    // anarchy.localhost:3000 → slug = 'anarchy'
+    tenantSlug = hostname.split('.')[0]
+  } else if (!isRawLocalhost) {
     const subdomain = hostname.replace(`.${MAIN_DOMAIN}`, '')
     if (subdomain && subdomain !== hostname && !RESERVED_SLUGS.includes(subdomain)) {
       tenantSlug = subdomain
@@ -80,9 +85,26 @@ export async function middleware(request: NextRequest) {
 
   // ── 5. Protección de rutas admin ─────────────────────────────
   if (request.nextUrl.pathname.startsWith('/admin')) {
+    // Sin tenant resuelto no hay admin válido (ej: dominio principal sin subdominio)
+    if (!tenantSlug) {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user && !request.nextUrl.pathname.startsWith('/admin/login')) {
+    const isLoginPage = request.nextUrl.pathname.startsWith('/admin/login')
+
+    if (!user && !isLoginPage) {
       return NextResponse.redirect(new URL('/admin/login', request.url))
+    }
+
+    // Verificar tenant — solo app_metadata (firmado por Supabase, no falsificable por el cliente)
+    // NOTA: requiere que createUser en sass-admin setee app_metadata.tenant_id
+    if (user && !isLoginPage) {
+      const userTenantId = user.app_metadata?.tenant_id as string | undefined
+      const resolvedTenantId = requestHeaders.get('x-tenant-id')
+      if (!userTenantId || userTenantId !== resolvedTenantId) {
+        return NextResponse.redirect(new URL('/admin/login', request.url))
+      }
     }
   }
 

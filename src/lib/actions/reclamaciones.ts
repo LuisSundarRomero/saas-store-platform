@@ -101,6 +101,29 @@ export async function getReclamaciones(filtros?: {
   return data ?? []
 }
 
+export async function getReclamacionesCount(filtros?: { estado?: string; search?: string }) {
+  const supabase = await createClient()
+  let query = supabase
+    .from('libro_reclamaciones')
+    .select('*', { count: 'exact', head: true })
+
+  if (filtros?.estado && filtros.estado !== 'todos') {
+    query = query.eq('estado', filtros.estado as EstadoReclamacion)
+  }
+  if (filtros?.search) {
+    const num = parseInt(filtros.search)
+    if (!isNaN(num)) {
+      query = query.eq('numero', num)
+    } else {
+      query = query.or(
+        `consumidor_nombre.ilike.%${filtros.search}%,consumidor_email.ilike.%${filtros.search}%`
+      )
+    }
+  }
+  const { count } = await query
+  return count ?? 0
+}
+
 export async function getReclamacion(id: string) {
   const supabase = await createClient()
   const { data } = await supabase

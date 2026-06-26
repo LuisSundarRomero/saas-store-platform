@@ -1,5 +1,5 @@
 ﻿import { Fragment } from 'react'
-import { getReclamaciones } from '@/lib/actions/reclamaciones'
+import { getReclamaciones, getReclamacionesCount } from '@/lib/actions/reclamaciones'
 import { ReclamacionesTable } from '@/components/admin/ReclamacionesTable'
 import { ReclamacionesBuscador } from '@/components/admin/ReclamacionesBuscador'
 import Link from 'next/link'
@@ -15,10 +15,10 @@ export default async function ReclamacionesPage({ searchParams }: Props) {
   const { estado, q, page: pageStr } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? '1'))
 
-  const [todos, reclamacionesPagina, reclamacionesFiltradas] = await Promise.all([
+  const [todos, reclamacionesPagina, totalFiltrados] = await Promise.all([
     getReclamaciones(),
     getReclamaciones({ estado, search: q, limit: POR_PAGINA, offset: (page - 1) * POR_PAGINA }),
-    getReclamaciones({ estado, search: q }),
+    getReclamacionesCount({ estado, search: q }),
   ])
 
   const pendientes = todos.filter((r) => r.estado === 'pendiente').length
@@ -28,8 +28,6 @@ export default async function ReclamacionesPage({ searchParams }: Props) {
     const now = new Date()
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
   }).length
-
-  const totalFiltrados = reclamacionesFiltradas.length
   const totalPaginas = Math.ceil(totalFiltrados / POR_PAGINA)
 
   const stats = [

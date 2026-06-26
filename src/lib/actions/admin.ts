@@ -16,20 +16,9 @@ export async function getPedidos(filtros?: {
     .select('*, pedido_items(cantidad)')
     .order('created_at', { ascending: false })
 
-  if (filtros?.estado && filtros.estado !== 'todos') {
-    query = query.eq('estado', filtros.estado)
-  }
-
-  if (filtros?.search) {
-    query = query.or(
-      `order_id.ilike.%${filtros.search}%,cliente_telefono.ilike.%${filtros.search}%`
-    )
-  }
-
-  if (filtros?.limit) {
-    const from = filtros.offset ?? 0
-    query = query.range(from, from + filtros.limit - 1)
-  }
+  if (filtros?.estado && filtros.estado !== 'todos') query = query.eq('estado', filtros.estado)
+  if (filtros?.search) query = query.or(`order_id.ilike.%${filtros.search}%,cliente_telefono.ilike.%${filtros.search}%`)
+  if (filtros?.limit) { const from = filtros.offset ?? 0; query = query.range(from, from + filtros.limit - 1) }
 
   const { data, error } = await query
   if (error) return []
@@ -157,6 +146,24 @@ export async function upsertCategoria(data: {
 export async function deleteCategoria(id: string) {
   const supabase = await createClient()
   await supabase.from('categorias').delete().eq('id', id)
+}
+
+export async function getPedidosCount(filtros?: { estado?: string; search?: string }) {
+  const supabase = await createClient()
+  let query = supabase
+    .from('pedidos')
+    .select('*', { count: 'exact', head: true })
+
+  if (filtros?.estado && filtros.estado !== 'todos') {
+    query = query.eq('estado', filtros.estado)
+  }
+  if (filtros?.search) {
+    query = query.or(
+      `order_id.ilike.%${filtros.search}%,cliente_telefono.ilike.%${filtros.search}%`
+    )
+  }
+  const { count } = await query
+  return count ?? 0
 }
 
 export async function reordenarCategorias(idsEnOrden: string[]) {
