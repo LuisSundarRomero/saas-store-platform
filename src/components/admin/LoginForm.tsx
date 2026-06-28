@@ -60,8 +60,7 @@ export function LoginForm() {
         window.turnstile?.reset()
         setTurnstileToken('')
       } else {
-        router.push('/admin/pedidos')
-        router.refresh()
+        window.location.href = '/admin/pedidos'
       }
     })
   }

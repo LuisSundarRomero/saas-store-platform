@@ -32,8 +32,7 @@ export function AdminSidebar({ tiendaNombre = 'Mi Tienda', planPro = false }: Si
   async function handleLogout() {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/admin/login')
-    router.refresh()
+    window.location.href = '/admin/login'
   }
 
   return (
