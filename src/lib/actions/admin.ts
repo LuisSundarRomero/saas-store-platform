@@ -200,24 +200,6 @@ export async function deleteCategoria(id: string) {
   await admin.from('categorias').delete().eq('id', id).eq('tenant_id', tenant.id)
 }
 
-export async function getPedidosCount(filtros?: { estado?: string; search?: string }) {
-  const supabase = await createClient()
-  let query = supabase
-    .from('pedidos')
-    .select('*', { count: 'exact', head: true })
-
-  if (filtros?.estado && filtros.estado !== 'todos') {
-    query = query.eq('estado', filtros.estado)
-  }
-  if (filtros?.search) {
-    query = query.or(
-      `order_id.ilike.%${filtros.search}%,cliente_telefono.ilike.%${filtros.search}%`
-    )
-  }
-  const { count } = await query
-  return count ?? 0
-}
-
 export async function reordenarCategorias(idsEnOrden: string[]) {
   const admin = createAdminClient()
   const tenant = await getTenant()
