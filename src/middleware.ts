@@ -134,9 +134,14 @@ export async function middleware(request: NextRequest) {
   // ── 6. Protección de rutas superadmin ────────────────────────
   if (request.nextUrl.pathname.startsWith('/superadmin')) {
     if (!request.nextUrl.pathname.startsWith('/superadmin/login')) {
-      const key = request.cookies.get('sa_key')?.value
-      const expected = process.env.SUPERADMIN_KEY
-      if (!expected || key !== expected) {
+      const key = request.cookies.get('sa_key')?.value ?? ''
+      const expected = process.env.SUPERADMIN_KEY ?? ''
+      const keyBuf = Buffer.from(key)
+      const expBuf = Buffer.from(expected)
+      const valid = expected.length > 0 &&
+        key.length === expected.length &&
+        require('crypto').timingSafeEqual(keyBuf, expBuf)
+      if (!valid) {
         return NextResponse.redirect(new URL('/superadmin/login', request.url))
       }
     }

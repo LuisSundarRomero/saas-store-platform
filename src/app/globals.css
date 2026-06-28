@@ -20,6 +20,8 @@
   --color-brand-bg:    #3A1014;
   --color-brand-text:  #FF6B7A;
   --color-brand-glow:  rgba(225,29,46,0.35);
+  --color-warning-bg:  #3A2A0A;
+  --color-warning:     #F59E0B;
   --font-display-transform: uppercase;
   --font-display-spacing:   0.04em;
 }
@@ -35,6 +37,8 @@
   --color-brand-bg:    #FCE7F3;
   --color-brand-text:  #BE185D;
   --color-brand-glow:  rgba(240,98,146,0.25);
+  --color-warning-bg:  #FEF3C7;
+  --color-warning:     #B45309;
   --font-display-transform: none;
   --font-display-spacing:   -0.01em;
 }
@@ -50,6 +54,8 @@
   --color-brand-bg:    rgba(101,81,68,0.10);
   --color-brand-text:  #46220c;
   --color-brand-glow:  rgba(101,81,68,0.22);
+  --color-warning-bg:  #FEF3C7;
+  --color-warning:     #92400E;
   --font-display-transform: none;
   --font-display-spacing:   -0.025em;
 }
@@ -61,8 +67,22 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: 0.01em;
+}
+
+/* Números tabulares para precios — evita layout shift */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Respeta prefers-reduced-motion — accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Tipografía de impacto — títulos, drops, CTAs grandes */

@@ -1,15 +1,35 @@
 'use server'
 
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/server'
+import { loginRatelimit } from '@/lib/ratelimit'
 
 // ─── Auth ────────────────────────────────────────────────────
 
+function timingSafeEqual(a: string, b: string): boolean {
+  const bufA = Buffer.from(a)
+  const bufB = Buffer.from(b)
+  if (bufA.length !== bufB.length) return false
+  return require('crypto').timingSafeEqual(bufA, bufB)
+}
+
 export async function loginSuperadmin(formData: FormData) {
+  const h = await headers()
+  const ip =
+    h.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    h.get('x-real-ip') ??
+    'unknown'
+
+  const { success, reset } = await loginRatelimit.limit(`superadmin:${ip}`)
+  if (!success) {
+    const waitMin = Math.ceil((reset - Date.now()) / 60000)
+    return { error: `Demasiados intentos. Espera ${waitMin} minuto${waitMin !== 1 ? 's' : ''}.` }
+  }
+
   const key = formData.get('key') as string
   const expected = process.env.SUPERADMIN_KEY
-  if (!expected || key !== expected) {
+  if (!expected || !timingSafeEqual(key, expected)) {
     return { error: 'Clave incorrecta' }
   }
   const cookieStore = await cookies()
@@ -101,13 +121,17 @@ export async function crearTenant(input: CrearTenantInput): Promise<{ error?: st
   // 4. Crear o asignar usuario admin
   if (input.modo_usuario === 'nuevo') {
     if (!input.password) return rollbackTenant(admin, tenantId, 'La contraseña es requerida')
-    const { error: userError } = await admin.auth.admin.createUser({
+    const { data: newUser, error: userError } = await admin.auth.admin.createUser({
       email:          input.email.trim().toLowerCase(),
       password:       input.password,
       email_confirm:  true,
-      user_metadata:  { tenant_id: tenantId },
     })
-    if (userError) return rollbackTenant(admin, tenantId, userError.message)
+    if (userError || !newUser.user) return rollbackTenant(admin, tenantId, userError?.message ?? 'Error creando usuario')
+    // app_metadata solo puede ser escrito por service role — no falsificable por el cliente
+    const { error: metaError } = await admin.auth.admin.updateUserById(newUser.user.id, {
+      app_metadata: { tenant_id: tenantId },
+    })
+    if (metaError) return rollbackTenant(admin, tenantId, metaError.message)
   } else {
     // Buscar usuario existente por email
     const { data: { users }, error: listError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 })
@@ -115,7 +139,7 @@ export async function crearTenant(input: CrearTenantInput): Promise<{ error?: st
     const user = users.find((u) => u.email?.toLowerCase() === input.email.trim().toLowerCase())
     if (!user) return rollbackTenant(admin, tenantId, `No se encontró ningún usuario con el email "${input.email}"`)
     const { error: updateError } = await admin.auth.admin.updateUserById(user.id, {
-      user_metadata: { ...(user.user_metadata ?? {}), tenant_id: tenantId },
+      app_metadata: { ...(user.app_metadata ?? {}), tenant_id: tenantId },
     })
     if (updateError) return rollbackTenant(admin, tenantId, updateError.message)
   }

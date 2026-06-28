@@ -20,7 +20,7 @@ export function ProductCard({ producto, priority = false }: ProductCardProps) {
   const nuevo = producto.es_nuevo
 
   return (
-    <Link href={`/catalogo/${producto.slug}`} className="group flex flex-col transition-transform duration-300 hover:-translate-y-1">
+    <Link href={`/catalogo/${producto.slug}`} className="group flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(0,0,0,0.25)]">
 
       {/* Imagen */}
       <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[var(--color-surface)] mb-3 ring-1 ring-transparent transition-all duration-300 group-hover:ring-[var(--color-brand)]/40 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)]">
@@ -45,7 +45,13 @@ export function ProductCard({ producto, priority = false }: ProductCardProps) {
             )}
           </>
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-[var(--color-border)] text-4xl">🖤</div>
+          <div className="absolute inset-0 flex items-center justify-center text-[var(--color-border)]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </div>
         )}
 
         {/* Badge descuento */}
@@ -57,7 +63,7 @@ export function ProductCard({ producto, priority = false }: ProductCardProps) {
           )}
           {stockBajo && !agotado && (
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: '#3A2A0A', color: '#F59E0B' }}>
+              style={{ backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning)' }}>
               ¡Últimas {producto.stock}!
             </span>
           )}
@@ -90,11 +96,11 @@ export function ProductCard({ producto, priority = false }: ProductCardProps) {
           {producto.nombre}
         </p>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold" style={{ color: producto.precio_antes ? 'var(--color-brand)' : 'var(--color-ink)' }}>
+          <span className="text-sm font-bold tabular-nums" style={{ color: producto.precio_antes ? 'var(--color-brand)' : 'var(--color-ink)' }}>
             {formatPrice(producto.precio)}
           </span>
           {producto.precio_antes && (
-            <span className="text-xs text-[var(--color-muted)] line-through">
+            <span className="text-xs text-[var(--color-muted)] line-through tabular-nums">
               {formatPrice(producto.precio_antes)}
             </span>
           )}

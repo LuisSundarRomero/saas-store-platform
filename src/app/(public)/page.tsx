@@ -111,7 +111,7 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: 'var(--color-bg)' }}>
+    <main className="min-h-dvh" style={{ backgroundColor: 'var(--color-bg)' }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

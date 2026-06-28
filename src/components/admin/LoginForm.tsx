@@ -1,11 +1,10 @@
 ﻿'use client'
 
 import { useState, useTransition, useRef, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import Script from 'next/script'
 import { IconMail, IconLock, IconEye, IconEyeOff } from '@tabler/icons-react'
-import { createClient } from '@/lib/supabase/client'
 import { verifyTurnstileToken } from '@/lib/actions/turnstile'
+import { loginAdmin } from '@/lib/actions/admin-auth'
 
 declare global {
   interface Window {
@@ -17,7 +16,6 @@ declare global {
 }
 
 export function LoginForm() {
-  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
@@ -53,10 +51,9 @@ export function LoginForm() {
         return
       }
 
-      const supabase = createClient()
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) {
-        setError('Email o contraseña incorrectos')
+      const result = await loginAdmin(email, password)
+      if ('error' in result) {
+        setError(result.error)
         window.turnstile?.reset()
         setTurnstileToken('')
       } else {

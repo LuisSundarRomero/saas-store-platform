@@ -18,22 +18,17 @@ async function descontarStockPedido(
   tenantId: string,
   items: CartItem[]
 ) {
+  // Operación atómica via RPC — elimina el race condition TOCTOU del patrón
+  // SELECT + UPDATE. PostgreSQL bloquea la fila durante el UPDATE, así dos
+  // checkouts simultáneos nunca leen el mismo stock y no generan oversell.
   await Promise.all(
-    items.map(async (item) => {
-      const { data: producto } = await admin
-        .from('productos')
-        .select('stock')
-        .eq('id', item.productoId)
-        .eq('tenant_id', tenantId)
-        .single()
-      if (!producto || producto.stock == null) return
-      const nuevoStock = Math.max(0, producto.stock - item.cantidad)
-      await admin
-        .from('productos')
-        .update({ stock: nuevoStock, visible: nuevoStock > 0 })
-        .eq('id', item.productoId)
-        .eq('tenant_id', tenantId)
-    })
+    items.map((item) =>
+      admin.rpc('descontar_stock', {
+        p_producto_id: item.productoId,
+        p_tenant_id:   tenantId,
+        p_cantidad:    item.cantidad,
+      })
+    )
   )
 }
 
@@ -109,7 +104,20 @@ function findDeclineMessage(cargo: { decline_code?: string; merchant_message?: s
   return undefined
 }
 
+function validarInputPedido(input: { clienteNombre: string; clienteEmail: string; clienteTelefono: string; clienteDireccion: string; items: CartItem[] }): string | null {
+  if (!input.clienteNombre?.trim() || input.clienteNombre.length > 120) return 'Nombre inválido'
+  if (!input.clienteEmail?.trim() || input.clienteEmail.length > 200 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.clienteEmail)) return 'Email inválido'
+  if (!input.clienteTelefono?.trim() || input.clienteTelefono.replace(/\D/g, '').length < 9) return 'Teléfono inválido'
+  if (!input.clienteDireccion?.trim() || input.clienteDireccion.length < 8 || input.clienteDireccion.length > 300) return 'Dirección inválida'
+  if (!input.items?.length || input.items.length > 50) return 'Carrito inválido'
+  if (input.items.some((i) => i.cantidad < 1 || i.cantidad > 99 || i.precio < 0)) return 'Item inválido'
+  return null
+}
+
 export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Promise<CrearPedidoConCulqiResult> {
+  const validationError = validarInputPedido(input)
+  if (validationError) return { success: false, errorType: 'generic', error: validationError }
+
   const admin = getAdminClient()
   const tenant = await getTenant()
 
@@ -284,6 +292,9 @@ type CrearPedidoWhatsAppResult =
   | { success: false; error: string }
 
 export async function crearPedidoWhatsApp(input: CrearPedidoWhatsAppInput): Promise<CrearPedidoWhatsAppResult> {
+  const validationError = validarInputPedido(input)
+  if (validationError) return { success: false, error: validationError }
+
   const admin = getAdminClient()
   const tenant = await getTenant()
 

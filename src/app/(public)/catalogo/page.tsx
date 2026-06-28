@@ -77,7 +77,7 @@ export default async function CatalogoPage({ searchParams }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--color-bg)]">
+    <main className="min-h-dvh bg-[var(--color-bg)]">
       {/* Chips sticky — solo cuando NO hay sidebar */}
       {!useSidebar && (
         <div
