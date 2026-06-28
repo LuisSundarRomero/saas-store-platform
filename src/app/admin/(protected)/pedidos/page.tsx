@@ -1,4 +1,5 @@
-﻿import { getPedidos, getPedidosCount } from '@/lib/actions/admin'
+import { Fragment } from 'react'
+import { getPedidos, getPedidosCount } from '@/lib/actions/admin'
 import { PedidosTable } from '@/components/admin/PedidosTable'
 import { PedidosBuscador } from '@/components/admin/PedidosBuscador'
 import { formatPrice } from '@/lib/utils/format'
@@ -89,11 +90,9 @@ export default async function PedidosPage({ searchParams }: Props) {
           ))}
         </div>
 
-        {/* Buscador por código */}
         <PedidosBuscador defaultValue={q} estado={estado} />
       </div>
 
-      {/* Info resultados */}
       {q && (
         <p className="text-sm text-gray-500 mb-3">
           {totalFiltrados} resultado{totalFiltrados !== 1 ? 's' : ''} para <strong>&quot;{q}&quot;</strong>
@@ -119,18 +118,18 @@ export default async function PedidosPage({ searchParams }: Props) {
             {Array.from({ length: totalPaginas }, (_, i) => i + 1)
               .filter(p => p === 1 || p === totalPaginas || Math.abs(p - page) <= 1)
               .map((p, i, arr) => (
-                <>
+                <Fragment key={p}>
                   {i > 0 && arr[i - 1] !== p - 1 && (
-                    <span key={`dots-${p}`} className="px-2 py-2 text-sm text-gray-400">…</span>
+                    <span className="px-2 py-2 text-sm text-gray-400">…</span>
                   )}
-                  <Link key={p} href={buildUrl({ page: String(p) })}
+                  <Link href={buildUrl({ page: String(p) })}
                     className="w-9 h-9 flex items-center justify-center text-sm font-semibold rounded-xl transition-colors"
                     style={p === page
                       ? { backgroundColor: 'var(--color-brand)', color: '#fff' }
                       : { border: '1px solid #E5E7EB', color: '#6B7280' }}>
                     {p}
                   </Link>
-                </>
+                </Fragment>
               ))}
             {page < totalPaginas && (
               <Link href={buildUrl({ page: String(page + 1) })}
@@ -144,4 +143,3 @@ export default async function PedidosPage({ searchParams }: Props) {
     </div>
   )
 }
-

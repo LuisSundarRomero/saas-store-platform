@@ -1,15 +1,21 @@
+import { headers } from 'next/headers'
 import type { MetadataRoute } from 'next'
 
-export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? 'https://anarchyy.pe'
+const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN ?? 'contahorro.com'
+
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const h = await headers()
+  const slug = h.get('x-tenant-slug') ?? ''
+  const host = slug ? `https://${slug}.${MAIN_DOMAIN}` : `https://${MAIN_DOMAIN}`
+
   return {
     rules: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/api/'],
+        disallow: ['/admin/', '/checkout/', '/api/'],
       },
     ],
-    sitemap: `${base}/sitemap.xml`,
+    sitemap: `${host}/sitemap.xml`,
   }
 }

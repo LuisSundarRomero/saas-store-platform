@@ -16,17 +16,16 @@ export default async function CatalogoAdminPage({ searchParams }: Props) {
   const POR_PAGINA = Math.min(Math.max(parseInt(sizeStr ?? '12'), 4), 50)
   const page = Math.max(1, parseInt(pageStr ?? '1'))
 
-  const [todosLosProductos, productosPagina, categorias] = await Promise.all([
-    getProductosAdmin({ q, categoriaSlug: cat, filtro }),
+  const [resultado, statsResult, categorias] = await Promise.all([
     getProductosAdmin({ q, categoriaSlug: cat, filtro, limit: POR_PAGINA, offset: (page - 1) * POR_PAGINA }),
+    getProductosAdmin({ q, categoriaSlug: cat, filtro }),
     getCategorias(),
   ])
 
-  const total = todosLosProductos.length
+  const total = statsResult.total
   const totalPaginas = Math.ceil(total / POR_PAGINA)
-  const visibles  = todosLosProductos.filter((p: Producto) => p.visible).length
-  const agotados  = todosLosProductos.filter((p: Producto) => p.stock === 0).length
-  const destacados = todosLosProductos.filter((p: Producto) => p.destacado).length
+  const { visibles, agotados, destacados } = statsResult.stats
+  const productosPagina = resultado.data as Producto[]
 
   function buildUrl(params: Record<string, string>) {
     const p = new URLSearchParams()

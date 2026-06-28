@@ -16,12 +16,15 @@ export async function getCategorias(): Promise<Categoria[]> {
   return data ?? []
 }
 
+const PAGE_SIZE = 24
+
 export async function getProductos(params?: {
   categoriaSlug?: string
   search?: string
   limit?: number
+  offset?: number
   sort?: string
-}): Promise<Producto[]> {
+}): Promise<{ productos: Producto[]; hasMore: boolean }> {
   noStore()
   const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
 
@@ -31,6 +34,8 @@ export async function getProductos(params?: {
 
   const ascending = params?.sort === 'precio_asc'
   const orderCol = params?.sort?.startsWith('precio') ? 'precio' : 'created_at'
+  const limit = params?.limit ?? PAGE_SIZE
+  const offset = params?.offset ?? 0
 
   let query = supabase
     .from('productos')
@@ -40,6 +45,7 @@ export async function getProductos(params?: {
     .order('destacado', { ascending: false })
     .order('es_nuevo', { ascending: false })
     .order(orderCol, { ascending })
+    .range(offset, offset + limit) // range is inclusive → fetches limit+1 rows to detect hasMore
 
   if (params?.categoriaSlug) {
     query = query.eq('categorias.slug', params.categoriaSlug)
@@ -49,13 +55,11 @@ export async function getProductos(params?: {
     query = query.ilike('nombre', `%${params.search}%`)
   }
 
-  if (params?.limit) {
-    query = query.limit(params.limit)
-  }
-
   const { data, error } = await query
-  if (error) return []
-  return (data ?? []) as Producto[]
+  if (error) return { productos: [], hasMore: false }
+  const rows = (data ?? []) as Producto[]
+  const hasMore = rows.length > limit
+  return { productos: hasMore ? rows.slice(0, limit) : rows, hasMore }
 }
 
 export async function getProductosDestacados(): Promise<Producto[]> {

@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { NextResponse, type NextRequest } from 'next/server'
 
 const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'contahorro.com'
-const RESERVED_SLUGS = ['www', 'sass', 'app', 'api']
+const RESERVED_SLUGS = ['www', 'sass', 'app', 'api', 'superadmin']
 
 // Cliente admin para resolver tenants — bypasa RLS, solo se usa en servidor
 const supabaseAdmin = createClient(
@@ -29,16 +29,33 @@ export async function middleware(request: NextRequest) {
       tenantSlug = subdomain
     }
   } else {
-    tenantSlug = request.headers.get('x-tenant-slug') || 'anarchy'
+    // En localhost, detectar subdominio si existe (ej: demo.localhost:3000)
+    const parts = hostname.split('.')
+    const firstPart = parts[0]
+    if (
+      parts.length > 1 &&
+      !firstPart.includes('localhost') &&
+      !firstPart.includes('127') &&
+      !RESERVED_SLUGS.includes(firstPart)
+    ) {
+      tenantSlug = firstPart
+    } else {
+      tenantSlug = request.headers.get('x-tenant-slug') || 'anarchy'
+    }
   }
 
   // ── 2. Construir headers del request con datos del tenant ────
   const requestHeaders = new Headers(request.headers)
 
+  // Dominio raíz sin subdominio → landing de venta del SaaS
+  if (!tenantSlug && !isLocalhost) {
+    requestHeaders.set('x-is-platform', 'true')
+  }
+
   if (tenantSlug) {
     const { data: tenant } = await supabaseAdmin
       .from('tenants')
-      .select('id, slug, nombre, color_primario, logo_url, activo')
+      .select('id, slug, nombre, color_primario, logo_url, activo, font_display, font_body, theme, planes!plan_id(nombre)')
       .eq('slug', tenantSlug)
       .eq('activo', true)
       .single()
@@ -59,6 +76,12 @@ export async function middleware(request: NextRequest) {
     requestHeaders.set('x-tenant-nombre', tenant.nombre)
     requestHeaders.set('x-tenant-color', tenant.color_primario || '#000000')
     requestHeaders.set('x-tenant-logo', tenant.logo_url || '')
+    requestHeaders.set('x-tenant-font-display', tenant.font_display || '')
+    requestHeaders.set('x-tenant-font-body', tenant.font_body || '')
+    requestHeaders.set('x-tenant-theme', tenant.theme || 'dark')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const planNombre = (tenant as any).planes?.nombre ?? ''
+    requestHeaders.set('x-tenant-plan', planNombre)
   }
 
   // ── 3. Crear respuesta con los headers modificados ───────────
@@ -104,6 +127,17 @@ export async function middleware(request: NextRequest) {
       const resolvedTenantId = requestHeaders.get('x-tenant-id')
       if (!userTenantId || userTenantId !== resolvedTenantId) {
         return NextResponse.redirect(new URL('/admin/login', request.url))
+      }
+    }
+  }
+
+  // ── 6. Protección de rutas superadmin ────────────────────────
+  if (request.nextUrl.pathname.startsWith('/superadmin')) {
+    if (!request.nextUrl.pathname.startsWith('/superadmin/login')) {
+      const key = request.cookies.get('sa_key')?.value
+      const expected = process.env.SUPERADMIN_KEY
+      if (!expected || key !== expected) {
+        return NextResponse.redirect(new URL('/superadmin/login', request.url))
       }
     }
   }

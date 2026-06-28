@@ -1,51 +1,67 @@
 ﻿import Link from 'next/link'
 import { IconArrowLeft, IconFileText } from '@tabler/icons-react'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
+import type { Metadata } from 'next'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const tenant = await getTenant()
+  const nombre = tenant.nombre || 'Mi Tienda'
+  return {
+    title: 'Términos y Condiciones',
+    description: `Términos y condiciones de compra de ${nombre}. Política de envíos, devoluciones y garantías.`,
+    alternates: { canonical: '/terminos-y-condiciones' },
+    robots: { index: true, follow: false },
+  }
+}
 
 export default async function TerminosPage() {
-  const supabase = await createClient()
-  const { data: config } = await supabase
-    .from('config')
-    .select('tienda_nombre, empresa_razon_social, empresa_ruc, empresa_direccion, whatsapp_numero, footer_email')
-    .single()
+  const tenant = await getTenant()
+  const admin = createAdminClient()
+  const [{ data: ct }, { data: cf }] = await Promise.all([
+    admin.from('config_tienda').select('tienda_nombre, empresa_razon, empresa_ruc, empresa_dir, whatsapp_numero').eq('tenant_id', tenant.id).single(),
+    admin.from('config_footer').select('email').eq('tenant_id', tenant.id).single(),
+  ])
 
-  const tiendaNombre = config?.tienda_nombre ?? 'Mi Tienda'
-  const razonSocial = config?.empresa_razon_social || tiendaNombre
-  const ruc = config?.empresa_ruc ?? ''
-  const direccion = config?.empresa_direccion ?? ''
-  const whatsapp = config?.whatsapp_numero ?? ''
-  const email = config?.footer_email ?? ''
+  const tiendaNombre = ct?.tienda_nombre ?? tenant.nombre
+  const razonSocial  = ct?.empresa_razon || tiendaNombre
+  const ruc          = ct?.empresa_ruc ?? ''
+  const direccion    = ct?.empresa_dir  ?? ''
+  const whatsapp     = ct?.whatsapp_numero ?? ''
+  const email        = cf?.email ?? ''
 
   const hoy = new Date()
   const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
   const fecha = `${hoy.getDate()} de ${meses[hoy.getMonth()]} de ${hoy.getFullYear()}`
 
   return (
-    <main className="min-h-screen bg-[#1F1F22]">
+    <main className="min-h-screen bg-[var(--color-bg)]">
 
       {/* Header */}
-      <div className="bg-[#1F1F22]/95 backdrop-blur border-b border-[#2C2C30] px-4 py-3.5 flex items-center gap-3 sticky top-0 z-10">
+      <div className="backdrop-blur border-b px-4 py-3.5 flex items-center gap-3 sticky top-0 z-10"
+        style={{ backgroundColor: 'color-mix(in srgb, var(--color-bg) 95%, transparent)', borderColor: 'var(--color-border)' }}>
         <Link href="/"
-          className="p-1.5 rounded-full hover:bg-[#161618] transition-colors text-[#9A9A9E]">
+          className="p-1.5 rounded-full hover:bg-[var(--color-surface)] transition-colors text-[var(--color-muted)]">
           <IconArrowLeft size={18} />
         </Link>
-        <p className="font-bold text-[#F5F5F2] text-sm">Términos y condiciones</p>
+        <p className="font-bold text-[var(--color-ink)] text-sm">Términos y condiciones</p>
       </div>
 
       <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-4">
 
         {/* Intro */}
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#3A1014' }}>
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--color-brand-bg)' }}>
             <IconFileText size={22} style={{ color: 'var(--color-brand)' }} />
           </div>
-          <p className="text-sm text-[#9A9A9E] leading-relaxed">
+          <p className="text-sm text-[var(--color-muted)] leading-relaxed">
             Al realizar una compra en {tiendaNombre} aceptas los siguientes términos y condiciones.
             Te recomendamos leerlos antes de completar tu pedido.
           </p>
         </div>
 
-        <div className="bg-[#161618] border border-[#2C2C30] rounded-2xl p-5 flex flex-col gap-5 text-sm text-[#C9C9CD] leading-relaxed">
+        <div className="border rounded-2xl p-5 flex flex-col gap-5 text-sm leading-relaxed"
+          style={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)', color: 'var(--color-ink)' }}>
 
           <section>
             <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-brand)' }}>
@@ -122,7 +138,7 @@ export default async function TerminosPage() {
             </p>
             <p>
               Si tienes una queja o reclamo sobre tu compra, puedes registrarlo en nuestro{' '}
-              <Link href="/libro-de-reclamaciones" className="underline" style={{ color: '#F5F5F2' }}>
+              <Link href="/libro-de-reclamaciones" className="underline" style={{ color: 'var(--color-ink)' }}>
                 Libro de Reclamaciones
               </Link>, conforme al Código de Protección y Defensa del Consumidor.
             </p>
@@ -141,7 +157,7 @@ export default async function TerminosPage() {
             </section>
           )}
 
-          <p className="text-xs text-[#6B6B70] pt-2 border-t border-[#2C2C30]">
+          <p className="text-xs pt-2 border-t" style={{ color: 'var(--color-muted)', borderColor: 'var(--color-border)' }}>
             Última actualización: {fecha}
           </p>
         </div>

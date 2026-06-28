@@ -83,6 +83,73 @@ export interface Config {
   whatsapp_template: string
 }
 
+// ─── Config types (multi-tab) ────────────────────────────────
+
+export interface ConfigTienda {
+  tenant_id?: string
+  tienda_nombre: string
+  whatsapp_numero: string
+  moneda: string
+  email_notif: string | null
+  empresa_razon: string | null
+  empresa_ruc: string | null
+  empresa_dir: string | null
+}
+
+export interface ConfigAnuncio {
+  tenant_id?: string
+  visible: boolean
+  texto: string
+  link: string | null
+  expira: string | null
+}
+
+export interface ConfigBanner {
+  tenant_id?: string
+  hero_badge: string
+  hero_titulo: string
+  hero_subtitulo: string
+  hero_boton: string
+  hero_visible: boolean
+  imagenes_visible: boolean
+  imagenes: string[]
+  imagenes_links: string[]
+  strip_visible: boolean
+  strip_item1: string
+  strip_item2: string
+  strip_item3: string
+  strip_item4: string
+  categorias_sidebar: boolean
+}
+
+export interface ConfigFooter {
+  tenant_id?: string
+  descripcion: string
+  politica: string
+  info1: string
+  info2: string
+  info3: string
+  info4: string
+  email: string | null
+  tagline: string
+  instagram: string | null
+  tiktok: string | null
+}
+
+export interface ConfigMensajes {
+  tenant_id?: string
+  whatsapp_template: string
+}
+
+export interface ConfigNosotros {
+  tenant_id?: string
+  visible: boolean
+  titulo: string
+  subtitulo: string
+  descripcion: string
+  imagen_url: string | null
+}
+
 export type TipoDocumento = 'DNI' | 'CE' | 'Pasaporte'
 export type TipoBien = 'producto' | 'servicio'
 export type TipoReclamacion = 'reclamo' | 'queja'

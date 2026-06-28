@@ -149,7 +149,7 @@ export function PagoCheckout({ tiendaNombre = 'Mi Tienda', culqiPublicKey }: { t
   useEffect(() => {
     if (items.length === 0 || !checkoutInfo.email || !culqiReady || !window.CulqiCheckout) return
 
-    const checkout = new window.CulqiCheckout(culqiPublicKey ?? process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY ?? '', {
+    const checkout = new window.CulqiCheckout(culqiPublicKey ?? '', {
       settings: {
         title: tiendaNombre,
         currency: 'PEN',

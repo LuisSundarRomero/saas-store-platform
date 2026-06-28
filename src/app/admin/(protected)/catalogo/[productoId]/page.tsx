@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
+import { getTenant } from '@/lib/tenant'
 import { ProductoForm } from '@/components/admin/ProductoForm'
 
 interface Props {
@@ -8,11 +9,13 @@ interface Props {
 
 export default async function ProductoFormPage({ params }: Props) {
   const { productoId } = await params
-  const supabase = await createClient()
+  const admin = createAdminClient()
+  const tenant = await getTenant()
 
-  const categorias = await supabase
+  const categorias = await admin
     .from('categorias')
     .select('id, nombre')
+    .eq('tenant_id', tenant.id)
     .eq('activa', true)
     .order('orden')
     .then(({ data }) => data ?? [])
@@ -21,10 +24,11 @@ export default async function ProductoFormPage({ params }: Props) {
     return <ProductoForm categorias={categorias} />
   }
 
-  const { data: producto } = await supabase
+  const { data: producto } = await admin
     .from('productos')
     .select('*')
     .eq('id', productoId)
+    .eq('tenant_id', tenant.id)
     .single()
 
   if (!producto) notFound()
