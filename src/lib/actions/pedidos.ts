@@ -13,6 +13,30 @@ function getAdminClient() {
   )
 }
 
+async function descontarStockPedido(
+  admin: ReturnType<typeof getAdminClient>,
+  tenantId: string,
+  items: CartItem[]
+) {
+  await Promise.all(
+    items.map(async (item) => {
+      const { data: producto } = await admin
+        .from('productos')
+        .select('stock')
+        .eq('id', item.productoId)
+        .eq('tenant_id', tenantId)
+        .single()
+      if (!producto || producto.stock == null) return
+      const nuevoStock = Math.max(0, producto.stock - item.cantidad)
+      await admin
+        .from('productos')
+        .update({ stock: nuevoStock, visible: nuevoStock > 0 })
+        .eq('id', item.productoId)
+        .eq('tenant_id', tenantId)
+    })
+  )
+}
+
 interface CrearPedidoConCulqiInput {
   items: CartItem[]
   clienteNombre: string
