@@ -2,6 +2,7 @@
 import { Anton, Inter } from 'next/font/google'
 import { headers } from 'next/headers'
 import Script from 'next/script'
+import { FontLoader } from '@/components/ui/FontLoader'
 import './globals.css'
 
 export async function generateViewport(): Promise<Viewport> {
@@ -116,13 +117,6 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {googleFontsUrl && (
-          <>
-            <link rel="preconnect" href="https://fonts.googleapis.com" />
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-            <link rel="stylesheet" href={googleFontsUrl} />
-          </>
-        )}
         {GTM_ID && (
           <Script id="gtm-script" strategy="afterInteractive">
             {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -145,6 +139,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </noscript>
         )}
         {children}
+        {googleFontsUrl && <FontLoader url={googleFontsUrl} />}
       </body>
     </html>
   )
