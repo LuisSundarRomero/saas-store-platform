@@ -28,9 +28,11 @@ export function CartItemRow({ item }: Props) {
         {item.imagen ? (
           <Image src={item.imagen} alt={item.nombre} fill sizes="72px" className="object-cover" />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-xl"
+          <div className="absolute inset-0 flex items-center justify-center"
             style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-border)' }}>
-            🖤
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+            </svg>
           </div>
         )}
       </div>
@@ -54,24 +56,27 @@ export function CartItemRow({ item }: Props) {
             style={{ backgroundColor: 'var(--color-surface-alt)' }}>
             <button
               onClick={() => updateQty(item.productoId, item.talla, item.color, item.cantidad - 1)}
+              aria-label={`Reducir cantidad de ${item.nombre}`}
               className="w-6 h-6 rounded-full flex items-center justify-center transition-colors"
               style={{ color: 'var(--color-ink)' }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--color-border)')}
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
             >
-              <IconMinus size={11} />
+              <IconMinus size={11} aria-hidden="true" />
             </button>
-            <span className="text-sm font-semibold w-4 text-center" style={{ color: 'var(--color-ink)' }}>
+            <span className="text-sm font-semibold w-4 text-center" style={{ color: 'var(--color-ink)' }}
+              aria-label={`Cantidad: ${item.cantidad}`}>
               {item.cantidad}
             </span>
             <button
               onClick={() => updateQty(item.productoId, item.talla, item.color, item.cantidad + 1)}
+              aria-label={`Aumentar cantidad de ${item.nombre}`}
               className="w-6 h-6 rounded-full flex items-center justify-center transition-colors"
               style={{ color: 'var(--color-ink)' }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--color-border)')}
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
             >
-              <IconPlus size={11} />
+              <IconPlus size={11} aria-hidden="true" />
             </button>
           </div>
 
@@ -79,9 +84,10 @@ export function CartItemRow({ item }: Props) {
             <span className="text-sm font-bold" style={{ color: 'var(--color-brand)' }}>
               {formatPrice(item.precio * item.cantidad)}
             </span>
-            <button onClick={handleRemove} className="p-1 transition-colors hover:text-red-400"
+            <button onClick={handleRemove} aria-label={`Eliminar ${item.nombre} del carrito`}
+              className="p-1 transition-colors hover:text-red-400"
               style={{ color: 'var(--color-muted)' }}>
-              <IconTrash size={15} />
+              <IconTrash size={15} aria-hidden="true" />
             </button>
           </div>
         </div>

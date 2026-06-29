@@ -95,12 +95,13 @@ export function CartDrawer({
             )}
           </div>
           <button type="button" onClick={onClose}
+            aria-label="Cerrar carrito"
             className="p-1.5 rounded-full transition-colors"
             style={{ color: 'var(--color-muted)' }}
             onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--color-border)')}
             onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
           >
-            <IconX size={18} />
+            <IconX size={18} aria-hidden="true" />
           </button>
         </div>
 

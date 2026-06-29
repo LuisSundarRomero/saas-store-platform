@@ -50,7 +50,7 @@ export default async function HomePage() {
 
   const { createPublicClient } = await import('@/lib/supabase/server')
   const { getTenant } = await import('@/lib/tenant')
-  const [supabase, tenant] = await Promise.all([createPublicClient(), getTenant()])
+  const [, tenant] = await Promise.all([createPublicClient(), getTenant()])
   const { createAdminClient } = await import('@/lib/supabase/server')
   const admin = createAdminClient()
   const [{ data: cb }, { data: ct }, { data: cn }] = await Promise.all([
@@ -116,6 +116,11 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+
+      {/* H1 siempre presente para SEO — visualmente oculto si heroVisible muestra el decorativo */}
+      {!heroVisible && (
+        <h1 className="sr-only">{heroTitulo || tiendaNombreJson}</h1>
+      )}
 
       {/* ── HERO ── */}
       {heroVisible && (

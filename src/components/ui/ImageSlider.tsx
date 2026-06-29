@@ -423,6 +423,7 @@ function BannerSlider({
               fill
               className="object-cover lg:object-contain hover:scale-[1.03] transition-transform duration-500"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 80vw"
+              quality={i === 0 ? 80 : 70}
               priority={i === 0}
               loading={i === 0 ? undefined : 'lazy'}
             />
@@ -432,6 +433,7 @@ function BannerSlider({
             <Link
               key={i}
               href={s.href}
+              aria-label={s.alt || `Ver colección ${i + 1}`}
               className="relative shrink-0 w-full h-full snap-center block"
               style={{ backgroundColor: slideBg }}
             >

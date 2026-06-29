@@ -71,18 +71,19 @@ export function Navbar({ tiendaNombre = 'Mi Tienda', logoUrl, planBasico, whatsa
               </Link>
             </div>
 
-            <Link href="/rastrear" className="sm:hidden p-2 rounded-full transition-colors"
+            <Link href="/rastrear" aria-label="Rastrear pedido" className="sm:hidden p-2 rounded-full transition-colors"
               style={{ color: 'var(--color-muted)' }}>
-              <IconPackage size={22} />
+              <IconPackage size={22} aria-hidden="true" />
             </Link>
 
             <button
               type="button"
               onClick={openCart}
+              aria-label={count > 0 ? `Carrito (${count} productos)` : 'Carrito de compras'}
               className="relative p-2 rounded-full transition-colors"
               style={{ color: 'var(--color-muted)' }}
             >
-              <IconShoppingBag size={22} />
+              <IconShoppingBag size={22} aria-hidden="true" />
               {count > 0 && (
                 <span
                   className="absolute -top-0.5 -right-0.5 text-white text-[10px] font-bold min-w-[17px] h-[17px] rounded-full flex items-center justify-center px-1"

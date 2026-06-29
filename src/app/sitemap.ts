@@ -11,10 +11,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const host     = slug ? `https://${slug}.${MAIN_DOMAIN}` : `https://${MAIN_DOMAIN}`
 
   const staticPages: MetadataRoute.Sitemap = [
-    { url: host,                             lastModified: new Date(), changeFrequency: 'weekly',  priority: 1.0 },
-    { url: `${host}/catalogo`,               lastModified: new Date(), changeFrequency: 'daily',   priority: 0.9 },
-    { url: `${host}/politica-de-privacidad`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
-    { url: `${host}/terminos-y-condiciones`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
+    { url: host,                                   lastModified: new Date(), changeFrequency: 'weekly',  priority: 1.0 },
+    { url: `${host}/catalogo`,                     lastModified: new Date(), changeFrequency: 'daily',   priority: 0.9 },
+    { url: `${host}/rastrear`,                     lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${host}/politica-de-privacidad`,       lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${host}/terminos-y-condiciones`,       lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${host}/libro-de-reclamaciones`,       lastModified: new Date(), changeFrequency: 'monthly', priority: 0.2 },
   ]
 
   if (!tenantId) return staticPages

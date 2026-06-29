@@ -33,7 +33,7 @@
   --color-surface-alt: #FEF0F4;
   --color-border:      #FBCFE8;
   --color-ink:         #1A1A1A;
-  --color-muted:       #9CA3AF;
+  --color-muted:       #6B7280; /* was #9CA3AF — 2.46:1 fail → 4.76:1 pass WCAG AA */
   --color-brand-bg:    #FCE7F3;
   --color-brand-text:  #BE185D;
   --color-brand-glow:  rgba(240,98,146,0.25);
@@ -50,7 +50,7 @@
   --color-surface-alt: #e8ddd4;
   --color-border:      #cdbeb5;
   --color-ink:         #412413;
-  --color-muted:       #978478;
+  --color-muted:       #6B5A4E; /* was #978478 — 3.41:1 fail → 6.3:1 pass WCAG AA */
   --color-brand-bg:    rgba(101,81,68,0.10);
   --color-brand-text:  #46220c;
   --color-brand-glow:  rgba(101,81,68,0.22);

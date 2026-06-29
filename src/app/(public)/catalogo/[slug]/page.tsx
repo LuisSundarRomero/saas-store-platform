@@ -60,23 +60,41 @@ export default async function ProductoPage({ params }: Props) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
   const agotado = producto.stock !== null && producto.stock === 0
 
+  const priceValidUntil = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString().split('T')[0]
+
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: producto.nombre,
-    description: producto.descripcion ?? producto.nombre,
-    image: producto.imagenes ?? [],
-    url: `${appUrl}/catalogo/${producto.slug}`,
-    brand: { '@type': 'Brand', name: tiendaNombre },
-    offers: {
-      '@type': 'Offer',
-      priceCurrency: 'PEN',
-      price: (producto.precio / 100).toFixed(2),
-      availability: agotado
-        ? 'https://schema.org/OutOfStock'
-        : 'https://schema.org/InStock',
-      seller: { '@type': 'Organization', name: tiendaNombre },
-    },
+    '@graph': [
+      {
+        '@type': 'Product',
+        name: producto.nombre,
+        description: producto.descripcion ?? producto.nombre,
+        image: producto.imagenes ?? [],
+        url: `${appUrl}/catalogo/${producto.slug}`,
+        sku: producto.slug,
+        brand: { '@type': 'Brand', name: tiendaNombre },
+        offers: {
+          '@type': 'Offer',
+          priceCurrency: 'PEN',
+          price: (producto.precio / 100).toFixed(2),
+          priceValidUntil,
+          itemCondition: 'https://schema.org/NewCondition',
+          availability: agotado
+            ? 'https://schema.org/OutOfStock'
+            : 'https://schema.org/InStock',
+          seller: { '@type': 'Organization', name: tiendaNombre },
+          url: `${appUrl}/catalogo/${producto.slug}`,
+        },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Inicio', item: appUrl },
+          { '@type': 'ListItem', position: 2, name: 'Catálogo', item: `${appUrl}/catalogo` },
+          { '@type': 'ListItem', position: 3, name: producto.nombre, item: `${appUrl}/catalogo/${producto.slug}` },
+        ],
+      },
+    ],
   }
 
   return (
