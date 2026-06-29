@@ -65,38 +65,42 @@ export function Footer({
             <div className="flex gap-2.5 mt-5">
               {waNum && (
                 <a href={`https://wa.me/${waNum}`} target="_blank" rel="noopener noreferrer"
+                  aria-label={`Contactar por WhatsApp a ${tiendaNombre}`}
                   className={iconBtn}
                   style={{ borderColor: 'var(--color-border)', color: 'var(--color-muted)', backgroundColor: 'var(--color-surface)' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#22c55e'; e.currentTarget.style.color = '#22c55e' }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--color-border)'; e.currentTarget.style.color = 'var(--color-muted)' }}>
-                  <IconBrandWhatsapp size={16} />
+                  <IconBrandWhatsapp size={16} aria-hidden="true" />
                 </a>
               )}
               {email && (
                 <a href={`mailto:${email}`}
+                  aria-label={`Enviar email a ${tiendaNombre}`}
                   className={iconBtn}
                   style={{ borderColor: 'var(--color-border)', color: 'var(--color-muted)', backgroundColor: 'var(--color-surface)' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--color-brand)'; e.currentTarget.style.color = 'var(--color-brand)' }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--color-border)'; e.currentTarget.style.color = 'var(--color-muted)' }}>
-                  <IconMail size={16} />
+                  <IconMail size={16} aria-hidden="true" />
                 </a>
               )}
               {instagram && (
                 <a href={instagram} target="_blank" rel="noopener noreferrer"
+                  aria-label={`Instagram de ${tiendaNombre}`}
                   className={iconBtn}
                   style={{ borderColor: 'var(--color-border)', color: 'var(--color-muted)', backgroundColor: 'var(--color-surface)' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--color-brand)'; e.currentTarget.style.color = 'var(--color-brand)' }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--color-border)'; e.currentTarget.style.color = 'var(--color-muted)' }}>
-                  <IconBrandInstagram size={16} />
+                  <IconBrandInstagram size={16} aria-hidden="true" />
                 </a>
               )}
               {tiktok && (
                 <a href={tiktok} target="_blank" rel="noopener noreferrer"
+                  aria-label={`TikTok de ${tiendaNombre}`}
                   className={iconBtn}
                   style={{ borderColor: 'var(--color-border)', color: 'var(--color-muted)', backgroundColor: 'var(--color-surface)' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--color-ink)'; e.currentTarget.style.color = 'var(--color-ink)' }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--color-border)'; e.currentTarget.style.color = 'var(--color-muted)' }}>
-                  <IconBrandTiktok size={16} />
+                  <IconBrandTiktok size={16} aria-hidden="true" />
                 </a>
               )}
             </div>
@@ -154,7 +158,7 @@ export function Footer({
                   style={{ color: 'var(--color-muted)' }}
                   onMouseEnter={e => (e.currentTarget.style.color = '#22c55e')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-muted)')}>
-                  <IconBrandWhatsapp size={15} className="shrink-0" /> +{waNum}
+                  <IconBrandWhatsapp size={15} className="shrink-0" aria-hidden="true" /> +{waNum}
                 </a>
               )}
               {email && (
@@ -163,7 +167,7 @@ export function Footer({
                   style={{ color: 'var(--color-muted)' }}
                   onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-brand)')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-muted)')}>
-                  <IconMail size={15} className="shrink-0" /> {email}
+                  <IconMail size={15} className="shrink-0" aria-hidden="true" /> {email}
                 </a>
               )}
             </div>
