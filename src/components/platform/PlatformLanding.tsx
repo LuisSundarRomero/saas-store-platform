@@ -3,6 +3,11 @@ import { IconCheck, IconBrandWhatsapp, IconCreditCard, IconShoppingBag, IconChar
 
 const WHATSAPP = '51982121991'
 
+const VIOLET = '#6C2BD9'
+const JADE = '#00A389'
+const VIOLET_BG = 'rgba(108,43,217,0.12)'
+const JADE_BG = 'rgba(0,163,137,0.10)'
+
 const PLANES = [
   {
     nombre: 'Básico',
@@ -78,10 +83,12 @@ export function PlatformLanding() {
 
       {/* Nav */}
       <nav className="border-b border-white/10 px-6 py-4 flex items-center justify-between max-w-6xl mx-auto">
-        <span className="font-bold text-lg tracking-tight">peshoop</span>
+        <span className="font-bold text-lg tracking-tight">
+          <span style={{ color: VIOLET }}>pe</span><span style={{ color: JADE }}>shoop</span>
+        </span>
         <a href={waUrl} target="_blank" rel="noopener noreferrer"
           className="text-sm font-semibold px-4 py-2 rounded-full transition-opacity hover:opacity-90"
-          style={{ backgroundColor: '#E11D2E', color: '#fff' }}>
+          style={{ backgroundColor: VIOLET, color: '#fff' }}>
           Contactar
         </a>
       </nav>
@@ -89,12 +96,12 @@ export function PlatformLanding() {
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
         <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-6"
-          style={{ backgroundColor: '#1a0a0c', color: '#E11D2E' }}>
+          style={{ backgroundColor: VIOLET_BG, color: VIOLET }}>
           Plataforma SaaS · Tiendas de ropa online
         </span>
         <h1 className="font-bold leading-tight mb-6" style={{ fontSize: 'clamp(2.2rem, 7vw, 4rem)' }}>
           Tu tienda online lista{' '}
-          <span style={{ color: '#E11D2E' }}>en un día</span>
+          <span style={{ color: JADE }}>en un día</span>
         </h1>
         <p className="text-lg leading-relaxed mb-10 max-w-xl mx-auto" style={{ color: '#9A9A9E' }}>
           Crea tu catálogo, recibe pedidos por WhatsApp y cobra con tarjeta.
@@ -103,7 +110,7 @@ export function PlatformLanding() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a href={waUrl} target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#E11D2E', color: '#fff' }}>
+            style={{ backgroundColor: VIOLET, color: '#fff' }}>
             <IconBrandWhatsapp size={18} />
             Crear mi tienda
           </a>
@@ -122,8 +129,8 @@ export function PlatformLanding() {
             <div key={f.titulo} className="rounded-2xl p-5 border border-white/8"
               style={{ backgroundColor: '#161618' }}>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
-                style={{ backgroundColor: '#1a0a0c' }}>
-                <f.icon size={20} style={{ color: '#E11D2E' }} />
+                style={{ backgroundColor: JADE_BG }}>
+                <f.icon size={20} style={{ color: JADE }} />
               </div>
               <p className="font-semibold mb-1 text-sm">{f.titulo}</p>
               <p className="text-xs leading-relaxed" style={{ color: '#9A9A9E' }}>{f.desc}</p>
@@ -143,12 +150,12 @@ export function PlatformLanding() {
             <div key={plan.nombre}
               className="rounded-2xl p-6 border flex flex-col gap-4"
               style={{
-                backgroundColor: plan.destacado ? '#1a0a0c' : '#161618',
-                borderColor: plan.destacado ? '#E11D2E' : 'rgba(255,255,255,0.08)',
+                backgroundColor: plan.destacado ? 'rgba(108,43,217,0.08)' : '#161618',
+                borderColor: plan.destacado ? VIOLET : 'rgba(255,255,255,0.08)',
               }}>
               {plan.destacado && (
                 <span className="self-start text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
-                  style={{ backgroundColor: '#E11D2E', color: '#fff' }}>
+                  style={{ backgroundColor: VIOLET, color: '#fff' }}>
                   Recomendado
                 </span>
               )}
@@ -165,7 +172,7 @@ export function PlatformLanding() {
               <ul className="flex flex-col gap-2 flex-1">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
-                    <IconCheck size={15} className="mt-0.5 shrink-0" style={{ color: '#E11D2E' }} />
+                    <IconCheck size={15} className="mt-0.5 shrink-0" style={{ color: JADE }} />
                     <span>{f}</span>
                   </li>
                 ))}
@@ -179,7 +186,7 @@ export function PlatformLanding() {
               <a href={waUrl} target="_blank" rel="noopener noreferrer"
                 className="mt-2 inline-flex items-center justify-center gap-2 font-semibold px-5 py-3 rounded-full text-sm transition-opacity hover:opacity-90"
                 style={{
-                  backgroundColor: plan.destacado ? '#E11D2E' : 'rgba(255,255,255,0.08)',
+                  backgroundColor: plan.destacado ? VIOLET : 'rgba(255,255,255,0.08)',
                   color: '#fff',
                 }}>
                 <IconBrandWhatsapp size={16} />
@@ -198,7 +205,7 @@ export function PlatformLanding() {
         </p>
         <a href={waUrl} target="_blank" rel="noopener noreferrer"
           className="inline-flex items-center gap-2 font-semibold px-8 py-4 rounded-full text-sm transition-opacity hover:opacity-90"
-          style={{ backgroundColor: '#E11D2E', color: '#fff' }}>
+          style={{ backgroundColor: VIOLET, color: '#fff' }}>
           <IconBrandWhatsapp size={18} />
           Hablar por WhatsApp
         </a>
@@ -207,7 +214,7 @@ export function PlatformLanding() {
       {/* Footer */}
       <footer className="border-t border-white/10 px-6 py-6 text-center text-xs"
         style={{ color: '#6B6B70' }}>
-        © {new Date().getFullYear()} Contahorro · Plataforma SaaS de tiendas online en Perú
+        © {new Date().getFullYear()} Peshoop · Plataforma SaaS de tiendas online en Perú
       </footer>
 
     </main>
