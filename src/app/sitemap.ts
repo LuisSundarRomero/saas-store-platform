@@ -2,7 +2,7 @@ import { headers } from 'next/headers'
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
 import type { MetadataRoute } from 'next'
 
-const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN ?? 'contahorro.com'
+const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN ?? 'peshoop.com'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const h = await headers()

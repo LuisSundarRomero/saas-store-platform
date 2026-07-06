@@ -113,6 +113,7 @@ export default async function PedidoDetalleAdmin({ params }: Props) {
             <OrderTimeline
               estadoActual={pedido.estado as EstadoPedido}
               historial={pedido.estado_historial}
+              variant="light"
             />
           </div>
         </div>

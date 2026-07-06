@@ -2,7 +2,7 @@
 
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { getTenant } from '@/lib/tenant'
-import type { EstadoPedido, ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes, ConfigNosotros } from '@/types'
+import type { EstadoPedido, EstadoPedidoConfig, ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes, ConfigNosotros } from '@/types'
 
 // Re-export so existing imports from '@/lib/actions/admin' still work
 export type { ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes, ConfigNosotros } from '@/types'
@@ -206,6 +206,113 @@ export async function reordenarCategorias(idsEnOrden: string[]) {
   await Promise.all(
     idsEnOrden.map((id, i) =>
       admin.from('categorias').update({ orden: i + 1 }).eq('id', id).eq('tenant_id', tenant.id)
+    )
+  )
+}
+
+// ─── Estados de pedido (configurables por tenant) ───────────
+
+function slugifyEstado(text: string) {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/(^_|_$)/g, '')
+}
+
+export async function getEstadosPedido(): Promise<EstadoPedidoConfig[]> {
+  const admin = createAdminClient()
+  const tenant = await getTenant()
+  const { data } = await admin
+    .from('estados_pedido')
+    .select('*')
+    .eq('tenant_id', tenant.id)
+    .order('orden', { ascending: true })
+  return (data ?? []) as EstadoPedidoConfig[]
+}
+
+export async function crearEstadoPedido(data: {
+  label: string
+  emoji: string
+  color_bg: string
+  color_text: string
+  orden: number
+  requiere_comprobante: boolean
+  notificar_whatsapp: boolean
+  mensaje_whatsapp: string
+}) {
+  const admin = createAdminClient()
+  const tenant = await getTenant()
+  const slug = slugifyEstado(data.label)
+
+  const { error } = await admin.from('estados_pedido').insert({
+    ...data,
+    tenant_id: tenant.id,
+    slug,
+    es_sistema: false,
+    visible: true,
+  })
+  if (error) throw new Error(error.message)
+}
+
+export async function actualizarEstadoPedido(id: string, data: {
+  label: string
+  emoji: string
+  color_bg: string
+  color_text: string
+  requiere_comprobante: boolean
+  notificar_whatsapp: boolean
+  mensaje_whatsapp: string
+}) {
+  const admin = createAdminClient()
+  const tenant = await getTenant()
+  // Slug de sistema nunca cambia — preserva la lógica especial del código
+  const { error } = await admin
+    .from('estados_pedido')
+    .update(data)
+    .eq('id', id)
+    .eq('tenant_id', tenant.id)
+  if (error) throw new Error(error.message)
+}
+
+export async function eliminarEstadoPedido(id: string) {
+  const admin = createAdminClient()
+  const tenant = await getTenant()
+
+  const { data: estado } = await admin
+    .from('estados_pedido')
+    .select('slug, es_sistema')
+    .eq('id', id)
+    .eq('tenant_id', tenant.id)
+    .single()
+
+  if (!estado) throw new Error('Estado no encontrado')
+  if (estado.es_sistema) throw new Error('Este estado es del sistema y no se puede eliminar')
+
+  const { count } = await admin
+    .from('pedidos')
+    .select('*', { count: 'exact', head: true })
+    .eq('tenant_id', tenant.id)
+    .eq('estado', estado.slug)
+  if ((count ?? 0) > 0) throw new Error(`Hay ${count} pedido(s) usando este estado. Reasígnalos antes de eliminarlo.`)
+
+  const { error } = await admin.from('estados_pedido').delete().eq('id', id).eq('tenant_id', tenant.id)
+  if (error) throw new Error(error.message)
+}
+
+export async function toggleVisibleEstadoPedido(id: string, visible: boolean) {
+  const admin = createAdminClient()
+  const tenant = await getTenant()
+  await admin.from('estados_pedido').update({ visible }).eq('id', id).eq('tenant_id', tenant.id)
+}
+
+export async function reordenarEstadosPedido(idsEnOrden: string[]) {
+  const admin = createAdminClient()
+  const tenant = await getTenant()
+  await Promise.all(
+    idsEnOrden.map((id, i) =>
+      admin.from('estados_pedido').update({ orden: i + 1 }).eq('id', id).eq('tenant_id', tenant.id)
     )
   )
 }

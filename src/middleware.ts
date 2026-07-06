@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse, type NextRequest } from 'next/server'
 
-const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'contahorro.com'
+const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'peshoop.com'
 const RESERVED_SLUGS = ['www', 'sass', 'app', 'api', 'superadmin']
 
 // Cliente admin para resolver tenants — bypasa RLS, solo se usa en servidor
@@ -39,16 +39,15 @@ export async function middleware(request: NextRequest) {
       !RESERVED_SLUGS.includes(firstPart)
     ) {
       tenantSlug = firstPart
-    } else {
-      tenantSlug = request.headers.get('x-tenant-slug') || 'anarchy'
     }
+    // localhost:3000 sin subdominio → platform landing (igual que peshoop.com)
   }
 
   // ── 2. Construir headers del request con datos del tenant ────
   const requestHeaders = new Headers(request.headers)
 
   // Dominio raíz sin subdominio → landing de venta del SaaS
-  if (!tenantSlug && !isLocalhost) {
+  if (!tenantSlug) {
     requestHeaders.set('x-is-platform', 'true')
   }
 

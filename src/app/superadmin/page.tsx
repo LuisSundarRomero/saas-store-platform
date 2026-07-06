@@ -60,9 +60,9 @@ export default async function SuperadminPage() {
                       <div style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: t.color_primario || '#333', flexShrink: 0 }} />
                       <div>
                         <p style={{ fontSize: 13, fontWeight: 600, color: '#F5F5F2', margin: 0 }}>{t.nombre}</p>
-                        <a href={`https://${t.slug}.contahorro.com`} target="_blank" rel="noopener noreferrer"
+                        <a href={`https://${t.slug}.peshoop.com`} target="_blank" rel="noopener noreferrer"
                           style={{ fontSize: 11, color: '#6B6B70', textDecoration: 'none' }}>
-                          {t.slug}.contahorro.com ↗
+                          {t.slug}.peshoop.com ↗
                         </a>
                       </div>
                     </div>

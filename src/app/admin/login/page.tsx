@@ -45,7 +45,7 @@ export default async function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-5">
-          Acceso restringido al equipo de Anarchy
+          Acceso restringido al equipo de {tiendaNombre}
         </p>
       </div>
     </main>

@@ -1,14 +1,15 @@
-import { getConfigTienda, getConfigAnuncio, getConfigBanner, getConfigFooter, getConfigMensajes, getConfigNosotros } from '@/lib/actions/admin'
+import { getConfigTienda, getConfigAnuncio, getConfigBanner, getConfigFooter, getConfigMensajes, getConfigNosotros, getEstadosPedido } from '@/lib/actions/admin'
 import { ConfigForm } from '@/components/admin/ConfigForm'
 
 export default async function ConfiguracionPage() {
-  const [tienda, anuncio, banner, nosotros, footer, mensajes] = await Promise.all([
+  const [tienda, anuncio, banner, nosotros, footer, mensajes, estados] = await Promise.all([
     getConfigTienda(),
     getConfigAnuncio(),
     getConfigBanner(),
     getConfigNosotros(),
     getConfigFooter(),
     getConfigMensajes(),
+    getEstadosPedido(),
   ])
 
   return (
@@ -24,6 +25,7 @@ export default async function ConfiguracionPage() {
         nosotros={nosotros}
         footer={footer}
         mensajes={mensajes}
+        estados={estados}
       />
     </div>
   )

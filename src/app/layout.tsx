@@ -29,7 +29,7 @@ const inter = Inter({
   weight: ['300', '400', '500', '600', '700'],
 })
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://contahorro.com'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://peshoop.com'
 
 export async function generateMetadata(): Promise<Metadata> {
   const h = await headers()

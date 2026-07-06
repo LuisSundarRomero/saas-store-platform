@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { IconClock, IconPackage, IconTruck, IconCircleCheck, IconCreditCard } from '@tabler/icons-react'
 import { EstadoPedido } from '@/types'
@@ -21,6 +21,7 @@ interface HistorialEntry {
 interface Props {
   estadoActual: EstadoPedido
   historial?: HistorialEntry[]
+  variant?: 'dark' | 'light'
 }
 
 function formatDateTime(iso: string) {
@@ -32,10 +33,30 @@ function formatDateTime(iso: string) {
   }).format(new Date(iso))
 }
 
-export function OrderTimeline({ estadoActual, historial }: Props) {
+export function OrderTimeline({ estadoActual, historial, variant = 'dark' }: Props) {
   const indexActual = ORDER.indexOf(estadoActual)
   const fechaMap: Partial<Record<EstadoPedido, string>> = {}
   historial?.forEach((h) => { fechaMap[h.estado] = h.changed_at })
+
+  const isLight = variant === 'light'
+
+  const colors = {
+    completadoBg:   isLight ? '#DCFCE7' : '#0F2A18',
+    completadoIcon: isLight ? '#16A34A' : '#22C55E',
+    completadoLine: isLight ? '#BBF7D0' : '#1B5E32',
+    activoBg:       'var(--color-brand)',
+    activoIcon:     '#ffffff',
+    activoShadow:   isLight ? '0 0 0 4px #FEE2E2' : '0 0 0 4px #3A1014',
+    futuroBg:       isLight ? '#F3F4F6' : '#1F1F22',
+    futuroIcon:     isLight ? '#9CA3AF' : '#6B6B70',
+    futuroLine:     isLight ? '#E5E7EB' : '#2C2C30',
+    activoLabel:    isLight ? 'var(--color-brand)' : '#FF6B7A',
+    futuroLabel:    isLight ? '#9CA3AF' : '#6B6B70',
+    completadoLabel: isLight ? '#374151' : '#F5F5F2',
+    activoBadgeBg:  isLight ? '#FEE2E2' : '#3A1014',
+    activoBadgeText: isLight ? 'var(--color-brand)' : '#FF6B7A',
+    fechaColor:     isLight ? '#9CA3AF' : '#6B6B70',
+  }
 
   return (
     <div className="flex flex-col">
@@ -55,17 +76,9 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
                 style={{
                   width: 36,
                   height: 36,
-                  backgroundColor: completado
-                    ? '#0F2A18'
-                    : activo
-                    ? 'var(--color-brand)'
-                    : '#1F1F22',
-                  color: completado
-                    ? '#22C55E'
-                    : activo
-                    ? '#ffffff'
-                    : '#6B6B70',
-                  boxShadow: activo ? '0 0 0 4px #3A1014' : 'none',
+                  backgroundColor: completado ? colors.completadoBg : activo ? colors.activoBg : colors.futuroBg,
+                  color: completado ? colors.completadoIcon : activo ? colors.activoIcon : colors.futuroIcon,
+                  boxShadow: activo ? colors.activoShadow : 'none',
                 }}
               >
                 {e.icon}
@@ -76,7 +89,7 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
                     width: 2,
                     flex: 1,
                     minHeight: 24,
-                    backgroundColor: completado ? '#1B5E32' : '#2C2C30',
+                    backgroundColor: completado ? colors.completadoLine : colors.futuroLine,
                   }}
                 />
               )}
@@ -87,7 +100,7 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
               <p
                 className="text-sm font-semibold leading-tight"
                 style={{
-                  color: activo ? '#FF6B7A' : futuro ? '#6B6B70' : '#F5F5F2',
+                  color: activo ? colors.activoLabel : futuro ? colors.futuroLabel : colors.completadoLabel,
                 }}
               >
                 {e.label}
@@ -95,13 +108,13 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
               {activo && !fecha && (
                 <span
                   className="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: '#3A1014', color: '#FF6B7A' }}
+                  style={{ backgroundColor: colors.activoBadgeBg, color: colors.activoBadgeText }}
                 >
                   Estado actual
                 </span>
               )}
               {fecha && (
-                <p className="text-xs mt-0.5" style={{ color: '#6B6B70' }}>
+                <p className="text-xs mt-0.5" style={{ color: colors.fechaColor }}>
                   {formatDateTime(fecha)}
                 </p>
               )}
@@ -112,4 +125,3 @@ export function OrderTimeline({ estadoActual, historial }: Props) {
     </div>
   )
 }
-

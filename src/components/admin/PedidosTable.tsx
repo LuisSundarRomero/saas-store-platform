@@ -7,7 +7,7 @@ import { EstadoPedido, Pedido } from '@/types'
 import { formatPrice, formatDate } from '@/lib/utils/format'
 import { updateEstadoPedido } from '@/lib/actions/admin'
 import { useRouter } from 'next/navigation'
-import { IconBrandWhatsapp, IconCheck, IconX, IconUpload } from '@tabler/icons-react'
+import { IconBrandWhatsapp, IconCheck, IconX, IconUpload, IconChevronRight } from '@tabler/icons-react'
 import { createClient } from '@/lib/supabase/client'
 
 const BADGE: Record<EstadoPedido, { bg: string; color: string }> = {
@@ -168,7 +168,16 @@ export function PedidosTable({ pedidos, tiendaNombre = 'Mi Tienda' }: Props) {
                   ))}
                 </select>
               </div>
-              <p className="text-xs text-gray-400 mt-2">{formatDate(p.created_at)}</p>
+              <div className="flex items-center justify-between mt-3">
+                <p className="text-xs text-gray-400">{formatDate(p.created_at)}</p>
+                <Link
+                  href={`/admin/pedidos/${p.order_id}`}
+                  className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+                  style={{ backgroundColor: 'var(--color-brand)', color: '#fff' }}
+                >
+                  Ver detalle <IconChevronRight size={13} />
+                </Link>
+              </div>
             </div>
           )
         })}
@@ -185,6 +194,7 @@ export function PedidosTable({ pedidos, tiendaNombre = 'Mi Tienda' }: Props) {
                 <th className="text-left px-4 py-3 font-semibold text-gray-400">Total</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-400">Estado</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-400">Fecha</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-400">Cambiar estado</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
@@ -222,6 +232,15 @@ export function PedidosTable({ pedidos, tiendaNombre = 'Mi Tienda' }: Props) {
                           </option>
                         ))}
                       </select>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/admin/pedidos/${p.order_id}`}
+                        className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+                        style={{ backgroundColor: 'var(--color-brand)', color: '#fff' }}
+                      >
+                        Ver detalle <IconChevronRight size={13} />
+                      </Link>
                     </td>
                   </tr>
                 )

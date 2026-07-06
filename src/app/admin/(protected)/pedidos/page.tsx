@@ -3,7 +3,6 @@ import { getPedidos, getPedidosCount } from '@/lib/actions/admin'
 import { PedidosTable } from '@/components/admin/PedidosTable'
 import { PedidosBuscador } from '@/components/admin/PedidosBuscador'
 import { formatPrice } from '@/lib/utils/format'
-import { createClient } from '@/lib/supabase/server'
 import { getTenant } from '@/lib/tenant'
 import Link from 'next/link'
 
@@ -18,9 +17,8 @@ export default async function PedidosPage({ searchParams }: Props) {
   const { estado, q, page: pageStr } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? '1'))
 
-  const [supabase, tenant] = await Promise.all([createClient(), getTenant()])
-  const { data: config } = await supabase.from('config').select('tienda_nombre').eq('tenant_id', tenant.id).single()
-  const tiendaNombre = config?.tienda_nombre ?? tenant.nombre
+  const tenant = await getTenant()
+  const tiendaNombre = tenant.nombre
 
   const [todos, pedidosPagina, totalFiltrados] = await Promise.all([
     getPedidos(),

@@ -72,7 +72,7 @@ export function NuevaTiendaForm({ planes }: Props) {
       if (result.error) {
         setError(result.error)
       } else {
-        setSuccess(`✓ Tienda "${input.nombre}" creada. El admin puede ingresar en ${input.slug}.contahorro.com/admin`)
+        setSuccess(`✓ Tienda "${input.nombre}" creada. El admin puede ingresar en ${input.slug}.peshoop.com/admin`)
         setTimeout(() => router.push('/superadmin'), 3000)
       }
     })
@@ -94,7 +94,7 @@ export function NuevaTiendaForm({ planes }: Props) {
               <input name="slug" required placeholder="anarchy" pattern="[a-z0-9-]+" title="Solo letras minúsculas, números y guiones"
                 style={{ ...S.input, paddingRight: 120 }} />
               <span style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 11, color: '#6B6B70', pointerEvents: 'none' }}>
-                .contahorro.com
+                .peshoop.com
               </span>
             </div>
           </div>

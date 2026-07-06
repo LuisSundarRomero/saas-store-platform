@@ -1,4 +1,22 @@
-export type EstadoPedido = 'pendiente' | 'pago_confirmado' | 'empaquetado' | 'en_camino' | 'entregado'
+// Slugs de sistema con lógica especial en el código — el resto son libres por tenant
+export type EstadoPedidoSistema = 'pendiente' | 'pago_confirmado' | 'entregado'
+export type EstadoPedido = string
+
+export interface EstadoPedidoConfig {
+  id: string
+  tenant_id: string
+  slug: string
+  label: string
+  emoji: string
+  color_bg: string
+  color_text: string
+  orden: number
+  es_sistema: boolean
+  requiere_comprobante: boolean
+  notificar_whatsapp: boolean
+  mensaje_whatsapp: string
+  visible: boolean
+}
 
 export interface Categoria {
   id: string

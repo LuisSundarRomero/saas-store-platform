@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useTransition, useRef, useCallback } from 'react'
 import Script from 'next/script'
@@ -15,6 +15,8 @@ declare global {
   }
 }
 
+const isDev = process.env.NODE_ENV === 'development'
+
 export function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -25,7 +27,7 @@ export function LoginForm() {
   const turnstileRef = useRef<HTMLDivElement>(null)
 
   const renderTurnstile = useCallback(() => {
-    if (turnstileRef.current && window.turnstile) {
+    if (!isDev && turnstileRef.current && window.turnstile) {
       window.turnstile.render(turnstileRef.current, {
         sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!,
         callback: (token: string) => setTurnstileToken(token),
@@ -37,7 +39,7 @@ export function LoginForm() {
     e.preventDefault()
     setError('')
 
-    if (!turnstileToken) {
+    if (!isDev && !turnstileToken) {
       setError('Completa la verificación de seguridad')
       return
     }
@@ -46,7 +48,7 @@ export function LoginForm() {
       const tokenValido = await verifyTurnstileToken(turnstileToken)
       if (!tokenValido) {
         setError('Verificación de seguridad fallida, intenta de nuevo')
-        window.turnstile?.reset()
+        if (!isDev) window.turnstile?.reset()
         setTurnstileToken('')
         return
       }
@@ -54,7 +56,7 @@ export function LoginForm() {
       const result = await loginAdmin(email, password)
       if ('error' in result) {
         setError(result.error)
-        window.turnstile?.reset()
+        if (!isDev) window.turnstile?.reset()
         setTurnstileToken('')
       } else {
         window.location.href = '/admin/pedidos'
@@ -64,11 +66,13 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <Script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-        onLoad={renderTurnstile}
-        strategy="lazyOnload"
-      />
+      {!isDev && (
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          onLoad={renderTurnstile}
+          strategy="lazyOnload"
+        />
+      )}
 
       {/* Email */}
       <div className="flex flex-col gap-1.5">
@@ -79,7 +83,7 @@ export function LoginForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="admin@anarchyy.pe"
+            placeholder="tu@email.com"
             required
             autoComplete="email"
             className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 bg-gray-50 focus:bg-white focus:border-red-400 focus:outline-none transition-colors autofill:[-webkit-text-fill-color:#111827] autofill:[box-shadow:0_0_0_1000px_#F9FAFB_inset]"
@@ -113,13 +117,13 @@ export function LoginForm() {
         </div>
       </div>
 
-      {/* Verificación de seguridad */}
-      <div ref={turnstileRef} className="flex justify-center" />
+      {/* Verificación de seguridad — solo en producción */}
+      {!isDev && <div ref={turnstileRef} className="flex justify-center" />}
 
       {/* Error */}
       {error && (
         <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 px-4 py-3 rounded-2xl">
-          <span>⚠ï¸</span> {error}
+          <span>⚠️</span> {error}
         </div>
       )}
 
@@ -138,4 +142,3 @@ export function LoginForm() {
     </form>
   )
 }
-

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import {
   IconBuildingStore, IconSettings, IconPhoto,
-  IconLayoutBottombar, IconBrandWhatsapp, IconUsers,
+  IconLayoutBottombar, IconBrandWhatsapp, IconUsers, IconListCheck,
 } from '@tabler/icons-react'
 import { TiendaTab } from './config/TiendaTab'
 import { AnuncioTab } from './config/AnuncioTab'
@@ -11,9 +11,10 @@ import { BannerTab } from './config/BannerTab'
 import { FooterTab } from './config/FooterTab'
 import { MensajesTab } from './config/MensajesTab'
 import { NosotrosTab } from './config/NosotrosTab'
-import type { ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes, ConfigNosotros } from '@/types'
+import { EstadosTab } from './config/EstadosTab'
+import type { ConfigTienda, ConfigAnuncio, ConfigBanner, ConfigFooter, ConfigMensajes, ConfigNosotros, EstadoPedidoConfig } from '@/types'
 
-type TabId = 'tienda' | 'anuncio' | 'banner' | 'nosotros' | 'footer' | 'mensajes'
+type TabId = 'tienda' | 'anuncio' | 'banner' | 'nosotros' | 'footer' | 'mensajes' | 'estados'
 
 const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
   { id: 'tienda',    label: 'Tienda',    icon: IconBuildingStore },
@@ -22,6 +23,7 @@ const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
   { id: 'nosotros',  label: 'Nosotros',  icon: IconUsers },
   { id: 'footer',    label: 'Footer',    icon: IconLayoutBottombar },
   { id: 'mensajes',  label: 'Mensajes',  icon: IconBrandWhatsapp },
+  { id: 'estados',   label: 'Estados',   icon: IconListCheck },
 ]
 
 interface Props {
@@ -31,9 +33,10 @@ interface Props {
   nosotros:  ConfigNosotros  | null
   footer:    ConfigFooter    | null
   mensajes:  ConfigMensajes  | null
+  estados:   EstadoPedidoConfig[]
 }
 
-export function ConfigForm({ tienda, anuncio, banner, nosotros, footer, mensajes }: Props) {
+export function ConfigForm({ tienda, anuncio, banner, nosotros, footer, mensajes, estados }: Props) {
   const [tab, setTab] = useState<TabId>('tienda')
 
   return (
@@ -71,6 +74,7 @@ export function ConfigForm({ tienda, anuncio, banner, nosotros, footer, mensajes
         />
       )}
       {tab === 'mensajes'  && <MensajesTab mensajes={mensajes} />}
+      {tab === 'estados'   && <EstadosTab estados={estados} />}
     </div>
   )
 }

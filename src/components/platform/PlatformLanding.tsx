@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { IconCheck, IconBrandWhatsapp, IconCreditCard, IconShoppingBag, IconChartBar, IconTruckDelivery } from '@tabler/icons-react'
 
-const WHATSAPP = '51999999999' // reemplazar con número real del SaaS owner
+const WHATSAPP = '51982121991'
 
 const PLANES = [
   {
@@ -78,7 +78,7 @@ export function PlatformLanding() {
 
       {/* Nav */}
       <nav className="border-b border-white/10 px-6 py-4 flex items-center justify-between max-w-6xl mx-auto">
-        <span className="font-bold text-lg tracking-tight">contahorro</span>
+        <span className="font-bold text-lg tracking-tight">peshoop</span>
         <a href={waUrl} target="_blank" rel="noopener noreferrer"
           className="text-sm font-semibold px-4 py-2 rounded-full transition-opacity hover:opacity-90"
           style={{ backgroundColor: '#E11D2E', color: '#fff' }}>
