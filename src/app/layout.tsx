@@ -1,5 +1,5 @@
 ﻿import type { Metadata, Viewport } from 'next'
-import { Anton, Inter } from 'next/font/google'
+import { Anton, Inter, Plus_Jakarta_Sans, Comfortaa } from 'next/font/google'
 import { headers } from 'next/headers'
 import Script from 'next/script'
 import { FontLoader } from '@/components/ui/FontLoader'
@@ -27,6 +27,20 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   weight: ['300', '400', '500', '600', '700'],
+})
+
+const jakarta = Plus_Jakarta_Sans({
+  variable: '--font-jakarta',
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500', '700'],
+})
+
+const comfortaa = Comfortaa({
+  variable: '--font-comfortaa',
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['700'],
 })
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://peshoop.com'
@@ -141,7 +155,7 @@ export default async function RootLayout({
   return (
     <html
       lang="es"
-      className={`${inter.variable} ${anton.variable} h-full${theme === 'dark' ? ' dark' : ''}`}
+      className={`${inter.variable} ${anton.variable} ${jakarta.variable} ${comfortaa.variable} h-full${theme === 'dark' ? ' dark' : ''}`}
       data-theme={theme}
       style={cssVarOverrides as React.CSSProperties}
       suppressHydrationWarning

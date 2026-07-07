@@ -10,6 +10,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const tenantId = h.get('x-tenant-id')   ?? ''
   const host     = slug ? `https://${slug}.${MAIN_DOMAIN}` : `https://${MAIN_DOMAIN}`
 
+  // Platform landing — solo indexar la home
+  if (!tenantId) {
+    return [
+      { url: `https://${MAIN_DOMAIN}`, lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
+    ]
+  }
+
   const staticPages: MetadataRoute.Sitemap = [
     { url: host,                                   lastModified: new Date(), changeFrequency: 'weekly',  priority: 1.0 },
     { url: `${host}/catalogo`,                     lastModified: new Date(), changeFrequency: 'daily',   priority: 0.9 },
@@ -18,8 +25,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${host}/terminos-y-condiciones`,       lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
     { url: `${host}/libro-de-reclamaciones`,       lastModified: new Date(), changeFrequency: 'monthly', priority: 0.2 },
   ]
-
-  if (!tenantId) return staticPages
 
   const admin = createSupabaseAdmin(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

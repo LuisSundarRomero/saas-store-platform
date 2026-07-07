@@ -4,15 +4,9 @@ import {
   IconArrowRight, IconBrandLinkedin,
 } from '@tabler/icons-react'
 import { MobileMenu } from './MobileMenu'
+import { Wordmark } from './Wordmark'
 
 const WHATSAPP = '51982121991'
-
-const V = '#6C2BD9'
-const J = '#00A389'
-const VL = '#E4D9F7'
-const JL = '#D6F0EA'
-const BG = '#FBFAFC'
-const TEXT = '#221A2E'
 
 const NAV_LINKS = [
   { href: '#problema',       label: 'El problema' },
@@ -30,11 +24,11 @@ const PROBLEMAS = [
 ]
 
 const PASOS = [
-  { n: '01', titulo: 'Tu cliente entra a tu tienda', desc: 'Navega tus productos por categorías, tallas y colores. Encuentra fotos, precios y detalles claros sin preguntarte nada.', tag: 'Experiencia simple', color: V, bg: VL },
-  { n: '02', titulo: 'Elige y agrega al carrito', desc: 'Revisa cantidades y ve el total antes de confirmar. Una experiencia más rápida y cómoda desde el celular.', tag: 'Carrito automático', color: J, bg: JL },
-  { n: '03', titulo: 'Recibes el pedido organizado', desc: 'Todo llega directo a tu WhatsApp: productos, cantidades y datos del cliente. Sin perder nada en el chat.', tag: 'Sin caos en el chat', color: V, bg: VL },
-  { n: '04', titulo: 'Gestionas desde tu panel', desc: 'Desde tu celular revisas pedidos, actualizas estados y administras productos. Sin conocimientos técnicos.', tag: 'Panel simple', color: J, bg: JL },
-  { n: '05', titulo: 'Tus clientes hacen seguimiento solos', desc: 'Cada cliente consulta el estado de su pedido con su número de orden. Menos preguntas repetidas.', tag: 'Rastreo propio', color: V, bg: VL },
+  { n: '01', titulo: 'Tu cliente entra a tu tienda', desc: 'Navega tus productos por categorías, tallas y colores. Encuentra fotos, precios y detalles claros sin preguntarte nada.', tag: 'Experiencia simple', circleClass: 'pl-step-circle-v', badgeClass: 'pl-badge-v' },
+  { n: '02', titulo: 'Elige y agrega al carrito', desc: 'Revisa cantidades y ve el total antes de confirmar. Una experiencia más rápida y cómoda desde el celular.', tag: 'Carrito automático', circleClass: 'pl-step-circle-j', badgeClass: 'pl-badge-j' },
+  { n: '03', titulo: 'Recibes el pedido organizado', desc: 'Todo llega directo a tu WhatsApp: productos, cantidades y datos del cliente. Sin perder nada en el chat.', tag: 'Sin caos en el chat', circleClass: 'pl-step-circle-v', badgeClass: 'pl-badge-v' },
+  { n: '04', titulo: 'Gestionas desde tu panel', desc: 'Desde tu celular revisas pedidos, actualizas estados y administras productos. Sin conocimientos técnicos.', tag: 'Panel simple', circleClass: 'pl-step-circle-j', badgeClass: 'pl-badge-j' },
+  { n: '05', titulo: 'Tus clientes hacen seguimiento solos', desc: 'Cada cliente consulta el estado de su pedido con su número de orden. Menos preguntas repetidas.', tag: 'Rastreo propio', circleClass: 'pl-step-circle-v', badgeClass: 'pl-badge-v' },
 ]
 
 const PLANES = [
@@ -45,7 +39,9 @@ const PLANES = [
     cta: 'Quiero el Plan Básico',
     waText: 'Hola! Me interesa el Plan Básico de peshoop (S/69/mes) para crear mi tienda online. ¿Podemos hablar? 🛍️',
     destacado: false,
+    nota: '',
     features: [
+      'Lista en un día',
       'Diseño personalizado con tu identidad',
       'Catálogo ilimitado de productos',
       'Pedidos directos por WhatsApp',
@@ -54,7 +50,7 @@ const PLANES = [
       'Demo de prueba antes de lanzar',
       'Soporte y asesoramiento incluido',
     ],
-    noIncluye: ['Cobro con tarjeta (Visa/Mastercard)', 'Yape integrado'],
+    noIncluye: [],
   },
   {
     nombre: 'Pro',
@@ -63,13 +59,13 @@ const PLANES = [
     cta: 'Quiero el Plan Pro',
     waText: 'Hola! Me interesa el Plan Pro de peshoop (S/99/mes) con cobro con tarjeta y Yape. ¿Podemos hablar? 🚀',
     destacado: true,
+    nota: 'Requiere RUC para configurar Culqi. Te guiamos en el proceso.',
     features: [
       'Todo lo del Plan Básico',
       'Cobro con tarjeta (Visa/Mastercard)',
       'Yape integrado',
       'Pasarela Culqi certificada PCI-DSS',
       'Confirmación automática del pedido',
-      'Email de confirmación al cliente',
       'Soporte prioritario',
     ],
     noIncluye: [],
@@ -77,53 +73,114 @@ const PLANES = [
 ]
 
 const PROCESO = [
-  { n: '01', titulo: 'Creamos una demo gratis', desc: 'Antes de pagar, construimos una primera versión de tu tienda. La ves funcionando y decides.' },
-  { n: '02', titulo: 'La adaptamos a tu estilo', desc: 'Revisamos juntos diseño, categorías y colores. Hacemos cambios hasta que estés conforme.' },
-  { n: '03', titulo: 'Aprendes a manejar tu tienda', desc: 'Te mostramos cómo gestionar pedidos, actualizar productos y usar tu panel. Capacitación incluida.' },
-  { n: '04', titulo: 'Pagas cuando estés listo', desc: 'Primero ves tu tienda funcionando y haces tus ajustes. El primer pago ocurre cuando estás conforme.' },
-  { n: '05', titulo: 'Lanzamiento acompañado', desc: 'Tu tienda sale al aire. Te avisamos, te acompañamos el primer día y quedamos atentos.' },
+  { n: '01', titulo: 'Creamos tú demo', desc: 'Antes de pagar, construimos una primera versión de tu tienda. La ves funcionando y decides.', badgeClass: 'pl-badge-v' },
+  { n: '02', titulo: 'La adaptamos a tu estilo', desc: 'Revisamos juntos diseño, categorías y colores. Hacemos cambios hasta que estés conforme.', badgeClass: 'pl-badge-j' },
+  { n: '03', titulo: 'Aprendes a manejar tu tienda', desc: 'Te mostramos cómo gestionar pedidos, actualizar productos y usar tu panel. Capacitación incluida.', badgeClass: 'pl-badge-v' },
+  { n: '04', titulo: 'Pagas cuando estés listo', desc: 'Primero ves tu tienda funcionando y haces tus ajustes. El primer pago ocurre cuando estás conforme.', badgeClass: 'pl-badge-j' },
+  { n: '05', titulo: 'Lanzamiento acompañado', desc: 'Tu tienda sale al aire. Te avisamos, te acompañamos el primer día y quedamos atentos.', badgeClass: 'pl-badge-v' },
 ]
 
-const COMPARACION = [
-  { label: 'Costo',          shopify: 'Mensual + comisiones', propio: 'Mayor inversión',      peshoop: 'Desde S/69/mes' },
-  { label: 'Soporte',        shopify: 'Ayuda externa',        propio: 'Pagas extra o nada',   peshoop: 'Español, directo' },
-  { label: 'Configuración',  shopify: 'Tú aprendes solo',     propio: 'Semanas o meses',      peshoop: 'Nosotros lo hacemos' },
-  { label: 'Si creces',      shopify: 'Sube el plan solo',    propio: 'Rediseño = más costo', peshoop: 'Te acompañamos' },
-]
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://peshoop.com'
+
+const JSON_LD = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${APP_URL}/#organization`,
+      name: 'Peshoop',
+      url: APP_URL,
+      logo: { '@type': 'ImageObject', url: `${APP_URL}/favicon-96x96.png` },
+      contactPoint: { '@type': 'ContactPoint', contactType: 'sales', telephone: '+51982121991', availableLanguage: 'Spanish' },
+      sameAs: ['https://linkedin.com/in/luis-romero-frontend'],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${APP_URL}/#website`,
+      url: APP_URL,
+      name: 'Peshoop',
+      publisher: { '@id': `${APP_URL}/#organization` },
+      inLanguage: 'es-PE',
+    },
+    {
+      '@type': 'Person',
+      '@id': `${APP_URL}/#founder`,
+      name: 'Luis Romero',
+      jobTitle: 'Fundador',
+      worksFor: { '@id': `${APP_URL}/#organization` },
+      sameAs: ['https://linkedin.com/in/luis-romero-frontend'],
+      image: `${APP_URL}/luis-romero.jpg`,
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${APP_URL}/#webpage`,
+      url: APP_URL,
+      name: 'Peshoop — Tu tienda online lista para vender',
+      description: 'Crea tu tienda online para ropa en minutos. Recibe pedidos por WhatsApp y cobra con tarjeta. Desde S/69/mes. Para negocios peruanos.',
+      isPartOf: { '@id': `${APP_URL}/#website` },
+      about: { '@id': `${APP_URL}/#organization` },
+      inLanguage: 'es-PE',
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${APP_URL}/#app`,
+      name: 'Peshoop',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web',
+      offers: [
+        { '@type': 'Offer', name: 'Plan Básico', price: '69', priceCurrency: 'PEN', billingIncrement: 'monthly' },
+        { '@type': 'Offer', name: 'Plan Pro',    price: '99', priceCurrency: 'PEN', billingIncrement: 'monthly' },
+      ],
+    },
+  ],
+}
 
 export function PlatformLanding() {
   const waUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hola! Quiero crear mi tienda online con peshoop 🛍️')}`
   const liUrl = 'https://linkedin.com/in/luis-romero-frontend'
 
   return (
-    <main style={{ backgroundColor: BG, color: TEXT, fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <>
+      {/* Preconnects para recursos externos */}
+      <link rel="preconnect" href="https://wa.me" />
+      <link rel="dns-prefetch" href="https://wa.me" />
+
+      {/* JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+      />
+
+    <main className="bg-pbg text-ptxt font-jakarta">
 
       {/* ── NAV ── */}
-      <nav style={{ backgroundColor: '#fff', borderBottom: '1px solid #EDE9F4' }}
-        className="sticky top-0 z-30 px-6 py-3">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+      <nav className="sticky top-0 z-30 bg-white/95 border-b border-pborder px-6 py-0" style={{ backdropFilter: 'blur(8px)' }}>
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-6 h-16">
           {/* Logo */}
-          <a href="#" className="font-bold text-xl tracking-tight shrink-0 select-none">
-            <span style={{ color: V }}>pe</span><span style={{ color: J }}>shoop</span>
+          <a href="#" className="shrink-0 select-none">
+            <Wordmark className="text-xl" />
           </a>
 
-          {/* Links secciones — solo desktop */}
-          <div className="hidden lg:flex items-center gap-1">
+          {/* Links — desktop */}
+          <div className="hidden lg:flex items-center gap-0 flex-1 justify-center">
             {NAV_LINKS.map((l) => (
               <a key={l.href} href={l.href}
-                className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-gray-50"
-                style={{ color: '#6B6080' }}>
+                className="relative px-4 py-5 text-sm font-medium text-pmuted transition-colors hover:text-ptxt group">
                 {l.label}
+                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-pv scale-x-0 group-hover:scale-x-100 transition-transform duration-200 rounded-full" />
               </a>
             ))}
           </div>
 
-          {/* CTA desktop + hamburger mobile */}
-          <div className="flex items-center gap-2">
+          {/* Acciones */}
+          <div className="flex items-center gap-2 shrink-0">
+            <a href="#planes"
+              className="hidden md:block text-sm font-medium text-pmuted hover:text-ptxt transition-colors px-3 py-2">
+              Ver planes
+            </a>
             <a href={waUrl} target="_blank" rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full transition-opacity hover:opacity-90"
-              style={{ backgroundColor: V, color: '#fff' }}>
-              <IconBrandWhatsapp size={16} />
+              className="hidden sm:flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full transition-opacity hover:opacity-90 bg-pj text-white">
+              <IconBrandWhatsapp size={15} />
               Crear mi tienda
             </a>
             <MobileMenu waUrl={waUrl} />
@@ -133,30 +190,29 @@ export function PlatformLanding() {
 
       {/* ── HERO ── */}
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
-        <h1 className="font-bold leading-tight mb-5"
-          style={{ fontSize: 'clamp(2rem, 6vw, 3.75rem)', color: TEXT, letterSpacing: '-0.02em' }}>
-          Tu tienda online lista{' '}
-          <span style={{ color: J }}>en un día</span>
+        <h1 className="font-comfortaa font-bold leading-tight mb-5 text-ptxt"
+          style={{ fontSize: 'clamp(2rem, 6vw, 3.75rem)', letterSpacing: '-0.02em' }}>
+          Tu tienda online{' '}
+          <span className="text-pj">lista para vender</span>
         </h1>
-        <p className="text-lg leading-relaxed mb-3 max-w-xl mx-auto" style={{ color: '#6B6080' }}>
+        <p className="text-lg leading-relaxed mb-3 max-w-xl mx-auto text-pmuted">
           Crea tu catálogo, recibe pedidos por WhatsApp y cobra con tarjeta.
-          Sin complicaciones. <strong style={{ color: TEXT }}>Desde S/69/mes.</strong>
+          Sin complicaciones. <strong className="text-ptxt">Desde S/69/mes.</strong>
         </p>
         <div className="mb-10" />
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a href={waUrl} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm transition-opacity hover:opacity-90"
-            style={{ backgroundColor: V, color: '#fff' }}>
+            className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm text-white transition-opacity hover:opacity-90"
+            style={{ backgroundColor: '#00A389' }}>
             <IconBrandWhatsapp size={18} />
-            Crear mi tienda gratis
+            Crear mi tienda
           </a>
           <a href="#planes"
-            className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm border transition-colors hover:border-gray-300"
-            style={{ color: TEXT, backgroundColor: '#fff', borderColor: '#DDD6F0' }}>
+            className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm border transition-colors hover:bg-pvl bg-white text-pv" style={{ borderColor: '#C4A8F0' }}>
             Ver planes
           </a>
         </div>
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs" style={{ color: '#9C8FB0' }}>
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs text-pmuted2">
           {['✓ Demo gratis antes de pagar', '✓ Setup completo incluido', '✓ Soporte en español', '✓ Lanzamiento en 48 h'].map(t => (
             <span key={t}>{t}</span>
           ))}
@@ -164,30 +220,30 @@ export function PlatformLanding() {
       </section>
 
       {/* ── PROBLEMA ── */}
-      <section id="problema" style={{ backgroundColor: '#fff' }} className="py-20">
+      <section id="problema" className="bg-white py-20">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: V }}>El problema</p>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: TEXT, letterSpacing: '-0.01em' }}>
+            <p className="pl-section-label mb-3 text-pv">El problema</p>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-ptxt" style={{ letterSpacing: '-0.01em' }}>
               ¿Te pasa esto todos los días?
             </h2>
-            <p className="text-sm max-w-lg mx-auto" style={{ color: '#6B6080' }}>
+            <p className="text-sm max-w-lg mx-auto text-pmuted">
               Si vendes por Instagram, WhatsApp o haces lives, probablemente esto te suena:
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {PROBLEMAS.map((p) => (
-              <div key={p.titulo} className="flex gap-4 p-5 rounded-2xl border" style={{ borderColor: '#EDE9F4', backgroundColor: BG }}>
+              <div key={p.titulo} className="flex gap-4 p-5 rounded-2xl border border-pborder bg-pbg">
                 <span className="text-2xl shrink-0 mt-0.5">{p.icon}</span>
                 <div>
-                  <p className="font-semibold text-sm mb-1" style={{ color: TEXT }}>{p.titulo}</p>
-                  <p className="text-xs leading-relaxed" style={{ color: '#6B6080' }}>{p.desc}</p>
+                  <p className="font-semibold text-sm mb-1 text-ptxt">{p.titulo}</p>
+                  <p className="text-xs leading-relaxed text-pmuted">{p.desc}</p>
                 </div>
               </div>
             ))}
           </div>
-          <div className="mt-8 p-5 rounded-2xl text-center" style={{ backgroundColor: JL, border: `1px solid ${J}30` }}>
-            <p className="text-sm font-semibold" style={{ color: TEXT }}>
+          <div className="mt-8 p-5 rounded-2xl text-center bg-pjl border border-pj/20">
+            <p className="text-sm font-semibold text-ptxt">
               La buena noticia: no necesitas una plataforma gigante.
             </p>
             <p className="text-xs mt-1" style={{ color: '#4A7A70' }}>
@@ -198,37 +254,34 @@ export function PlatformLanding() {
       </section>
 
       {/* ── CÓMO FUNCIONA ── */}
-      <section id="como-funciona" className="py-20" style={{ backgroundColor: BG }}>
+      <section id="como-funciona" className="py-20 bg-pbg">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: J }}>Cómo funciona</p>
-            <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: TEXT, letterSpacing: '-0.01em' }}>
+            <p className="pl-section-label mb-3 text-pj">Cómo funciona</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-ptxt" style={{ letterSpacing: '-0.01em' }}>
               5 pasos para vender sin complicarte
             </h2>
           </div>
-          <div className="flex flex-col gap-4">
-            {PASOS.map((paso) => (
-              <div key={paso.n} className="flex gap-5 p-5 rounded-2xl border bg-white items-start"
-                style={{ borderColor: '#EDE9F4' }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm"
-                  style={{ backgroundColor: paso.bg, color: paso.color }}>
-                  {paso.n}
+          <div className="flex flex-col">
+            {PASOS.map((paso, i) => (
+              <div key={paso.n} className="flex gap-5 sm:gap-8 relative">
+                <div className="flex flex-col items-center shrink-0">
+                  <div className={paso.circleClass}>{paso.n}</div>
+                  {i < PASOS.length - 1 && <div className="pl-connector" />}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm mb-1" style={{ color: TEXT }}>{paso.titulo}</p>
-                  <p className="text-xs leading-relaxed" style={{ color: '#6B6080' }}>{paso.desc}</p>
+                <div className={`flex-1 ${i === PASOS.length - 1 ? 'pb-0' : 'pb-8'}`}>
+                  <div className="flex items-start justify-between gap-3 flex-wrap">
+                    <p className="font-semibold text-sm sm:text-base text-ptxt">{paso.titulo}</p>
+                    <span className={`${paso.badgeClass} pl-badge`}>{paso.tag}</span>
+                  </div>
+                  <p className="text-xs sm:text-sm leading-relaxed mt-1 text-pmuted">{paso.desc}</p>
                 </div>
-                <span className="hidden sm:inline-flex shrink-0 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
-                  style={{ backgroundColor: paso.bg, color: paso.color }}>
-                  {paso.tag}
-                </span>
               </div>
             ))}
           </div>
           <div className="mt-8 text-center">
             <a href={waUrl} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity hover:opacity-80"
-              style={{ color: V }}>
+              className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity hover:opacity-80 text-pj">
               Quiero ver mi tienda <IconArrowRight size={16} />
             </a>
           </div>
@@ -236,85 +289,75 @@ export function PlatformLanding() {
       </section>
 
       {/* ── PLANES ── */}
-      <section id="planes" style={{ backgroundColor: '#fff' }} className="py-20">
+      <section id="planes" className="bg-white py-20">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: V }}>Planes</p>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: TEXT, letterSpacing: '-0.01em' }}>
+            <p className="pl-section-label mb-3 text-pv">Planes</p>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-ptxt" style={{ letterSpacing: '-0.01em' }}>
               Empieza simple. Crece cuando estés listo.
             </h2>
-            <p className="text-sm" style={{ color: '#6B6080' }}>7 días gratis · Sin tarjeta · Sin letra chica</p>
+            
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {PLANES.map((plan) => (
-              <div key={plan.nombre} className="rounded-2xl p-6 flex flex-col gap-4"
-                style={{
-                  backgroundColor: plan.destacado ? V : BG,
-                  color: plan.destacado ? '#fff' : TEXT,
-                  border: plan.destacado ? 'none' : '1px solid #EDE9F4',
-                  boxShadow: plan.destacado ? `0 8px 32px ${V}30` : 'none',
-                }}>
+              <div key={plan.nombre}
+                className={`rounded-2xl p-6 flex flex-col gap-4 ${plan.destacado ? 'pl-plan-featured' : 'bg-pbg border border-pborder'}`}>
                 {plan.destacado && (
-                  <span className="self-start text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
-                    style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#fff' }}>
+                  <span className="self-start text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full text-white" style={{ backgroundColor: '#00A389' }}>
                     ★ Más popular
                   </span>
                 )}
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-1"
-                    style={{ color: plan.destacado ? 'rgba(255,255,255,0.6)' : '#9C8FB0' }}>
+                  <p className={`text-xs font-bold uppercase tracking-widest mb-1 ${plan.destacado ? 'text-white/60' : 'text-pmuted2'}`}>
                     Plan {plan.nombre}
                   </p>
-                  <p className="font-bold" style={{ fontSize: '2.25rem', letterSpacing: '-0.02em' }}>
+                  <p className="font-bold text-[2.25rem]" style={{ letterSpacing: '-0.02em' }}>
                     S/{plan.precio}
-                    <span className="text-sm font-normal"
-                      style={{ color: plan.destacado ? 'rgba(255,255,255,0.6)' : '#9C8FB0' }}>/mes</span>
+                    <span className={`text-sm font-normal ${plan.destacado ? 'text-white/60' : 'text-pmuted2'}`}>/mes</span>
                   </p>
-                  <p className="text-sm mt-1"
-                    style={{ color: plan.destacado ? 'rgba(255,255,255,0.75)' : '#6B6080' }}>
+                  <p className={`text-sm mt-1 ${plan.destacado ? 'text-white/75' : 'text-pmuted'}`}>
                     {plan.descripcion}
                   </p>
                 </div>
                 <ul className="flex flex-col gap-2 flex-1">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm">
-                      <IconCheck size={14} className="mt-0.5 shrink-0" style={{ color: plan.destacado ? JL : J }} />
+                      <IconCheck size={14} className={`mt-0.5 shrink-0 ${plan.destacado ? 'text-pjl' : 'text-pj'}`} />
                       <span>{f}</span>
                     </li>
                   ))}
                   {plan.noIncluye.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm"
-                      style={{ color: plan.destacado ? 'rgba(255,255,255,0.35)' : '#BDB5CC' }}>
+                    <li key={f} className={`flex items-start gap-2 text-sm ${plan.destacado ? 'text-white/35' : 'text-pmuted3'}`}>
                       <IconX size={14} className="mt-0.5 shrink-0" />
                       <span>{f}</span>
                     </li>
                   ))}
                 </ul>
+                {plan.nota && (
+                  <p className="text-xs px-1 text-white/50">{plan.nota}</p>
+                )}
                 <a href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(plan.waText)}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center justify-center gap-2 font-semibold px-5 py-3 rounded-full text-sm transition-opacity hover:opacity-90"
-                  style={{ backgroundColor: plan.destacado ? '#fff' : V, color: plan.destacado ? V : '#fff' }}>
+                  className={`mt-2 inline-flex items-center justify-center gap-2 font-semibold px-5 py-3 rounded-full text-sm transition-opacity hover:opacity-90 ${plan.destacado ? 'bg-white text-pj' : 'bg-pj text-white'}`}>
                   <IconBrandWhatsapp size={16} />
                   {plan.cta}
                 </a>
               </div>
             ))}
           </div>
-          <div className="mt-8 rounded-2xl p-5 border" style={{ borderColor: '#EDE9F4', backgroundColor: BG }}>
-            <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#9C8FB0' }}>
-              Servicios adicionales (opcionales)
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="mt-8 rounded-2xl p-5 border border-pborder bg-pbg">
+            <p className="pl-section-label mb-4 text-pmuted2">Servicios adicionales (opcionales)</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 { icon: '🌐', titulo: 'Dominio propio', desc: 'tumarca.com / tumarca.pe — más confianza y profesionalismo.' },
-                { icon: '📧', titulo: 'Correo corporativo', desc: 'ventas@tumarca.com — deja de usar correos personales.' },
-                { icon: '💳', titulo: 'Pagos Culqi', desc: 'Yape + tarjeta débito/crédito. Solo necesitas RUC.' },
+                { icon: '✉️', titulo: 'Correo corporativo', desc: 'ventas@tumarca.com — deja de usar correos personales.' },
+          
               ].map((s) => (
                 <div key={s.titulo} className="flex gap-3">
                   <span className="text-xl shrink-0">{s.icon}</span>
                   <div>
-                    <p className="text-xs font-semibold mb-0.5" style={{ color: TEXT }}>{s.titulo}</p>
-                    <p className="text-xs leading-relaxed" style={{ color: '#6B6080' }}>{s.desc}</p>
+                    <p className="text-xs font-semibold mb-0.5 text-ptxt">{s.titulo}</p>
+                    <p className="text-xs leading-relaxed text-pmuted">{s.desc}</p>
                   </div>
                 </div>
               ))}
@@ -324,71 +367,30 @@ export function PlatformLanding() {
       </section>
 
       {/* ── EL PROCESO ── */}
-      <section id="proceso" className="py-20" style={{ backgroundColor: BG }}>
+      <section id="proceso" className="py-20 bg-pbg">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: J }}>El proceso</p>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: TEXT, letterSpacing: '-0.01em' }}>
+            <p className="pl-section-label mb-3 text-pj">El proceso</p>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-ptxt" style={{ letterSpacing: '-0.01em' }}>
               De la idea a tu tienda en pocos pasos
             </h2>
-            <p className="text-sm" style={{ color: '#6B6080' }}>
-              Te acompañamos desde el primer día hasta el lanzamiento.
-            </p>
+            <p className="text-sm text-pmuted">Te acompañamos desde el primer día hasta el lanzamiento.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {PROCESO.map((p, i) => (
-              <div key={p.n} className="p-5 rounded-2xl border bg-white" style={{ borderColor: '#EDE9F4' }}>
-                <span className="inline-block text-xs font-bold mb-3 px-2 py-0.5 rounded-md"
-                  style={{ backgroundColor: i % 2 === 0 ? VL : JL, color: i % 2 === 0 ? V : J }}>
-                  Paso {p.n}
-                </span>
-                <p className="font-semibold text-sm mb-1" style={{ color: TEXT }}>{p.titulo}</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#6B6080' }}>{p.desc}</p>
+            {PROCESO.slice(0, 3).map((p) => (
+              <div key={p.n} className="pl-card p-5">
+                <span className={`${p.badgeClass} pl-badge mb-3`}>Paso {p.n}</span>
+                <p className="font-semibold text-sm mb-1 text-ptxt">{p.titulo}</p>
+                <p className="text-xs leading-relaxed text-pmuted">{p.desc}</p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ── COMPARACIÓN ── */}
-      <section style={{ backgroundColor: '#fff' }} className="py-20">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: V }}>Comparación</p>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: TEXT, letterSpacing: '-0.01em' }}>
-              ¿Por qué elegir peshoop?
-            </h2>
-            <p className="text-sm" style={{ color: '#6B6080' }}>
-              Diseñado para emprendedores peruanos, no para grandes empresas.
-            </p>
-          </div>
-
-          {/* Cards por atributo — funciona perfecto en mobile */}
-          <div className="flex flex-col gap-3">
-            {COMPARACION.map((row) => (
-              <div key={row.label} className="rounded-2xl border overflow-hidden" style={{ borderColor: '#EDE9F4' }}>
-                {/* Título del atributo */}
-                <div className="px-4 py-2.5 border-b" style={{ borderColor: '#EDE9F4', backgroundColor: BG }}>
-                  <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#9C8FB0' }}>{row.label}</p>
-                </div>
-                {/* 3 opciones en fila */}
-                <div className="grid grid-cols-3">
-                  {/* Shopify */}
-                  <div className="px-3 py-4 border-r" style={{ borderColor: '#EDE9F4' }}>
-                    <p className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: '#C4BBC8' }}>Shopify</p>
-                    <p className="text-xs leading-snug" style={{ color: '#9C8FB0' }}>{row.shopify}</p>
-                  </div>
-                  {/* Desarrollo */}
-                  <div className="px-3 py-4 border-r" style={{ borderColor: '#EDE9F4' }}>
-                    <p className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: '#C4BBC8' }}>Desarrollo</p>
-                    <p className="text-xs leading-snug" style={{ color: '#9C8FB0' }}>{row.propio}</p>
-                  </div>
-                  {/* peshoop — destacado */}
-                  <div className="px-3 py-4" style={{ backgroundColor: VL }}>
-                    <p className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: V }}>peshoop ✓</p>
-                    <p className="text-xs font-semibold leading-snug" style={{ color: V }}>{row.peshoop}</p>
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            {PROCESO.slice(3).map((p) => (
+              <div key={p.n} className="pl-card p-5">
+                <span className={`${p.badgeClass} pl-badge mb-3`}>Paso {p.n}</span>
+                <p className="font-semibold text-sm mb-1 text-ptxt">{p.titulo}</p>
+                <p className="text-xs leading-relaxed text-pmuted">{p.desc}</p>
               </div>
             ))}
           </div>
@@ -396,55 +398,40 @@ export function PlatformLanding() {
       </section>
 
       {/* ── QUIÉNES SOMOS ── */}
-      <section id="nosotros" className="py-20" style={{ backgroundColor: BG }}>
+      <section id="nosotros" className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: J }}>Quiénes somos</p>
-            <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: TEXT, letterSpacing: '-0.01em' }}>
+            <p className="pl-section-label mb-3 text-pj">Quiénes somos</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-ptxt" style={{ letterSpacing: '-0.01em' }}>
               Construimos contigo, no solo para ti
             </h2>
           </div>
 
-          {/* Tarjeta principal — 2 col desktop, 1 col mobile */}
-          <div className="bg-white rounded-3xl border overflow-hidden flex flex-col lg:flex-row"
-            style={{ borderColor: '#EDE9F4', boxShadow: '0 4px 32px rgba(108,43,217,0.07)' }}>
-
-            {/* Columna imagen */}
-            <div className="flex-shrink-0 flex items-center justify-center p-8 lg:p-10"
-              style={{ backgroundColor: VL, minWidth: 0 }}>
-              <div className="relative">
-                {/* Aro violeta decorativo */}
-                <div className="absolute inset-0 rounded-full"
-                  style={{ boxShadow: `0 0 0 6px ${VL}, 0 0 0 10px ${V}30` }} />
-                <div className="w-48 h-48 sm:w-56 sm:h-56 lg:w-52 lg:h-52 rounded-full overflow-hidden relative"
-                  style={{ border: `4px solid #fff`, boxShadow: '0 8px 24px rgba(108,43,217,0.18)' }}>
-                  <Image
-                    src="/luis-romero.jpg"
-                    alt="Luis Romero — Fundador de Peshoop"
-                    width={208}
-                    height={208}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {/* Badge "Fundador" */}
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full"
-                  style={{ backgroundColor: V, color: '#fff', boxShadow: '0 2px 8px rgba(108,43,217,0.35)' }}>
-                  Fundador
-                </div>
+          <div className="rounded-3xl border border-pborder overflow-hidden flex flex-col lg:flex-row bg-white">
+            {/* Imagen */}
+            <div className="flex-shrink-0 flex items-center justify-center p-8 lg:p-10 bg-pvl">
+              <div className="w-48 h-48 sm:w-56 sm:h-56 lg:w-52 lg:h-52 rounded-full overflow-hidden border-4 border-white">
+                <Image
+                  src="/luis-romero.jpg"
+                  alt="Luis Romero — Fundador de Peshoop"
+                  width={208}
+                  height={208}
+                  sizes="(max-width: 640px) 192px, 208px"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
 
-            {/* Columna texto */}
+            {/* Texto */}
             <div className="flex-1 px-6 sm:px-8 lg:px-10 py-8 flex flex-col justify-center gap-5">
-              {/* Nombre y cargo */}
               <div>
-                <h3 className="font-bold text-2xl" style={{ color: TEXT }}>Luis Romero</h3>
-                <p className="text-sm mt-1" style={{ color: '#9C8FB0' }}>
-                  6 años construyendo plataformas digitales en Perú
-                </p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="font-bold text-2xl text-ptxt">Luis Romero</h3>
+                  <span className="pl-badge pl-badge-v">Fundador</span>
+                </div>
+                <p className="text-sm mt-1 text-pmuted2">6 años construyendo plataformas digitales en Perú</p>
               </div>
 
-              {/* Highlights */}
               <ul className="flex flex-col gap-3">
                 {[
                   'Trabajé en proyectos digitales para Pacífico Seguros, UPC, UPN, Cibertec y Claro Perú.',
@@ -452,25 +439,22 @@ export function PlatformLanding() {
                   'Acompañamos antes, durante y después — no desaparecemos al entregar.',
                 ].map((t) => (
                   <li key={t} className="flex gap-3 text-sm items-start">
-                    <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: JL }}>
-                      <IconCheck size={11} style={{ color: J }} />
+                    <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 bg-pjl">
+                      <IconCheck size={11} className="text-pj" />
                     </span>
-                    <span style={{ color: '#6B6080' }}>{t}</span>
+                    <span className="text-pmuted">{t}</span>
                   </li>
                 ))}
               </ul>
 
-              {/* Transparencia */}
-              <div className="p-4 rounded-2xl text-xs leading-relaxed" style={{ backgroundColor: VL, color: V }}>
+              <div className="pl-transparency-box">
                 <strong>Sin letra chica:</strong> Si los planes cambian, siempre avisamos con anticipación. Sin cobros sorpresa.
               </div>
 
-              {/* LinkedIn */}
               <div>
                 <a href={liUrl} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-opacity hover:opacity-90"
-                  style={{ backgroundColor: '#0A66C2', color: '#fff' }}>
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-opacity hover:opacity-90 text-white"
+                  style={{ backgroundColor: '#0A66C2' }}>
                   <IconBrandLinkedin size={16} />
                   Ver LinkedIn
                 </a>
@@ -481,44 +465,37 @@ export function PlatformLanding() {
       </section>
 
       {/* ── CTA FINAL ── */}
-      <section className="py-20" style={{ backgroundColor: V }}>
+      <section className="py-20 bg-pv">
         <div className="max-w-2xl mx-auto px-6 text-center">
-          <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.55)' }}>
-            Sin compromiso
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: '#fff', letterSpacing: '-0.01em' }}>
-            Escríbenos y creamos tu demo gratis
+          <p className="pl-section-label mb-4" style={{ color: 'rgba(255,255,255,0.5)' }}>Sin compromiso</p>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-white" style={{ letterSpacing: '-0.01em' }}>
+            Escríbenos y creamos tú demo
           </h2>
-          <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.75)' }}>
+          <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.7)' }}>
             Primero ves tu tienda funcionando. Pagas cuando estés listo.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a href={waUrl} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm transition-opacity hover:opacity-90"
-              style={{ backgroundColor: '#fff', color: V }}>
+              className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm transition-opacity hover:opacity-90 bg-white text-pv">
               <IconBrandWhatsapp size={18} />
               Escribir por WhatsApp
             </a>
             <a href="#planes"
-              className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm border transition-colors"
-              style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.35)' }}>
+              className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm border transition-colors text-white border-white/35">
               Ver planes
             </a>
           </div>
-          <p className="mt-6 text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            WA: 982 121 991 · peshoop.com
-          </p>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="px-6 py-5 text-center text-xs border-t" style={{ backgroundColor: '#fff', borderColor: '#EDE9F4', color: '#9C8FB0' }}>
-        <span className="font-bold" style={{ color: V }}>pe</span>
-        <span className="font-bold" style={{ color: J }}>shoop</span>
+      <footer className="px-6 py-5 text-center text-xs border-t border-pborder bg-white text-pmuted2">
+        <Wordmark className="text-sm" />
         <span className="mx-2">·</span>
         © {new Date().getFullYear()} Peshoop · Tiendas online para negocios peruanos
       </footer>
 
     </main>
+    </>
   )
 }

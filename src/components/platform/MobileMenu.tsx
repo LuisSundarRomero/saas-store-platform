@@ -1,10 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IconMenu2, IconX, IconBrandWhatsapp } from '@tabler/icons-react'
-
-const V = '#6C2BD9'
-const J = '#00A389'
 
 const NAV_LINKS = [
   { href: '#problema',       label: 'El problema' },
@@ -21,9 +18,22 @@ interface Props {
 export function MobileMenu({ waUrl }: Props) {
   const [open, setOpen] = useState(false)
 
+  // Cierra automáticamente al pasar a desktop
+  useEffect(() => {
+    const close = () => { if (window.innerWidth >= 1024) setOpen(false) }
+    window.addEventListener('resize', close)
+    return () => window.removeEventListener('resize', close)
+  }, [])
+
+  // Bloquea scroll del body cuando está abierto
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [open])
+
   return (
     <>
-      {/* Botón hamburger */}
+      {/* Botón hamburger — solo mobile */}
       <button
         onClick={() => setOpen(true)}
         className="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl border transition-colors"
@@ -33,27 +43,29 @@ export function MobileMenu({ waUrl }: Props) {
         <IconMenu2 size={20} />
       </button>
 
-      {/* Overlay */}
+      {/* Overlay — solo cuando está abierto */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
-      {/* Drawer */}
+      {/* Drawer — solo en mobile */}
       <div
-        className="fixed top-0 right-0 bottom-0 z-50 w-72 flex flex-col transition-transform duration-300"
+        className="fixed top-0 right-0 bottom-0 z-50 w-72 flex flex-col lg:hidden transition-transform duration-300"
         style={{
           backgroundColor: '#fff',
           boxShadow: '-4px 0 24px rgba(108,43,217,0.12)',
           transform: open ? 'translateX(0)' : 'translateX(100%)',
         }}
+        aria-hidden={!open}
       >
-        {/* Header del drawer */}
+        {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#EDE9F4' }}>
-          <span className="font-bold text-lg">
-            <span style={{ color: V }}>pe</span><span style={{ color: J }}>shoop</span>
+          <span className="font-bold text-lg" style={{ fontFamily: 'var(--font-comfortaa), cursive' }}>
+            <span style={{ color: '#6C2BD9' }}>pe</span>
+            <span style={{ color: '#00A389' }}>shoop</span>
           </span>
           <button
             onClick={() => setOpen(false)}
@@ -80,7 +92,7 @@ export function MobileMenu({ waUrl }: Props) {
           ))}
         </nav>
 
-        {/* CTA */}
+        {/* CTA jade */}
         <div className="px-4 py-5 border-t" style={{ borderColor: '#EDE9F4' }}>
           <a
             href={waUrl}
@@ -88,7 +100,7 @@ export function MobileMenu({ waUrl }: Props) {
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}
             className="flex items-center justify-center gap-2 w-full font-semibold px-5 py-3.5 rounded-full text-sm transition-opacity hover:opacity-90"
-            style={{ backgroundColor: V, color: '#fff' }}
+            style={{ backgroundColor: '#00A389', color: '#fff' }}
           >
             <IconBrandWhatsapp size={18} />
             Crear mi tienda gratis

@@ -7,6 +7,22 @@
   /* Fuentes — sobreescritas inline por layout.tsx según tenant */
   --font-sans:    var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-display), Impact, ui-sans-serif, sans-serif;
+
+  /* ── Peshoop landing typography ── */
+  --font-jakarta:   var(--font-jakarta), system-ui, sans-serif;
+  --font-comfortaa: var(--font-comfortaa), 'Trebuchet MS', cursive;
+
+  /* ── Peshoop landing palette ── */
+  --color-pv:      #6C2BD9;  /* violeta eléctrico — primario */
+  --color-pj:      #00A389;  /* jade — acento */
+  --color-pvl:     #E4D9F7;  /* lavanda suave — soporte */
+  --color-pjl:     #D6F0EA;  /* jade pastel — fondos positivos */
+  --color-pbg:     #FBFAFC;  /* blanco violáceo — neutro base */
+  --color-ptxt:    #221A2E;  /* berenjena oscuro — texto principal */
+  --color-pmuted:  #6B6080;  /* texto secundario */
+  --color-pmuted2: #9C8FB0;  /* texto terciario */
+  --color-pmuted3: #C4BBC8;  /* texto desvanecido */
+  --color-pborder: #EDE9F4;  /* borde suave */
 }
 
 /* ── Tokens de tema (runtime) — sobreescritos por [data-theme] ── */
@@ -127,4 +143,131 @@ body {
 .ver-coleccion:hover {
   border-color: var(--color-brand);
   color: var(--color-ink);
+}
+
+/* ── Peshoop Landing Components ── */
+.pl-section-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.pl-card {
+  background-color: #fff;
+  border: 1px solid var(--color-pborder);
+  border-radius: 1rem;
+}
+.pl-badge {
+  display: inline-block;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+}
+.pl-badge-v { background-color: var(--color-pvl); color: var(--color-pv); }
+.pl-badge-j { background-color: var(--color-pjl); color: var(--color-pj); }
+
+.pl-btn-v {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  padding: 0.875rem 1.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  background-color: var(--color-pv);
+  color: #fff;
+  transition: opacity 0.15s;
+}
+.pl-btn-v:hover { opacity: 0.9; }
+
+.pl-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  padding: 0.875rem 1.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  background-color: #fff;
+  color: var(--color-ptxt);
+  border: 1px solid #DDD6F0;
+  transition: border-color 0.15s;
+}
+.pl-btn-outline:hover { border-color: #c4b8e8; }
+
+.pl-btn-j {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  padding: 0.875rem 1.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  background-color: var(--color-pj);
+  color: #fff;
+  transition: opacity 0.15s;
+}
+.pl-btn-j:hover { opacity: 0.9; }
+
+.pl-btn-v-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  background-color: var(--color-pv);
+  color: #fff;
+  transition: opacity 0.15s;
+}
+.pl-btn-v-sm:hover { opacity: 0.9; }
+
+.pl-step-circle-v {
+  width: 2.5rem; height: 2.5rem;
+  border-radius: 9999px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.875rem;
+  background-color: var(--color-pvl);
+  color: var(--color-pv);
+  border: 2px solid color-mix(in srgb, var(--color-pv) 20%, transparent);
+  flex-shrink: 0; z-index: 10;
+}
+.pl-step-circle-j {
+  width: 2.5rem; height: 2.5rem;
+  border-radius: 9999px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.875rem;
+  background-color: var(--color-pjl);
+  color: var(--color-pj);
+  border: 2px solid color-mix(in srgb, var(--color-pj) 20%, transparent);
+  flex-shrink: 0; z-index: 10;
+}
+.pl-connector {
+  width: 1px;
+  flex: 1;
+  margin: 0.25rem 0;
+  background-color: var(--color-pborder);
+  min-height: 2rem;
+}
+.pl-plan-featured {
+  background-color: var(--color-pv);
+  color: #fff;
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--color-pv) 30%, transparent);
+  border: none;
+}
+.pl-transparency-box {
+  background-color: var(--color-pvl);
+  color: var(--color-pv);
+  border-radius: 1rem;
+  padding: 1rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
 }
