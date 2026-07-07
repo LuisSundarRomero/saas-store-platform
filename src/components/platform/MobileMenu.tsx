@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { IconMenu2, IconX, IconBrandWhatsapp } from '@tabler/icons-react'
 
 const NAV_LINKS = [
@@ -17,6 +18,9 @@ interface Props {
 
 export function MobileMenu({ waUrl }: Props) {
   const [open, setOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
 
   // Cierra automáticamente al pasar a desktop
   useEffect(() => {
@@ -31,32 +35,24 @@ export function MobileMenu({ waUrl }: Props) {
     return () => { document.body.style.overflow = '' }
   }, [open])
 
-  return (
+  const portal = mounted ? createPortal(
     <>
-      {/* Botón hamburger — solo mobile */}
-      <button
-        onClick={() => setOpen(true)}
-        className="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl border transition-colors"
-        style={{ borderColor: '#EDE9F4', color: '#6B6080' }}
-        aria-label="Abrir menú"
-      >
-        <IconMenu2 size={20} />
-      </button>
-
-      {/* Overlay — solo cuando está abierto */}
+      {/* Overlay */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm lg:hidden"
+          style={{ zIndex: 9998 }}
           onClick={() => setOpen(false)}
         />
       )}
 
-      {/* Drawer — solo en mobile */}
+      {/* Drawer */}
       <div
-        className="fixed top-0 right-0 bottom-0 z-50 w-72 flex flex-col lg:hidden transition-transform duration-300"
+        className="fixed top-0 right-0 bottom-0 w-72 flex flex-col lg:hidden transition-transform duration-300"
         style={{
+          zIndex: 9999,
           backgroundColor: '#fff',
-          boxShadow: open ? '-4px 0 24px rgba(108,43,217,0.12)' : 'none',
+          boxShadow: open ? '-4px 0 24px rgba(108,43,217,0.14)' : 'none',
           transform: open ? 'translateX(0)' : 'translateX(110%)',
           visibility: open ? 'visible' : 'hidden',
         }}
@@ -108,6 +104,23 @@ export function MobileMenu({ waUrl }: Props) {
           </a>
         </div>
       </div>
+    </>,
+    document.body
+  ) : null
+
+  return (
+    <>
+      {/* Botón hamburger — solo mobile */}
+      <button
+        onClick={() => setOpen(true)}
+        className="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl border transition-colors"
+        style={{ borderColor: '#EDE9F4', color: '#6B6080' }}
+        aria-label="Abrir menú"
+      >
+        <IconMenu2 size={20} />
+      </button>
+
+      {portal}
     </>
   )
 }
