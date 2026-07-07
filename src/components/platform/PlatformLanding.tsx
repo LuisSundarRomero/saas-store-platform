@@ -137,9 +137,7 @@ export function PlatformLanding() {
           Crea tu catálogo, recibe pedidos por WhatsApp y cobra con tarjeta.
           Sin complicaciones. <strong style={{ color: TEXT }}>Desde S/69/mes.</strong>
         </p>
-        <p className="text-sm mb-10" style={{ color: '#9C8FB0' }}>
-          7 días gratis · Sin tarjeta · Cancela cuando quieras
-        </p>
+        <div className="mb-10" />
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a href={waUrl} target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm transition-opacity hover:opacity-90"
@@ -393,7 +391,7 @@ export function PlatformLanding() {
             <div className="px-6 sm:px-8 pb-8">
               {/* Avatar */}
               <div className="relative -mt-12 mb-5 flex items-end justify-between">
-                <div className="w-24 h-24 rounded-2xl border-4 border-white overflow-hidden shadow-md"
+                <div className="w-24 h-24 rounded-full border-4 border-white overflow-hidden shadow-md"
                   style={{ backgroundColor: VL }}>
                   <Image
                     src="/luis-romero.jpg"
