@@ -476,7 +476,7 @@ export function PlatformLanding() {
         <span className="font-bold" style={{ color: V }}>pe</span>
         <span className="font-bold" style={{ color: J }}>shoop</span>
         <span className="mx-2">·</span>
-        © {new Date().getFullYear()} Peshoop · Plataforma SaaS de tiendas online en Perú
+        © {new Date().getFullYear()} Peshoop · Tiendas online para negocios peruanos
       </footer>
 
     </main>
