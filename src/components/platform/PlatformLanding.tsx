@@ -1,19 +1,25 @@
+import Image from 'next/image'
 import {
   IconCheck, IconBrandWhatsapp, IconX,
-  IconShoppingBag, IconChartBar, IconTruckDelivery,
-  IconCreditCard, IconMessage, IconStar,
-  IconArrowRight, IconPlayerPlay,
+  IconArrowRight, IconBrandLinkedin,
 } from '@tabler/icons-react'
 
 const WHATSAPP = '51982121991'
-const DEMO_URL = 'https://anarchy.peshoop.com'
 
-const V = '#6C2BD9'      // violeta
-const J = '#00A389'      // jade
-const VL = '#E4D9F7'     // lavanda
-const JL = '#D6F0EA'     // jade claro
-const BG = '#FBFAFC'     // blanco violáceo
-const TEXT = '#221A2E'   // berenjena oscuro
+const V = '#6C2BD9'
+const J = '#00A389'
+const VL = '#E4D9F7'
+const JL = '#D6F0EA'
+const BG = '#FBFAFC'
+const TEXT = '#221A2E'
+
+const NAV_LINKS = [
+  { href: '#problema',       label: 'El problema' },
+  { href: '#como-funciona',  label: 'Cómo funciona' },
+  { href: '#planes',         label: 'Planes' },
+  { href: '#proceso',        label: 'El proceso' },
+  { href: '#nosotros',       label: 'Quiénes somos' },
+]
 
 const PROBLEMAS = [
   { icon: '😟', titulo: 'Pierdes ventas cuando no estás', desc: 'Tus clientes quieren comprar en cualquier momento. Si terminó tu live o no respondes rápido, pierdes la venta.' },
@@ -23,7 +29,7 @@ const PROBLEMAS = [
 ]
 
 const PASOS = [
-  { n: '01', titulo: 'Tu cliente entra a tu tienda', desc: 'Navega tus productos por categorías, tallas y colores. Encuentra fotos, precios y detalles claros sin tener que preguntarte nada.', tag: 'Experiencia simple', color: V, bg: VL },
+  { n: '01', titulo: 'Tu cliente entra a tu tienda', desc: 'Navega tus productos por categorías, tallas y colores. Encuentra fotos, precios y detalles claros sin preguntarte nada.', tag: 'Experiencia simple', color: V, bg: VL },
   { n: '02', titulo: 'Elige y agrega al carrito', desc: 'Revisa cantidades y ve el total antes de confirmar. Una experiencia más rápida y cómoda desde el celular.', tag: 'Carrito automático', color: J, bg: JL },
   { n: '03', titulo: 'Recibes el pedido organizado', desc: 'Todo llega directo a tu WhatsApp: productos, cantidades y datos del cliente. Sin perder nada en el chat.', tag: 'Sin caos en el chat', color: V, bg: VL },
   { n: '04', titulo: 'Gestionas desde tu panel', desc: 'Desde tu celular revisas pedidos, actualizas estados y administras productos. Sin conocimientos técnicos.', tag: 'Panel simple', color: J, bg: JL },
@@ -76,49 +82,52 @@ const PROCESO = [
 ]
 
 const COMPARACION = [
-  { label: 'Costo', shopify: 'Mensual + comisiones', propio: 'Mayor inversión', peshoop: 'Desde S/69/mes' },
-  { label: 'Soporte', shopify: 'Ayuda externa', propio: 'Pagas extra o nada', peshoop: 'Español, directo' },
-  { label: 'Configuración', shopify: 'Tú aprendes solo', propio: 'Semanas o meses', peshoop: 'Nosotros lo hacemos' },
-  { label: 'Si creces', shopify: 'Sube el plan solo', propio: 'Rediseño = más costo', peshoop: 'Te acompañamos' },
+  { label: 'Costo',          shopify: 'Mensual + comisiones', propio: 'Mayor inversión',      peshoop: 'Desde S/69/mes' },
+  { label: 'Soporte',        shopify: 'Ayuda externa',        propio: 'Pagas extra o nada',   peshoop: 'Español, directo' },
+  { label: 'Configuración',  shopify: 'Tú aprendes solo',     propio: 'Semanas o meses',      peshoop: 'Nosotros lo hacemos' },
+  { label: 'Si creces',      shopify: 'Sube el plan solo',    propio: 'Rediseño = más costo', peshoop: 'Te acompañamos' },
 ]
 
 export function PlatformLanding() {
   const waUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hola! Quiero crear mi tienda online con peshoop 🛍️')}`
+  const liUrl = 'https://linkedin.com/in/luis-romero-frontend'
 
   return (
     <main style={{ backgroundColor: BG, color: TEXT, fontFamily: "'Inter', system-ui, sans-serif" }}>
 
       {/* ── NAV ── */}
       <nav style={{ backgroundColor: '#fff', borderBottom: '1px solid #EDE9F4' }}
-        className="sticky top-0 z-30 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <span className="font-bold text-xl tracking-tight select-none">
+        className="sticky top-0 z-30 px-6 py-3">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+          {/* Logo */}
+          <a href="#" className="font-bold text-xl tracking-tight shrink-0 select-none">
             <span style={{ color: V }}>pe</span><span style={{ color: J }}>shoop</span>
-          </span>
-          <div className="flex items-center gap-3">
-            <a href={DEMO_URL} target="_blank" rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1.5 text-sm font-medium transition-colors"
-              style={{ color: V }}>
-              <IconPlayerPlay size={14} />
-              Ver demo
-            </a>
-            <a href={waUrl} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full transition-opacity hover:opacity-90"
-              style={{ backgroundColor: V, color: '#fff' }}>
-              <IconBrandWhatsapp size={16} />
-              Contactar
-            </a>
+          </a>
+
+          {/* Links secciones — hidden en móvil */}
+          <div className="hidden lg:flex items-center gap-1">
+            {NAV_LINKS.map((l) => (
+              <a key={l.href} href={l.href}
+                className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-gray-50"
+                style={{ color: '#6B6080' }}>
+                {l.label}
+              </a>
+            ))}
           </div>
+
+          {/* CTA */}
+          <a href={waUrl} target="_blank" rel="noopener noreferrer"
+            className="shrink-0 flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full transition-opacity hover:opacity-90"
+            style={{ backgroundColor: V, color: '#fff' }}>
+            <IconBrandWhatsapp size={16} />
+            <span className="hidden sm:inline">Crear mi tienda</span>
+            <span className="sm:hidden">Contactar</span>
+          </a>
         </div>
       </nav>
 
       {/* ── HERO ── */}
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
-        <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-6"
-          style={{ backgroundColor: VL, color: V }}>
-          <IconStar size={11} />
-          Plataforma SaaS · Tiendas de ropa online
-        </span>
         <h1 className="font-bold leading-tight mb-5"
           style={{ fontSize: 'clamp(2rem, 6vw, 3.75rem)', color: TEXT, letterSpacing: '-0.02em' }}>
           Tu tienda online lista{' '}
@@ -138,15 +147,12 @@ export function PlatformLanding() {
             <IconBrandWhatsapp size={18} />
             Crear mi tienda gratis
           </a>
-          <a href={DEMO_URL} target="_blank" rel="noopener noreferrer"
+          <a href="#planes"
             className="inline-flex items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-full text-sm border transition-colors hover:border-gray-300"
             style={{ color: TEXT, backgroundColor: '#fff', borderColor: '#DDD6F0' }}>
-            <IconPlayerPlay size={16} />
-            Ver demo en vivo
+            Ver planes
           </a>
         </div>
-
-        {/* Trust bar */}
         <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs" style={{ color: '#9C8FB0' }}>
           {['✓ Demo gratis antes de pagar', '✓ Setup completo incluido', '✓ Soporte en español', '✓ Lanzamiento en 48 h'].map(t => (
             <span key={t}>{t}</span>
@@ -155,7 +161,7 @@ export function PlatformLanding() {
       </section>
 
       {/* ── PROBLEMA ── */}
-      <section style={{ backgroundColor: '#fff' }} className="py-20">
+      <section id="problema" style={{ backgroundColor: '#fff' }} className="py-20">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
             <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: V }}>El problema</p>
@@ -177,7 +183,7 @@ export function PlatformLanding() {
               </div>
             ))}
           </div>
-          <div className="mt-8 p-5 rounded-2xl text-center" style={{ backgroundColor: JL, border: `1px solid ${J}20` }}>
+          <div className="mt-8 p-5 rounded-2xl text-center" style={{ backgroundColor: JL, border: `1px solid ${J}30` }}>
             <p className="text-sm font-semibold" style={{ color: TEXT }}>
               La buena noticia: no necesitas una plataforma gigante.
             </p>
@@ -189,7 +195,7 @@ export function PlatformLanding() {
       </section>
 
       {/* ── CÓMO FUNCIONA ── */}
-      <section className="py-20" style={{ backgroundColor: BG }}>
+      <section id="como-funciona" className="py-20" style={{ backgroundColor: BG }}>
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
             <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: J }}>Cómo funciona</p>
@@ -217,10 +223,10 @@ export function PlatformLanding() {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <a href={DEMO_URL} target="_blank" rel="noopener noreferrer"
+            <a href={waUrl} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity hover:opacity-80"
               style={{ color: V }}>
-              Ver demo en vivo <IconArrowRight size={16} />
+              Quiero ver mi tienda <IconArrowRight size={16} />
             </a>
           </div>
         </div>
@@ -234,9 +240,7 @@ export function PlatformLanding() {
             <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: TEXT, letterSpacing: '-0.01em' }}>
               Empieza simple. Crece cuando estés listo.
             </h2>
-            <p className="text-sm" style={{ color: '#6B6080' }}>
-              7 días gratis · Sin tarjeta · Sin letra chica
-            </p>
+            <p className="text-sm" style={{ color: '#6B6080' }}>7 días gratis · Sin tarjeta · Sin letra chica</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {PLANES.map((plan) => (
@@ -271,8 +275,7 @@ export function PlatformLanding() {
                 <ul className="flex flex-col gap-2 flex-1">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm">
-                      <IconCheck size={14} className="mt-0.5 shrink-0"
-                        style={{ color: plan.destacado ? JL : J }} />
+                      <IconCheck size={14} className="mt-0.5 shrink-0" style={{ color: plan.destacado ? JL : J }} />
                       <span>{f}</span>
                     </li>
                   ))}
@@ -286,18 +289,13 @@ export function PlatformLanding() {
                 </ul>
                 <a href={waUrl} target="_blank" rel="noopener noreferrer"
                   className="mt-2 inline-flex items-center justify-center gap-2 font-semibold px-5 py-3 rounded-full text-sm transition-opacity hover:opacity-90"
-                  style={{
-                    backgroundColor: plan.destacado ? '#fff' : V,
-                    color: plan.destacado ? V : '#fff',
-                  }}>
+                  style={{ backgroundColor: plan.destacado ? '#fff' : V, color: plan.destacado ? V : '#fff' }}>
                   <IconBrandWhatsapp size={16} />
                   {plan.cta}
                 </a>
               </div>
             ))}
           </div>
-
-          {/* Servicios adicionales */}
           <div className="mt-8 rounded-2xl p-5 border" style={{ borderColor: '#EDE9F4', backgroundColor: BG }}>
             <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#9C8FB0' }}>
               Servicios adicionales (opcionales)
@@ -322,7 +320,7 @@ export function PlatformLanding() {
       </section>
 
       {/* ── EL PROCESO ── */}
-      <section className="py-20" style={{ backgroundColor: BG }}>
+      <section id="proceso" className="py-20" style={{ backgroundColor: BG }}>
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
             <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: J }}>El proceso</p>
@@ -335,8 +333,7 @@ export function PlatformLanding() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {PROCESO.map((p, i) => (
-              <div key={p.n} className="p-5 rounded-2xl border bg-white"
-                style={{ borderColor: '#EDE9F4' }}>
+              <div key={p.n} className="p-5 rounded-2xl border bg-white" style={{ borderColor: '#EDE9F4' }}>
                 <span className="inline-block text-xs font-bold mb-3 px-2 py-0.5 rounded-md"
                   style={{ backgroundColor: i % 2 === 0 ? VL : JL, color: i % 2 === 0 ? V : J }}>
                   Paso {p.n}
@@ -359,18 +356,14 @@ export function PlatformLanding() {
             </h2>
           </div>
           <div className="rounded-2xl overflow-hidden border" style={{ borderColor: '#EDE9F4' }}>
-            {/* Header */}
-            <div className="grid grid-cols-4 text-xs font-bold uppercase tracking-wider"
-              style={{ backgroundColor: BG }}>
+            <div className="grid grid-cols-4 text-xs font-bold uppercase tracking-wider" style={{ backgroundColor: BG }}>
               <div className="px-4 py-3" style={{ color: '#9C8FB0' }}></div>
               <div className="px-4 py-3 text-center" style={{ color: '#9C8FB0' }}>Shopify</div>
               <div className="px-4 py-3 text-center" style={{ color: '#9C8FB0' }}>Desarrollo propio</div>
-              <div className="px-4 py-3 text-center rounded-t-xl"
-                style={{ backgroundColor: V, color: '#fff' }}>peshoop</div>
+              <div className="px-4 py-3 text-center" style={{ backgroundColor: V, color: '#fff' }}>peshoop</div>
             </div>
             {COMPARACION.map((row, i) => (
-              <div key={row.label}
-                className="grid grid-cols-4 text-xs border-t"
+              <div key={row.label} className="grid grid-cols-4 text-xs border-t"
                 style={{ borderColor: '#EDE9F4', backgroundColor: i % 2 === 0 ? '#fff' : BG }}>
                 <div className="px-4 py-3.5 font-semibold" style={{ color: TEXT }}>{row.label}</div>
                 <div className="px-4 py-3.5 text-center" style={{ color: '#9C8FB0' }}>{row.shopify}</div>
@@ -382,8 +375,8 @@ export function PlatformLanding() {
         </div>
       </section>
 
-      {/* ── SOBRE NOSOTROS ── */}
-      <section className="py-20" style={{ backgroundColor: BG }}>
+      {/* ── QUIÉNES SOMOS ── */}
+      <section id="nosotros" className="py-20" style={{ backgroundColor: BG }}>
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-10">
             <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: J }}>Quiénes somos</p>
@@ -391,32 +384,60 @@ export function PlatformLanding() {
               Construimos contigo, no solo para ti
             </h2>
           </div>
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border flex flex-col sm:flex-row gap-6"
-            style={{ borderColor: '#EDE9F4' }}>
-            <div className="w-16 h-16 rounded-2xl shrink-0 flex items-center justify-center font-bold text-xl self-start"
-              style={{ backgroundColor: VL, color: V }}>LR</div>
-            <div>
-              <p className="font-bold text-base mb-0.5" style={{ color: TEXT }}>Luis Romero</p>
-              <p className="text-xs mb-4" style={{ color: '#9C8FB0' }}>
-                Fundador de Peshoop · 6 años construyendo tiendas y plataformas online
-              </p>
-              <ul className="flex flex-col gap-2">
+
+          <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#EDE9F4' }}>
+            {/* Banner superior */}
+            <div className="h-24 w-full" style={{ background: `linear-gradient(135deg, ${VL} 0%, ${JL} 100%)` }} />
+
+            {/* Contenido */}
+            <div className="px-6 sm:px-8 pb-8">
+              {/* Avatar */}
+              <div className="relative -mt-12 mb-5 flex items-end justify-between">
+                <div className="w-24 h-24 rounded-2xl border-4 border-white overflow-hidden shadow-md"
+                  style={{ backgroundColor: VL }}>
+                  <Image
+                    src="/luis-romero.jpg"
+                    alt="Luis Romero — Fundador de Peshoop"
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <a href={liUrl} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: '#0A66C2', color: '#fff' }}>
+                  <IconBrandLinkedin size={15} />
+                  Ver LinkedIn
+                </a>
+              </div>
+
+              {/* Info */}
+              <div className="mb-5">
+                <h3 className="font-bold text-lg" style={{ color: TEXT }}>Luis Romero</h3>
+                <p className="text-sm mt-0.5" style={{ color: '#9C8FB0' }}>
+                  Fundador de Peshoop · 6 años construyendo plataformas online
+                </p>
+              </div>
+
+              {/* Highlights */}
+              <ul className="flex flex-col gap-3 mb-6">
                 {[
                   'Trabajé en plataformas digitales para Pacífico Seguros, UPC, UPN, Cibertec y Claro Perú.',
                   'Yo me encargo de crear, configurar y lanzar tu tienda. Tú enfócate en vender.',
                   'Acompañamos antes, durante y después — no desaparecemos al entregar el proyecto.',
                 ].map((t) => (
-                  <li key={t} className="flex gap-2 text-sm">
-                    <IconCheck size={14} className="mt-0.5 shrink-0" style={{ color: J }} />
+                  <li key={t} className="flex gap-2.5 text-sm">
+                    <IconCheck size={15} className="mt-0.5 shrink-0" style={{ color: J }} />
                     <span style={{ color: '#6B6080' }}>{t}</span>
                   </li>
                 ))}
               </ul>
-              <p className="text-xs mt-4" style={{ color: V }}>linkedin.com/in/luis-romero-frontend</p>
+
+              {/* Transparencia */}
+              <div className="p-4 rounded-xl text-xs" style={{ backgroundColor: JL, color: '#4A7A70' }}>
+                <strong>Transparencia en precios:</strong> Si los planes ajustan, siempre se avisa con anticipación. Sin cobros sorpresa, sin letra chica.
+              </div>
             </div>
-          </div>
-          <div className="mt-4 p-4 rounded-xl text-center text-xs" style={{ backgroundColor: JL, color: '#4A7A70' }}>
-            <strong>Transparencia en precios:</strong> Si los planes ajustan, siempre se avisa con anticipación. Sin cobros sorpresa, sin letra chica.
           </div>
         </div>
       </section>
@@ -424,7 +445,7 @@ export function PlatformLanding() {
       {/* ── CTA FINAL ── */}
       <section className="py-20" style={{ backgroundColor: V }}>
         <div className="max-w-2xl mx-auto px-6 text-center">
-          <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
+          <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.55)' }}>
             Sin compromiso
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: '#fff', letterSpacing: '-0.01em' }}>
@@ -446,14 +467,14 @@ export function PlatformLanding() {
               Ver planes
             </a>
           </div>
-          <p className="mt-6 text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <p className="mt-6 text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
             WA: 982 121 991 · peshoop.com
           </p>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="px-6 py-6 text-center text-xs border-t" style={{ backgroundColor: '#fff', borderColor: '#EDE9F4', color: '#9C8FB0' }}>
+      <footer className="px-6 py-5 text-center text-xs border-t" style={{ backgroundColor: '#fff', borderColor: '#EDE9F4', color: '#9C8FB0' }}>
         <span className="font-bold" style={{ color: V }}>pe</span>
         <span className="font-bold" style={{ color: J }}>shoop</span>
         <span className="mx-2">·</span>
