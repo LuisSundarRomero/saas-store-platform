@@ -78,6 +78,8 @@
 
 * { box-sizing: border-box; }
 
+html, body { overflow-x: hidden; }
+
 body {
   background-color: var(--color-bg);
   color: var(--color-ink);

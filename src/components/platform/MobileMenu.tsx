@@ -56,8 +56,9 @@ export function MobileMenu({ waUrl }: Props) {
         className="fixed top-0 right-0 bottom-0 z-50 w-72 flex flex-col lg:hidden transition-transform duration-300"
         style={{
           backgroundColor: '#fff',
-          boxShadow: '-4px 0 24px rgba(108,43,217,0.12)',
-          transform: open ? 'translateX(0)' : 'translateX(100%)',
+          boxShadow: open ? '-4px 0 24px rgba(108,43,217,0.12)' : 'none',
+          transform: open ? 'translateX(0)' : 'translateX(110%)',
+          visibility: open ? 'visible' : 'hidden',
         }}
         aria-hidden={!open}
       >
