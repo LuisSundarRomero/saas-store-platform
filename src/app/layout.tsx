@@ -33,31 +33,64 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://peshoop.com'
 
 export async function generateMetadata(): Promise<Metadata> {
   const h = await headers()
+  const isPlatform = h.get('x-is-platform') === 'true'
   const nombre = h.get('x-tenant-nombre') ?? 'Mi Tienda'
   const slug   = h.get('x-tenant-slug')   ?? ''
   const logo   = h.get('x-tenant-logo')   ?? ''
   const url    = slug ? `https://${slug}.${process.env.NEXT_PUBLIC_MAIN_DOMAIN}` : APP_URL
 
-  // Dynamic icon: tenant logo → tenant static folder → platform default
-  const tenantBase = slug ? `/tenants/${slug}` : ''
-  const iconUrl  = logo || (tenantBase ? `${tenantBase}/favicon.svg` : '/favicon.svg')
-  const icon96   = tenantBase ? `${tenantBase}/favicon-96x96.png` : '/favicon-96x96.png'
-  const iconApple = logo || (tenantBase ? `${tenantBase}/apple-touch-icon.png` : '/apple-touch-icon.png')
+  // ── Metadata específica para la platform landing (peshoop.com) ──
+  if (isPlatform || !slug) {
+    const PLATFORM_TITLE = 'Peshoop — Tu tienda online lista en un día'
+    const PLATFORM_DESC  = 'Crea tu tienda online para ropa en minutos. Recibe pedidos por WhatsApp y cobra con tarjeta. Sin complicaciones. Desde S/69/mes. Para negocios peruanos.'
+    return {
+      metadataBase: new URL(APP_URL),
+      title: PLATFORM_TITLE,
+      description: PLATFORM_DESC,
+      keywords: ['tienda online peru', 'vender ropa online', 'tienda whatsapp', 'ecommerce peru', 'peshoop', 'catalogo online', 'cobrar con tarjeta peru'],
+      authors: [{ name: 'Luis Romero', url: 'https://linkedin.com/in/luis-romero-frontend' }],
+      creator: 'Luis Romero',
+      publisher: 'Peshoop',
+      icons: {
+        icon: [{ url: '/favicon.svg' }, { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' }],
+        apple: { url: '/apple-touch-icon.png' },
+        shortcut: '/favicon.svg',
+      },
+      openGraph: {
+        type: 'website',
+        locale: 'es_PE',
+        url: APP_URL,
+        siteName: 'Peshoop',
+        title: PLATFORM_TITLE,
+        description: PLATFORM_DESC,
+        images: [{ url: `${APP_URL}/luis-romero.jpg`, width: 400, height: 400, alt: 'Luis Romero — Fundador de Peshoop' }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: PLATFORM_TITLE,
+        description: PLATFORM_DESC,
+        images: [`${APP_URL}/luis-romero.jpg`],
+        creator: '@peshoop',
+      },
+      robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+      alternates: { canonical: APP_URL },
+    }
+  }
+
+  // ── Metadata por tenant ──
+  const tenantBase = `/tenants/${slug}`
+  const iconUrl   = logo || `${tenantBase}/favicon.svg`
+  const icon96    = `${tenantBase}/favicon-96x96.png`
+  const iconApple = logo || `${tenantBase}/apple-touch-icon.png`
 
   return {
     metadataBase: new URL(url),
-    title: {
-      default: nombre,
-      template: `%s | ${nombre}`,
-    },
+    title: { default: nombre, template: `%s | ${nombre}` },
     description: `${nombre} — Tienda online. Pedidos por WhatsApp con envío a nivel nacional.`,
     authors: [{ name: nombre }],
     creator: nombre,
     icons: {
-      icon: [
-        { url: iconUrl },
-        { url: icon96, sizes: '96x96', type: 'image/png' },
-      ],
+      icon: [{ url: iconUrl }, { url: icon96, sizes: '96x96', type: 'image/png' }],
       apple: { url: iconApple },
       shortcut: iconUrl,
     },
@@ -76,11 +109,8 @@ export async function generateMetadata(): Promise<Metadata> {
       description: `${nombre} — Tienda online. Pedidos por WhatsApp.`,
       images: logo ? [logo] : [],
     },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: { index: true, follow: true },
-    },
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+    alternates: { canonical: url },
   }
 }
 
