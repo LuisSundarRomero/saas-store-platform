@@ -3,18 +3,11 @@ import {
   IconCheck, IconBrandWhatsapp, IconX,
   IconArrowRight, IconBrandLinkedin,
 } from '@tabler/icons-react'
-import { MobileMenu } from './MobileMenu'
+import { NavBar } from './NavBar'
 import { Wordmark } from './Wordmark'
 
 const WHATSAPP = '51982121991'
 
-const NAV_LINKS = [
-  { href: '#problema',       label: 'El problema' },
-  { href: '#como-funciona',  label: 'Cómo funciona' },
-  { href: '#planes',         label: 'Planes' },
-  { href: '#proceso',        label: 'El proceso' },
-  { href: '#nosotros',       label: 'Quiénes somos' },
-]
 
 const PROBLEMAS = [
   { icon: '😟', titulo: 'Pierdes ventas cuando no estás', desc: 'Tus clientes quieren comprar en cualquier momento. Si terminó tu live o no respondes rápido, pierdes la venta.' },
@@ -151,42 +144,9 @@ export function PlatformLanding() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
       />
 
-    <main className="bg-pbg text-ptxt font-jakarta">
+    <main className="bg-pbg text-ptxt font-jakarta pt-16">
 
-      {/* ── NAV ── */}
-      <nav className="sticky top-0 z-30 bg-white/95 border-b border-pborder px-6 py-0" style={{ backdropFilter: 'blur(8px)' }}>
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-6 h-16">
-          {/* Logo */}
-          <a href="#" className="shrink-0 select-none">
-            <Wordmark className="text-xl" />
-          </a>
-
-          {/* Links — desktop */}
-          <div className="hidden lg:flex items-center gap-0 flex-1 justify-center">
-            {NAV_LINKS.map((l) => (
-              <a key={l.href} href={l.href}
-                className="relative px-4 py-5 text-sm font-medium text-pmuted transition-colors hover:text-ptxt group">
-                {l.label}
-                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-pv scale-x-0 group-hover:scale-x-100 transition-transform duration-200 rounded-full" />
-              </a>
-            ))}
-          </div>
-
-          {/* Acciones */}
-          <div className="flex items-center gap-2 shrink-0">
-            <a href="#planes"
-              className="hidden md:block text-sm font-medium text-pmuted hover:text-ptxt transition-colors px-3 py-2">
-              Ver planes
-            </a>
-            <a href={waUrl} target="_blank" rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full transition-opacity hover:opacity-90 bg-pj text-white">
-              <IconBrandWhatsapp size={15} />
-              Crear mi tienda
-            </a>
-            <MobileMenu waUrl={waUrl} />
-          </div>
-        </div>
-      </nav>
+      <NavBar waUrl={waUrl} />
 
       {/* ── HERO ── */}
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
@@ -213,7 +173,7 @@ export function PlatformLanding() {
           </a>
         </div>
         <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs text-pmuted2">
-          {['✓ Demo gratis antes de pagar', '✓ Setup completo incluido', '✓ Soporte en español', '✓ Lanzamiento en 48 h'].map(t => (
+          {['✓ Demo gratis antes de pagar', '✓ Soporte en español'].map(t => (
             <span key={t}>{t}</span>
           ))}
         </div>
@@ -223,7 +183,6 @@ export function PlatformLanding() {
       <section id="problema" className="bg-white py-20">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <p className="pl-section-label mb-3 text-pv">El problema</p>
             <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-ptxt" style={{ letterSpacing: '-0.01em' }}>
               ¿Te pasa esto todos los días?
             </h2>
@@ -257,7 +216,6 @@ export function PlatformLanding() {
       <section id="como-funciona" className="py-20 bg-pbg">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <p className="pl-section-label mb-3 text-pj">Cómo funciona</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-ptxt" style={{ letterSpacing: '-0.01em' }}>
               5 pasos para vender sin complicarte
             </h2>
@@ -292,7 +250,6 @@ export function PlatformLanding() {
       <section id="planes" className="bg-white py-20">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-            <p className="pl-section-label mb-3 text-pv">Planes</p>
             <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-ptxt" style={{ letterSpacing: '-0.01em' }}>
               Empieza simple. Crece cuando estés listo.
             </h2>
@@ -370,7 +327,6 @@ export function PlatformLanding() {
       <section id="proceso" className="py-20 bg-pbg">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-            <p className="pl-section-label mb-3 text-pj">El proceso</p>
             <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-ptxt" style={{ letterSpacing: '-0.01em' }}>
               De la idea a tu tienda en pocos pasos
             </h2>
@@ -401,7 +357,7 @@ export function PlatformLanding() {
       <section id="nosotros" className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <p className="pl-section-label mb-3 text-pj">Quiénes somos</p>
+
             <h2 className="text-2xl sm:text-3xl font-bold text-ptxt" style={{ letterSpacing: '-0.01em' }}>
               Construimos contigo, no solo para ti
             </h2>
@@ -467,7 +423,6 @@ export function PlatformLanding() {
       {/* ── CTA FINAL ── */}
       <section className="py-20 bg-pv">
         <div className="max-w-2xl mx-auto px-6 text-center">
-          <p className="pl-section-label mb-4" style={{ color: 'rgba(255,255,255,0.5)' }}>Sin compromiso</p>
           <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-white" style={{ letterSpacing: '-0.01em' }}>
             Escríbenos y creamos tú demo
           </h2>
