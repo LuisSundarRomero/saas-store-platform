@@ -7,10 +7,17 @@ export function ScrollToHeroButton() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    const update = () => setVisible(window.scrollY > window.innerHeight * 0.6)
+    const update = () => {
+      const scrolledToEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 40
+      setVisible(scrolledToEnd)
+    }
     window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
     update()
-    return () => window.removeEventListener('scroll', update)
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
   }, [])
 
   return (
