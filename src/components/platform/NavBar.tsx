@@ -6,12 +6,14 @@ import { Wordmark } from './Wordmark'
 import { MobileMenu } from './MobileMenu'
 
 const NAV_LINKS = [
-  { href: '#te-pasa',      label: '¿Te pasa?' },
+  { href: '#te-pasa',       label: '¿Te pasa?' },
   { href: '#como-funciona', label: 'Cómo funciona' },
   { href: '#planes',        label: 'Planes' },
   { href: '#proceso',       label: 'El proceso' },
   { href: '#nosotros',      label: 'Quiénes somos' },
 ]
+
+const NAV_HEIGHT = 64 // h-16
 
 interface Props {
   waUrl: string
@@ -22,36 +24,32 @@ export function NavBar({ waUrl }: Props) {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => {
+    const ids = NAV_LINKS.map(l => l.href.slice(1))
+
+    const update = () => {
       const y = window.scrollY
       setScrolled(y > 8)
-      // Si el usuario está por encima del primer section, ningún link activo
-      const firstSection = document.getElementById('te-pasa')
-      if (firstSection && y < firstSection.offsetTop - 80) {
-        setActive('')
+
+      // Punto de referencia: 1/3 del viewport desde arriba, tras el nav
+      const trigger = y + NAV_HEIGHT + window.innerHeight * 0.18
+
+      // Busca la última sección cuya parte superior está por encima del trigger
+      let found = ''
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (el && el.offsetTop <= trigger) found = '#' + id
       }
+
+      // Si el scroll está antes del primer section, limpia
+      const firstEl = document.getElementById(ids[0])
+      if (firstEl && y + NAV_HEIGHT < firstEl.offsetTop) found = ''
+
+      setActive(found)
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
-  useEffect(() => {
-    const ids = NAV_LINKS.map(l => l.href.slice(1))
-    const observers: IntersectionObserver[] = []
-
-    ids.forEach(id => {
-      const el = document.getElementById(id)
-      if (!el) return
-      const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActive('#' + id) },
-        // Activa cuando la sección ocupa el 25-80% central del viewport
-        { rootMargin: '-15% 0px -65% 0px', threshold: 0 }
-      )
-      obs.observe(el)
-      observers.push(obs)
-    })
-
-    return () => observers.forEach(o => o.disconnect())
+    window.addEventListener('scroll', update, { passive: true })
+    update()
+    return () => window.removeEventListener('scroll', update)
   }, [])
 
   return (
