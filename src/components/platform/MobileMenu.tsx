@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 import { IconMenu2, IconX, IconBrandWhatsapp } from '@tabler/icons-react'
 
 const NAV_LINKS = [
-  { href: '#problema',       label: 'El problema' },
+  { href: '#te-pasa',       label: '¿Te pasa?' },
   { href: '#como-funciona',  label: 'Cómo funciona' },
   { href: '#planes',         label: 'Planes' },
   { href: '#proceso',        label: 'El proceso' },
