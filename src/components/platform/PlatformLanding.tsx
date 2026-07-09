@@ -4,6 +4,7 @@ import {
   IconArrowRight, IconBrandLinkedin,
 } from '@tabler/icons-react'
 import { NavBar } from './NavBar'
+import { ScrollToHeroButton } from './ScrollToHeroButton'
 
 const WHATSAPP = '51982121991'
 
@@ -471,6 +472,8 @@ export function PlatformLanding() {
           <Image src="/logo-peshoop.webp" alt="Peshoop" width={120} height={22} className="h-5 w-auto" />
           © {new Date().getFullYear()} Peshoop · Tiendas online para negocios peruanos
         </footer>
+
+        <ScrollToHeroButton />
       </main>
     </>
   )
