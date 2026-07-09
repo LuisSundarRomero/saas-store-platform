@@ -6,7 +6,7 @@ import { Wordmark } from './Wordmark'
 import { MobileMenu } from './MobileMenu'
 
 const NAV_LINKS = [
-  { href: '#problema',      label: 'El problema' },
+  { href: '#te-pasa',      label: '¿Te pasa?' },
   { href: '#como-funciona', label: 'Cómo funciona' },
   { href: '#planes',        label: 'Planes' },
   { href: '#proceso',       label: 'El proceso' },
@@ -22,8 +22,15 @@ export function NavBar({ waUrl }: Props) {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    // Sombra sutil al hacer scroll
-    const onScroll = () => setScrolled(window.scrollY > 8)
+    const onScroll = () => {
+      const y = window.scrollY
+      setScrolled(y > 8)
+      // Si el usuario está por encima del primer section, ningún link activo
+      const firstSection = document.getElementById('te-pasa')
+      if (firstSection && y < firstSection.offsetTop - 80) {
+        setActive('')
+      }
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
