@@ -25,10 +25,14 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         { src: manifest512, sizes: '512x512', type: 'image/png', purpose: 'maskable' },
       ]
 
+  const isPlatform = !slug
+  const appName    = isPlatform ? 'Peshoop' : nombre
+  const appDesc    = isPlatform ? 'Tu tienda online lista para vender' : `${nombre} — Tienda online`
+
   return {
-    name: nombre,
-    short_name: nombre,
-    description: `${nombre} — Tienda online`,
+    name: appName,
+    short_name: isPlatform ? 'Peshoop' : nombre,
+    description: appDesc,
     start_url: '/',
     display: 'standalone',
     background_color: '#121214',

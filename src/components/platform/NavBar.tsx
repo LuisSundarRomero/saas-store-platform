@@ -74,18 +74,13 @@ export function NavBar({ waUrl }: Props) {
               <a
                 key={l.href}
                 href={l.href}
-                className="relative px-4 py-5 text-sm font-medium transition-colors duration-150"
-                style={{ color: isActive ? '#6C2BD9' : '#6B6080' }}
-                onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = '#221A2E' }}
-                onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = '#6B6080' }}
+                data-active={isActive ? 'true' : undefined}
+                className="nav-link relative px-4 py-5 text-sm font-medium transition-colors duration-150 text-pmuted hover:text-ptxt data-[active]:text-pv"
               >
                 {l.label}
                 <span
-                  className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full transition-transform duration-200 origin-center"
-                  style={{
-                    backgroundColor: '#6C2BD9',
-                    transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
-                  }}
+                  className="absolute bottom-0 left-4 right-4 h-0.5 rounded-full bg-pv transition-transform duration-200 origin-center"
+                  style={{ transform: isActive ? 'scaleX(1)' : 'scaleX(0)' }}
                 />
               </a>
             )

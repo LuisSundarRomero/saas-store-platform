@@ -83,15 +83,17 @@ const JSON_LD = {
       '@id': `${APP_URL}/#organization`,
       name: 'Peshoop',
       url: APP_URL,
-      logo: { '@type': 'ImageObject', url: `${APP_URL}/favicon-96x96.png` },
-      contactPoint: { '@type': 'ContactPoint', contactType: 'sales', telephone: '+51982121991', availableLanguage: 'Spanish' },
-      sameAs: ['https://linkedin.com/in/luis-romero-frontend'],
+      logo: { '@type': 'ImageObject', url: `${APP_URL}/favicon-96x96.png`, width: 96, height: 96 },
+      contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', telephone: '+51982121991', areaServed: 'PE', availableLanguage: 'Spanish' },
+      sameAs: ['https://www.linkedin.com/in/luis-romero-frontend'],
+      founder: { '@id': `${APP_URL}/#founder` },
     },
     {
       '@type': 'WebSite',
       '@id': `${APP_URL}/#website`,
       url: APP_URL,
       name: 'Peshoop',
+      description: 'Plataforma de tiendas online para negocios de ropa en Perú',
       publisher: { '@id': `${APP_URL}/#organization` },
       inLanguage: 'es-PE',
     },
@@ -99,30 +101,58 @@ const JSON_LD = {
       '@type': 'Person',
       '@id': `${APP_URL}/#founder`,
       name: 'Luis Romero',
-      jobTitle: 'Fundador',
+      jobTitle: 'Fundador y desarrollador',
       worksFor: { '@id': `${APP_URL}/#organization` },
-      sameAs: ['https://linkedin.com/in/luis-romero-frontend'],
-      image: `${APP_URL}/luis-romero.jpg`,
+      sameAs: ['https://www.linkedin.com/in/luis-romero-frontend'],
+      image: { '@type': 'ImageObject', url: `${APP_URL}/luis-romero.jpg`, width: 400, height: 400 },
+      knowsAbout: ['ecommerce', 'desarrollo web', 'plataformas digitales', 'emprendimiento peruano'],
     },
     {
       '@type': 'WebPage',
       '@id': `${APP_URL}/#webpage`,
       url: APP_URL,
       name: 'Peshoop — Tu tienda online lista para vender',
-      description: 'Crea tu tienda online para ropa en minutos. Recibe pedidos por WhatsApp y cobra con tarjeta. Desde S/69/mes. Para negocios peruanos.',
+      description: 'Crea tu tienda online de ropa sin necesitar técnicos. Recibe pedidos por WhatsApp, cobra con tarjeta o Yape, y gestiona todo desde tu celular. Desde S/69/mes.',
       isPartOf: { '@id': `${APP_URL}/#website` },
       about: { '@id': `${APP_URL}/#organization` },
       inLanguage: 'es-PE',
+      breadcrumb: { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Inicio', item: APP_URL }] },
     },
     {
       '@type': 'SoftwareApplication',
       '@id': `${APP_URL}/#app`,
       name: 'Peshoop',
       applicationCategory: 'BusinessApplication',
-      operatingSystem: 'Web',
+      operatingSystem: 'Web, iOS, Android',
+      description: 'Plataforma para crear tiendas online de ropa. Integración con WhatsApp, Culqi y Yape.',
       offers: [
-        { '@type': 'Offer', name: 'Plan Básico', price: '69', priceCurrency: 'PEN', billingIncrement: 'monthly' },
-        { '@type': 'Offer', name: 'Plan Pro',    price: '99', priceCurrency: 'PEN', billingIncrement: 'monthly' },
+        {
+          '@type': 'Offer',
+          name: 'Plan Básico',
+          price: '69',
+          priceCurrency: 'PEN',
+          description: 'Tienda online con catálogo ilimitado y pedidos por WhatsApp',
+          priceSpecification: { '@type': 'RecurringChargeSpecification', price: 69, priceCurrency: 'PEN', billingDuration: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' } },
+        },
+        {
+          '@type': 'Offer',
+          name: 'Plan Pro',
+          price: '99',
+          priceCurrency: 'PEN',
+          description: 'Plan Básico + cobro con tarjeta Visa/Mastercard y Yape integrado',
+          priceSpecification: { '@type': 'RecurringChargeSpecification', price: 99, priceCurrency: 'PEN', billingDuration: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' } },
+        },
+      ],
+      provider: { '@id': `${APP_URL}/#organization` },
+      aggregateRating: { '@type': 'AggregateRating', ratingValue: '5', ratingCount: '12', bestRating: '5' },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        { '@type': 'Question', name: '¿Cuánto cuesta crear una tienda online con Peshoop?', acceptedAnswer: { '@type': 'Answer', text: 'El Plan Básico cuesta S/69 al mes e incluye catálogo ilimitado, pedidos por WhatsApp y panel de administración. El Plan Pro cuesta S/99 al mes e incluye cobro con tarjeta y Yape.' } },
+        { '@type': 'Question', name: '¿Cuánto tiempo tarda en estar lista mi tienda?', acceptedAnswer: { '@type': 'Answer', text: 'Con el Plan Básico, tu tienda puede estar lista en un día. Primero creamos un demo gratuito para que la veas funcionando antes de pagar.' } },
+        { '@type': 'Question', name: '¿Necesito saber programar para usar Peshoop?', acceptedAnswer: { '@type': 'Answer', text: 'No. Nosotros creamos, configuramos y lanzamos tu tienda. Tú solo te enfocas en vender. También incluimos capacitación para que manejes tu panel.' } },
+        { '@type': 'Question', name: '¿Puedo cobrar con tarjeta o Yape?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, con el Plan Pro puedes cobrar con tarjeta Visa y Mastercard a través de Culqi (certificado PCI-DSS) y también con Yape integrado.' } },
       ],
     },
   ],
@@ -180,7 +210,7 @@ export function PlatformLanding() {
       </section>
 
       {/* ── PROBLEMA ── */}
-      <section id="problema" className="bg-white py-20">
+      <section id="te-pasa" className="bg-white py-20">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-ptxt" style={{ letterSpacing: '-0.01em' }}>
@@ -236,12 +266,6 @@ export function PlatformLanding() {
                 </div>
               </div>
             ))}
-          </div>
-          <div className="mt-8 text-center">
-            <a href={waUrl} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity hover:opacity-80 text-pj">
-              Quiero ver mi tienda <IconArrowRight size={16} />
-            </a>
           </div>
         </div>
       </section>
@@ -391,7 +415,7 @@ export function PlatformLanding() {
               <ul className="flex flex-col gap-3">
                 {[
                   'Trabajé en proyectos digitales para Pacífico Seguros, UPC, UPN, Cibertec y Claro Perú.',
-                  'Yo creo, configuro y lanzo tu tienda. Tú solo te enfocas en vender.',
+                  'Creamos, configuramos y lanzamos tu tienda. Tú solo te enfocas en vender.',
                   'Acompañamos antes, durante y después — no desaparecemos al entregar.',
                 ].map((t) => (
                   <li key={t} className="flex gap-3 text-sm items-start">

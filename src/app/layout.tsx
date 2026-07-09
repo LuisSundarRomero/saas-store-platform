@@ -55,20 +55,25 @@ export async function generateMetadata(): Promise<Metadata> {
 
   // ── Metadata específica para la platform landing (peshoop.com) ──
   if (isPlatform || !slug) {
-    const PLATFORM_TITLE = 'Peshoop — Tu tienda online lista en un día'
-    const PLATFORM_DESC  = 'Crea tu tienda online para ropa en minutos. Recibe pedidos por WhatsApp y cobra con tarjeta. Sin complicaciones. Desde S/69/mes. Para negocios peruanos.'
+    const PLATFORM_TITLE = 'Peshoop — Tu tienda online lista para vender'
+    const PLATFORM_DESC  = 'Crea tu tienda online de ropa sin necesitar técnicos. Recibe pedidos por WhatsApp, cobra con tarjeta o Yape, y gestiona todo desde tu celular. Desde S/69/mes.'
     return {
       metadataBase: new URL(APP_URL),
       title: PLATFORM_TITLE,
       description: PLATFORM_DESC,
-      keywords: ['tienda online peru', 'vender ropa online', 'tienda whatsapp', 'ecommerce peru', 'peshoop', 'catalogo online', 'cobrar con tarjeta peru'],
+      keywords: [
+        'tienda online peru', 'vender ropa online peru', 'tienda por whatsapp', 'ecommerce peru barato',
+        'peshoop', 'catalogo online ropa', 'cobrar con tarjeta yape peru',
+        'crear tienda online sin saber programar', 'tienda virtual emprendedores peru',
+        'vender por instagram whatsapp', 'pedidos whatsapp automatico',
+      ],
       authors: [{ name: 'Luis Romero', url: 'https://linkedin.com/in/luis-romero-frontend' }],
       creator: 'Luis Romero',
       publisher: 'Peshoop',
       icons: {
-        icon: [{ url: '/favicon.svg' }, { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' }],
-        apple: { url: '/apple-touch-icon.png' },
-        shortcut: '/favicon.svg',
+        icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }, { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' }],
+        apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
+        shortcut: '/favicon.ico',
       },
       openGraph: {
         type: 'website',
@@ -80,13 +85,12 @@ export async function generateMetadata(): Promise<Metadata> {
         images: [{ url: `${APP_URL}/luis-romero.jpg`, width: 400, height: 400, alt: 'Luis Romero — Fundador de Peshoop' }],
       },
       twitter: {
-        card: 'summary_large_image',
+        card: 'summary',
         title: PLATFORM_TITLE,
         description: PLATFORM_DESC,
         images: [`${APP_URL}/luis-romero.jpg`],
-        creator: '@peshoop',
       },
-      robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+      robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
       alternates: { canonical: APP_URL },
     }
   }
