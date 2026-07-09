@@ -15,7 +15,7 @@ const securityHeaders = [
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https://*.supabase.co",
       "connect-src 'self' https://*.supabase.co https://api.culqi.com https://js.culqi.com https://challenges.cloudflare.com",
-      "frame-src https://challenges.cloudflare.com https://checkout.culqi.com",
+      "frame-src https://challenges.cloudflare.com https://checkout.culqi.com https://checkoutview.culqi.com",
       "object-src 'none'",
       "base-uri 'self'",
     ].join('; '),
