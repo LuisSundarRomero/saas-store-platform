@@ -105,7 +105,17 @@ export function NavBar({ waUrl }: Props) {
             <IconBrandWhatsapp size={15} />
             Crear mi tienda
           </a>
-          <MobileMenu waUrl={waUrl} active={active} />
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sm:hidden flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-opacity hover:opacity-90"
+            style={{ backgroundColor: '#00A389', color: '#fff' }}
+          >
+            <IconBrandWhatsapp size={13} />
+            Quiero mi tienda
+          </a>
+          <MobileMenu active={active} />
         </div>
       </div>
     </nav>

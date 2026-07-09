@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
-import { IconMenu2, IconX, IconBrandWhatsapp } from '@tabler/icons-react'
+import { IconMenu2, IconX } from '@tabler/icons-react'
 
 const NAV_LINKS = [
   { href: '#te-pasa',       label: '¿Te pasa?' },
@@ -14,11 +14,10 @@ const NAV_LINKS = [
 ]
 
 interface Props {
-  waUrl: string
   active?: string
 }
 
-export function MobileMenu({ waUrl, active = '' }: Props) {
+export function MobileMenu({ active = '' }: Props) {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -93,21 +92,6 @@ export function MobileMenu({ waUrl, active = '' }: Props) {
             )
           })}
         </nav>
-
-        {/* CTA jade */}
-        <div className="px-4 py-5 border-t" style={{ borderColor: '#EDE9F4' }}>
-          <a
-            href={waUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
-            className="flex items-center justify-center gap-2 w-full font-semibold px-5 py-3.5 rounded-full text-sm transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#00A389', color: '#fff' }}
-          >
-            <IconBrandWhatsapp size={18} />
-            Crear mi tienda gratis
-          </a>
-        </div>
       </div>
     </>,
     document.body
