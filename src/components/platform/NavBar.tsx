@@ -105,7 +105,7 @@ export function NavBar({ waUrl }: Props) {
             <IconBrandWhatsapp size={15} />
             Crear mi tienda
           </a>
-          <MobileMenu waUrl={waUrl} />
+          <MobileMenu waUrl={waUrl} active={active} />
         </div>
       </div>
     </nav>

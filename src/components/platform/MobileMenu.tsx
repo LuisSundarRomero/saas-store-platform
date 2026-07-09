@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import Image from 'next/image'
 import { IconMenu2, IconX, IconBrandWhatsapp } from '@tabler/icons-react'
 
 const NAV_LINKS = [
@@ -14,9 +15,10 @@ const NAV_LINKS = [
 
 interface Props {
   waUrl: string
+  active?: string
 }
 
-export function MobileMenu({ waUrl }: Props) {
+export function MobileMenu({ waUrl, active = '' }: Props) {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -60,10 +62,7 @@ export function MobileMenu({ waUrl }: Props) {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#EDE9F4' }}>
-          <span className="font-bold text-lg" style={{ fontFamily: 'var(--font-comfortaa), cursive' }}>
-            <span style={{ color: '#6C2BD9' }}>pe</span>
-            <span style={{ color: '#00A389' }}>shoop</span>
-          </span>
+          <Image src="/logo-peshoop.webp" alt="Peshoop" width={100} height={30} className="h-6 w-auto" />
           <button
             onClick={() => setOpen(false)}
             className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-50"
@@ -76,17 +75,23 @@ export function MobileMenu({ waUrl }: Props) {
 
         {/* Links */}
         <nav className="flex-1 px-3 py-4 flex flex-col gap-1 overflow-y-auto">
-          {NAV_LINKS.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-gray-50"
-              style={{ color: '#221A2E' }}
-            >
-              {l.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((l) => {
+            const isActive = active === l.href
+            return (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className="px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-gray-50"
+                style={{
+                  color: isActive ? '#6C2BD9' : '#221A2E',
+                  backgroundColor: isActive ? '#F3EDFC' : 'transparent',
+                }}
+              >
+                {l.label}
+              </a>
+            )
+          })}
         </nav>
 
         {/* CTA jade */}
