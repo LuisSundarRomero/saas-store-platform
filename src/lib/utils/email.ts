@@ -103,7 +103,7 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
 </html>`
 
   const { data, error } = await resend.emails.send({
-    from: `${tiendaNombre} <onboarding@resend.dev>`,
+    from: `${tiendaNombre} <pedidos@peshoop.com>`,
     to,
     subject: `🦇 Nuevo pedido #${orderId} — ${formatPrice(total)}`,
     html,
