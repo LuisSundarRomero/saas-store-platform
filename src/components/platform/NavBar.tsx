@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { IconBrandWhatsapp } from '@tabler/icons-react'
-import { Wordmark } from './Wordmark'
 import { MobileMenu } from './MobileMenu'
 
 const NAV_LINKS = [
@@ -63,7 +63,7 @@ export function NavBar({ waUrl }: Props) {
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-6 h-16">
         {/* Logo */}
         <a href="#" className="shrink-0 select-none">
-          <Wordmark className="text-xl" />
+          <Image src="/logo-peshoop.webp" alt="Peshoop" width={100} height={30} priority className="h-6 w-auto" />
         </a>
 
         {/* Links — desktop */}
