@@ -2,6 +2,13 @@
 import { CartItem } from '@/types'
 import { formatPrice, formatDate } from './format'
 
+// Local-part del remitente derivado del slug del tenant — ej. "anarchy@peshoop.com".
+// No requiere crear buzones: Resend envía desde cualquier dirección del dominio verificado.
+function remitenteDesdeSlug(slug?: string) {
+  const limpio = (slug ?? '').toLowerCase().replace(/[^a-z0-9-]/g, '')
+  return `${limpio || 'pedidos'}@peshoop.com`
+}
+
 function itemsTableHtml(items: CartItem[]) {
   return items
     .map((i) => {
@@ -34,6 +41,7 @@ interface NuevoPedidoEmailParams {
   total: number
   trackingUrl: string
   tiendaNombre?: string
+  tenantSlug?: string
 }
 
 export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
@@ -41,7 +49,7 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
 
   const resend = new Resend(process.env.RESEND_API_KEY)
 
-  const { to, orderId, clienteNombre, clienteTelefono, items, total, trackingUrl, tiendaNombre = 'Mi Tienda' } = params
+  const { to, orderId, clienteNombre, clienteTelefono, items, total, trackingUrl, tiendaNombre = 'Mi Tienda', tenantSlug } = params
 
   const itemsHtml = itemsTableHtml(items)
 
@@ -115,7 +123,7 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
 </html>`
 
   const { data, error } = await resend.emails.send({
-    from: `${tiendaNombre} <pedidos@peshoop.com>`,
+    from: `${tiendaNombre} <${remitenteDesdeSlug(tenantSlug)}>`,
     to,
     subject: `🛍️ Nuevo pedido #${orderId} — ${formatPrice(total)}`,
     html,
@@ -137,6 +145,7 @@ interface ConfirmacionClienteEmailParams {
   total: number
   trackingUrl: string
   tiendaNombre?: string
+  tenantSlug?: string
 }
 
 export async function enviarEmailConfirmacionCliente(params: ConfirmacionClienteEmailParams) {
@@ -144,7 +153,7 @@ export async function enviarEmailConfirmacionCliente(params: ConfirmacionCliente
 
   const resend = new Resend(process.env.RESEND_API_KEY)
 
-  const { to, orderId, clienteNombre, items, total, trackingUrl, tiendaNombre = 'Mi Tienda' } = params
+  const { to, orderId, clienteNombre, items, total, trackingUrl, tiendaNombre = 'Mi Tienda', tenantSlug } = params
 
   const itemsHtml = itemsTableHtml(items)
 
@@ -215,7 +224,7 @@ export async function enviarEmailConfirmacionCliente(params: ConfirmacionCliente
 </html>`
 
   const { data, error } = await resend.emails.send({
-    from: `${tiendaNombre} <pedidos@peshoop.com>`,
+    from: `${tiendaNombre} <${remitenteDesdeSlug(tenantSlug)}>`,
     to,
     subject: `✅ Confirmamos tu pedido #${orderId} — ${formatPrice(total)}`,
     html,

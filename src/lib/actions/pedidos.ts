@@ -274,6 +274,7 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
       total,
       trackingUrl,
       tiendaNombre: config.tienda_nombre ?? undefined,
+      tenantSlug: tenant.slug,
     }).catch((err) => console.error('[email]', err.message))
   }
 
@@ -287,6 +288,7 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
       total,
       trackingUrl,
       tiendaNombre: config?.tienda_nombre ?? undefined,
+      tenantSlug: tenant.slug,
     }).catch((err) => console.error('[email cliente]', err.message))
   }
 
@@ -416,6 +418,7 @@ export async function crearPedidoWhatsApp(input: CrearPedidoWhatsAppInput): Prom
       total,
       trackingUrl,
       tiendaNombre: config.tienda_nombre ?? undefined,
+      tenantSlug: tenant.slug,
     }).catch((err) => console.error('[email]', err.message))
   }
 
