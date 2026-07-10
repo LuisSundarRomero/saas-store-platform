@@ -83,9 +83,9 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
           </thead>
           <tbody>${itemsHtml}</tbody>
         </table>
-        <div style="border-top:2px solid #f3f4f6;margin-top:12px;padding-top:12px;display:flex;justify-content:space-between">
-          <strong>Total</strong>
-          <strong style="color:#6C2BD9;font-size:18px">${formatPrice(total)}</strong>
+        <div style="border-top:2px solid #f3f4f6;margin-top:12px;padding-top:12px;text-align:right">
+          <p style="margin:0;font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase">Total</p>
+          <p style="margin:4px 0 0;color:#6C2BD9;font-size:22px;font-weight:800">${formatPrice(total)}</p>
         </div>
       </div>
 
