@@ -5,6 +5,7 @@ import { formatPrice, formatDate } from './format'
 interface NuevoPedidoEmailParams {
   to: string
   orderId: string
+  clienteNombre: string
   clienteTelefono: string
   items: CartItem[]
   total: number
@@ -17,7 +18,7 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
 
   const resend = new Resend(process.env.RESEND_API_KEY)
 
-  const { to, orderId, clienteTelefono, items, total, trackingUrl, tiendaNombre = 'Mi Tienda' } = params
+  const { to, orderId, clienteNombre, clienteTelefono, items, total, trackingUrl, tiendaNombre = 'Mi Tienda' } = params
 
   const itemsHtml = items
     .map((i) => {
@@ -67,7 +68,8 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
       <!-- Cliente -->
       <div style="margin-bottom:20px">
         <p style="margin:0 0 4px;font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase">Cliente</p>
-        <p style="margin:0;font-size:16px;font-weight:600">📱 ${clienteTelefono}</p>
+        <p style="margin:0;font-size:16px;font-weight:600">${clienteNombre}</p>
+        <p style="margin:2px 0 0;font-size:14px;color:#6b7280">📱 ${clienteTelefono}</p>
       </div>
 
       <!-- Productos -->

@@ -268,6 +268,7 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
     enviarEmailNuevoPedido({
       to: config.email_notif,
       orderId,
+      clienteNombre: input.clienteNombre,
       clienteTelefono: input.clienteTelefono,
       items: input.items,
       total,
@@ -396,6 +397,7 @@ export async function crearPedidoWhatsApp(input: CrearPedidoWhatsAppInput): Prom
     enviarEmailNuevoPedido({
       to: config.email_notif,
       orderId,
+      clienteNombre: input.clienteNombre,
       clienteTelefono: input.clienteTelefono,
       items: input.items,
       total,
