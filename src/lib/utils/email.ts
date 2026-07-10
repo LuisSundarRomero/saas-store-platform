@@ -24,12 +24,16 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
       const variante = [i.talla, i.color].filter(Boolean).join(' · ')
       return `
         <tr>
-          <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;">
+          <td style="padding:12px 0;border-bottom:1px solid #f3f4f6;width:56px">
+            <img src="${i.imagen}" alt="${i.nombre}" width="48" height="48"
+              style="width:48px;height:48px;border-radius:10px;object-fit:cover;display:block;background:#f3f4f6" />
+          </td>
+          <td style="padding:12px 0 12px 12px;border-bottom:1px solid #f3f4f6;">
             <strong>${i.nombre}</strong>
             ${variante ? `<br><span style="color:#6b7280;font-size:13px">${variante}</span>` : ''}
           </td>
-          <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;text-align:center">${i.cantidad}</td>
-          <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;text-align:right;color:#221A2E;font-weight:600">
+          <td style="padding:12px 0;border-bottom:1px solid #f3f4f6;text-align:center">${i.cantidad}</td>
+          <td style="padding:12px 0;border-bottom:1px solid #f3f4f6;text-align:right;color:#221A2E;font-weight:600">
             ${formatPrice(i.precio * i.cantidad)}
           </td>
         </tr>`
@@ -53,10 +57,12 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
     <div style="padding:28px 32px">
 
       <!-- Order ID -->
-      <div style="background:#F3EDFC;border:1px solid #E4D9F7;border-radius:12px;padding:16px;text-align:center;margin-bottom:24px">
-        <p style="margin:0;color:#6C2BD9;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Código del pedido</p>
+      <a href="${trackingUrl}" target="_blank" rel="noopener noreferrer"
+        style="display:block;text-decoration:none;background:#F3EDFC;border:1px solid #E4D9F7;border-radius:12px;padding:16px;text-align:center;margin-bottom:24px">
+        <p style="margin:0;color:#6C2BD9;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Código de rastreo</p>
         <p style="margin:6px 0 0;font-size:28px;font-weight:800;color:#221A2E">#${orderId}</p>
-      </div>
+        <p style="margin:6px 0 0;font-size:12px;color:#6C2BD9;font-weight:600">Toca para ver el estado del pedido →</p>
+      </a>
 
       <!-- Cliente -->
       <div style="margin-bottom:20px">
@@ -70,7 +76,7 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
         <table style="width:100%;border-collapse:collapse;font-size:14px">
           <thead>
             <tr>
-              <th style="text-align:left;padding-bottom:8px;color:#6b7280;font-size:12px">Producto</th>
+              <th colspan="2" style="text-align:left;padding-bottom:8px;color:#6b7280;font-size:12px">Producto</th>
               <th style="text-align:center;padding-bottom:8px;color:#6b7280;font-size:12px">Cant.</th>
               <th style="text-align:right;padding-bottom:8px;color:#6b7280;font-size:12px">Subtotal</th>
             </tr>
@@ -85,9 +91,9 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
 
       <!-- CTA -->
       <div style="text-align:center;margin-top:24px">
-        <a href="${trackingUrl}"
+        <a href="${trackingUrl}" target="_blank" rel="noopener noreferrer"
           style="display:inline-block;background:#6C2BD9;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-weight:600;font-size:14px">
-          Ver pedido en el admin
+          Rastrear pedido
         </a>
       </div>
 
