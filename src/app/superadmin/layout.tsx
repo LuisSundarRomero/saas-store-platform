@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-export const metadata = { title: 'Superadmin — Contahorro', robots: 'noindex,nofollow' }
+export const metadata = { title: 'Superadmin — Peshoop', robots: 'noindex,nofollow' }
 
 export default function SuperadminLayout({ children }: { children: ReactNode }) {
   return (

@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const h = await headers()
   if (h.get('x-is-platform') === 'true') {
     return {
-      title: 'Contahorro — Crea tu tienda online',
+      title: 'Peshoop — Crea tu tienda online',
       description: 'Plataforma SaaS para tiendas de ropa online en Perú. Recibe pedidos por WhatsApp o tarjeta. Desde S/69/mes.',
     }
   }
