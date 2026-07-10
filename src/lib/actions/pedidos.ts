@@ -2,8 +2,8 @@
 
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
 import { CartItem } from '@/types'
-import { enviarEmailNuevoPedido } from '@/lib/utils/email'
-import { getTenant } from '@/lib/tenant'
+import { enviarEmailNuevoPedido, enviarEmailConfirmacionCliente } from '@/lib/utils/email'
+import { getTenant, esPlanPro } from '@/lib/tenant'
 
 // Cliente admin con service role — bypasea RLS solo para operaciones de servidor
 function getAdminClient() {
@@ -275,6 +275,19 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
       trackingUrl,
       tiendaNombre: config.tienda_nombre ?? undefined,
     }).catch((err) => console.error('[email]', err.message))
+  }
+
+  // Confirmación al comprador — feature exclusivo Plan Pro
+  if (input.clienteEmail && esPlanPro(tenant)) {
+    enviarEmailConfirmacionCliente({
+      to: input.clienteEmail,
+      orderId,
+      clienteNombre: input.clienteNombre,
+      items: input.items,
+      total,
+      trackingUrl,
+      tiendaNombre: config?.tienda_nombre ?? undefined,
+    }).catch((err) => console.error('[email cliente]', err.message))
   }
 
   return { success: true, orderId }

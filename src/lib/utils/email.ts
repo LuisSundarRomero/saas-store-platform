@@ -2,25 +2,8 @@
 import { CartItem } from '@/types'
 import { formatPrice, formatDate } from './format'
 
-interface NuevoPedidoEmailParams {
-  to: string
-  orderId: string
-  clienteNombre: string
-  clienteTelefono: string
-  items: CartItem[]
-  total: number
-  trackingUrl: string
-  tiendaNombre?: string
-}
-
-export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
-  if (!process.env.RESEND_API_KEY) return // silencioso si no hay key
-
-  const resend = new Resend(process.env.RESEND_API_KEY)
-
-  const { to, orderId, clienteNombre, clienteTelefono, items, total, trackingUrl, tiendaNombre = 'Mi Tienda' } = params
-
-  const itemsHtml = items
+function itemsTableHtml(items: CartItem[]) {
+  return items
     .map((i) => {
       const variante = [i.talla, i.color].filter(Boolean).join(' · ')
       return `
@@ -40,6 +23,27 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
         </tr>`
     })
     .join('')
+}
+
+interface NuevoPedidoEmailParams {
+  to: string
+  orderId: string
+  clienteNombre: string
+  clienteTelefono: string
+  items: CartItem[]
+  total: number
+  trackingUrl: string
+  tiendaNombre?: string
+}
+
+export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
+  if (!process.env.RESEND_API_KEY) return // silencioso si no hay key
+
+  const resend = new Resend(process.env.RESEND_API_KEY)
+
+  const { to, orderId, clienteNombre, clienteTelefono, items, total, trackingUrl, tiendaNombre = 'Mi Tienda' } = params
+
+  const itemsHtml = itemsTableHtml(items)
 
   const html = `
 <!DOCTYPE html>
@@ -123,5 +127,105 @@ export async function enviarEmailNuevoPedido(params: NuevoPedidoEmailParams) {
   }
 
   console.log('[email] Enviado OK — id:', data?.id, '→', to)
+}
+
+interface ConfirmacionClienteEmailParams {
+  to: string
+  orderId: string
+  clienteNombre: string
+  items: CartItem[]
+  total: number
+  trackingUrl: string
+  tiendaNombre?: string
+}
+
+export async function enviarEmailConfirmacionCliente(params: ConfirmacionClienteEmailParams) {
+  if (!process.env.RESEND_API_KEY) return // silencioso si no hay key
+
+  const resend = new Resend(process.env.RESEND_API_KEY)
+
+  const { to, orderId, clienteNombre, items, total, trackingUrl, tiendaNombre = 'Mi Tienda' } = params
+
+  const itemsHtml = itemsTableHtml(items)
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9fafb;margin:0;padding:24px">
+  <div style="max-width:520px;margin:0 auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1)">
+
+    <!-- Header -->
+    <div style="background:#6C2BD9;padding:28px 32px;text-align:center">
+      <h1 style="color:#ffffff;margin:0;font-size:22px;font-weight:700">✅ ¡Gracias por tu compra!</h1>
+      <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:14px">${formatDate(new Date().toISOString())}</p>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:28px 32px">
+
+      <p style="margin:0 0 20px;font-size:14px;color:#221A2E">
+        Hola ${clienteNombre}, tu pedido en <strong>${tiendaNombre}</strong> fue confirmado. Cuando quieras revisar el estado, usa tu código de rastreo.
+      </p>
+
+      <!-- Order ID -->
+      <a href="${trackingUrl}" target="_blank" rel="noopener noreferrer"
+        style="display:block;text-decoration:none;background:#F3EDFC;border:1px solid #E4D9F7;border-radius:12px;padding:16px;text-align:center;margin-bottom:24px">
+        <p style="margin:0;color:#6C2BD9;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Código de rastreo</p>
+        <p style="margin:6px 0 0;font-size:28px;font-weight:800;color:#221A2E">#${orderId}</p>
+        <p style="margin:6px 0 0;font-size:12px;color:#6C2BD9;font-weight:600">Toca para ver el estado del pedido →</p>
+      </a>
+
+      <!-- Productos -->
+      <div style="margin-bottom:20px">
+        <p style="margin:0 0 12px;font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase">Productos</p>
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <thead>
+            <tr>
+              <th colspan="2" style="text-align:left;padding-bottom:8px;color:#6b7280;font-size:12px">Producto</th>
+              <th style="text-align:center;padding-bottom:8px;color:#6b7280;font-size:12px">Cant.</th>
+              <th style="text-align:right;padding-bottom:8px;color:#6b7280;font-size:12px">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>${itemsHtml}</tbody>
+        </table>
+        <div style="border-top:2px solid #f3f4f6;margin-top:12px;padding-top:12px;text-align:right">
+          <p style="margin:0;font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase">Total</p>
+          <p style="margin:4px 0 0;color:#6C2BD9;font-size:22px;font-weight:800">${formatPrice(total)}</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div style="text-align:center;margin-top:24px">
+        <a href="${trackingUrl}" target="_blank" rel="noopener noreferrer"
+          style="display:inline-block;background:#6C2BD9;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:9999px;font-weight:600;font-size:14px">
+          Rastrear mi pedido
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="background:#f9fafb;padding:16px 32px;text-align:center;border-top:1px solid #f3f4f6">
+      <p style="margin:0;font-size:12px;color:#9ca3af">${tiendaNombre} · Confirmación automática de compra</p>
+    </div>
+
+  </div>
+</body>
+</html>`
+
+  const { data, error } = await resend.emails.send({
+    from: `${tiendaNombre} <pedidos@peshoop.com>`,
+    to,
+    subject: `✅ Confirmamos tu pedido #${orderId} — ${formatPrice(total)}`,
+    html,
+  })
+
+  if (error) {
+    console.error('[email] Resend error (cliente):', JSON.stringify(error))
+    return // no relanzar — la notificación al dueño ya se disparó por separado
+  }
+
+  console.log('[email] Confirmación cliente enviada — id:', data?.id, '→', to)
 }
 
