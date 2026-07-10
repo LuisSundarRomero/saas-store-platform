@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: '#planes',        label: 'Planes' },
   { href: '#proceso',       label: 'El proceso' },
   { href: '#nosotros',      label: 'Quiénes somos' },
+  { href: '#preguntas',     label: 'Preguntas' },
 ]
 
 const NAV_HEIGHT = 64 // h-16
@@ -99,13 +100,13 @@ export function NavBar({ waUrl }: Props) {
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full transition-opacity hover:opacity-90"
+            className="flex items-center gap-2 text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-opacity hover:opacity-90"
             style={{ backgroundColor: '#00A389', color: '#fff' }}
           >
             <IconBrandWhatsapp size={15} />
-            Crear mi tienda
+            <span className="hidden sm:inline">Crear mi tienda</span>
           </a>
-          <MobileMenu active={active} />
+          <MobileMenu active={active} waUrl={waUrl} />
         </div>
       </div>
     </nav>

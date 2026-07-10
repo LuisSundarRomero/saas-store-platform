@@ -10,10 +10,10 @@ const WHATSAPP = '51982121991'
 
 
 const PROBLEMAS = [
-  { icon: '😟', titulo: 'Pierdes ventas cuando no estás', desc: 'Tus clientes quieren comprar en cualquier momento. Si terminó tu live o no respondes rápido, pierdes la venta.' },
-  { icon: '💬', titulo: 'Pedidos perdidos entre mensajes', desc: 'Fotos, precios, tallas y direcciones mezcladas en un mismo chat. Organizar todo se convierte en caos.' },
-  { icon: '📊', titulo: 'No sabes cuánto vendiste', desc: 'Sin una herramienta que te ayude, controlar ventas e inventario te roba tiempo que podrías usar para crecer.' },
-  { icon: '🔄', titulo: 'Respondes lo mismo todos los días', desc: '¿Tienes talla M? ¿Llegó mi pedido? Mientras respondes, podrías estar buscando nuevos clientes.' },
+  { icon: '😟', titulo: 'Pierdes ventas cuando no estás', desc: 'Tus clientes quieren comprar en cualquier momento. Si terminó tu live o no respondes rápido, pierdes la venta.', solucion: 'Tu tienda vende 24/7 aunque no estés en línea.' },
+  { icon: '💬', titulo: 'Pedidos perdidos entre mensajes', desc: 'Fotos, precios, tallas y direcciones mezcladas en un mismo chat. Organizar todo se convierte en caos.', solucion: 'Cada pedido llega organizado a tu WhatsApp: productos, cantidades y datos del cliente.' },
+  { icon: '📊', titulo: 'No sabes cuánto vendiste', desc: 'Sin una herramienta que te ayude, controlar ventas e inventario te roba tiempo que podrías usar para crecer.', solucion: 'Tu panel te muestra ventas e inventario en tiempo real.' },
+  { icon: '🔄', titulo: 'Respondes lo mismo todos los días', desc: '¿Tienes talla M? ¿Llegó mi pedido? Mientras respondes, podrías estar buscando nuevos clientes.', solucion: 'Tus clientes ven tallas, precios y stock directo en tu catálogo, sin preguntarte.' },
 ]
 
 const PASOS = [
@@ -66,11 +66,18 @@ const PLANES = [
 ]
 
 const PROCESO = [
-  { n: '01', titulo: 'Creamos tú demo', desc: 'Antes de pagar, construimos una primera versión de tu tienda. La ves funcionando y decides.', badgeClass: 'pl-badge-v' },
+  { n: '01', titulo: 'Creamos tu demo', desc: 'Antes de pagar, construimos una primera versión de tu tienda. La ves funcionando y decides.', badgeClass: 'pl-badge-v' },
   { n: '02', titulo: 'La adaptamos a tu estilo', desc: 'Revisamos juntos diseño, categorías y colores. Hacemos cambios hasta que estés conforme.', badgeClass: 'pl-badge-j' },
   { n: '03', titulo: 'Aprendes a manejar tu tienda', desc: 'Te mostramos cómo gestionar pedidos, actualizar productos y usar tu panel. Capacitación incluida.', badgeClass: 'pl-badge-v' },
   { n: '04', titulo: 'Pagas cuando estés listo', desc: 'Primero ves tu tienda funcionando y haces tus ajustes. El primer pago ocurre cuando estás conforme.', badgeClass: 'pl-badge-j' },
   { n: '05', titulo: 'Lanzamiento acompañado', desc: 'Tu tienda sale al aire. Te avisamos, te acompañamos el primer día y quedamos atentos.', badgeClass: 'pl-badge-v' },
+]
+
+const FAQS = [
+  { pregunta: '¿Cuánto cuesta crear una tienda online con Peshoop?', respuesta: 'El Plan Básico cuesta S/69 al mes e incluye catálogo ilimitado, pedidos por WhatsApp y panel de administración. El Plan Pro cuesta S/99 al mes e incluye todo lo del Básico, más cobro con tarjeta y Yape.' },
+  { pregunta: '¿Cuánto tiempo tarda en estar lista mi tienda?', respuesta: 'Con el Plan Básico, tu tienda puede estar lista en un día — primero ves la demo gratis antes de pagar. Si eliges el Plan Pro, el cobro con tarjeta necesita que Culqi valide tu RUC, lo cual toma aproximadamente 5 días hábiles.' },
+  { pregunta: '¿Tengo que configurar mi tienda yo mismo?', respuesta: 'No. Nosotros creamos, configuramos y lanzamos tu tienda por ti — tú solo te enfocas en vender. También te capacitamos para que aprendas a manejar tu panel en minutos.' },
+  { pregunta: '¿Puedo cobrar con tarjeta o Yape?', respuesta: 'Sí, con el Plan Pro puedes cobrar con tarjeta Visa y Mastercard a través de Culqi (certificado PCI-DSS) y también con Yape integrado.' },
 ]
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://peshoop.com'
@@ -144,16 +151,14 @@ const JSON_LD = {
         },
       ],
       provider: { '@id': `${APP_URL}/#organization` },
-      aggregateRating: { '@type': 'AggregateRating', ratingValue: '5', ratingCount: '12', bestRating: '5' },
     },
     {
       '@type': 'FAQPage',
-      mainEntity: [
-        { '@type': 'Question', name: '¿Cuánto cuesta crear una tienda online con Peshoop?', acceptedAnswer: { '@type': 'Answer', text: 'El Plan Básico cuesta S/69 al mes e incluye catálogo ilimitado, pedidos por WhatsApp y panel de administración. El Plan Pro cuesta S/99 al mes e incluye cobro con tarjeta y Yape.' } },
-        { '@type': 'Question', name: '¿Cuánto tiempo tarda en estar lista mi tienda?', acceptedAnswer: { '@type': 'Answer', text: 'Con el Plan Básico, tu tienda puede estar lista en un día. Primero creamos un demo gratuito para que la veas funcionando antes de pagar.' } },
-        { '@type': 'Question', name: '¿Necesito saber programar para usar Peshoop?', acceptedAnswer: { '@type': 'Answer', text: 'No. Nosotros creamos, configuramos y lanzamos tu tienda. Tú solo te enfocas en vender. También incluimos capacitación para que manejes tu panel.' } },
-        { '@type': 'Question', name: '¿Puedo cobrar con tarjeta o Yape?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, con el Plan Pro puedes cobrar con tarjeta Visa y Mastercard a través de Culqi (certificado PCI-DSS) y también con Yape integrado.' } },
-      ],
+      mainEntity: FAQS.map((f) => ({
+        '@type': 'Question',
+        name: f.pregunta,
+        acceptedAnswer: { '@type': 'Answer', text: f.respuesta },
+      })),
     },
   ],
 }
@@ -186,8 +191,9 @@ export function PlatformLanding() {
             <span className="text-pj">lista para vender</span>
           </h1>
           <p className="text-lg leading-relaxed mb-3 max-w-xl mx-auto text-pmuted">
-            Crea tu catálogo, recibe pedidos por WhatsApp y cobra con tarjeta.
-            Sin complicaciones. <strong className="text-ptxt">Desde S/69/mes.</strong>
+            Crea tu catálogo, recibe pedidos por WhatsApp y cobra con tarjeta o Yape.
+            Hecho para negocios que venden por Instagram, WhatsApp y TikTok.{' '}
+            <strong className="text-ptxt">Desde S/69/mes.</strong>
           </p>
           <div className="mb-10" />
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -227,6 +233,10 @@ export function PlatformLanding() {
                   <div>
                     <p className="font-semibold text-sm mb-1 text-ptxt">{p.titulo}</p>
                     <p className="text-xs leading-relaxed text-pmuted">{p.desc}</p>
+                    <p className="flex items-start gap-1.5 text-xs leading-relaxed mt-2 font-medium text-pj">
+                      <IconCheck size={13} className="mt-0.5 shrink-0" />
+                      <span>Con Peshoop: {p.solucion}</span>
+                    </p>
                   </div>
                 </div>
               ))}
@@ -247,7 +257,7 @@ export function PlatformLanding() {
           <div className="max-w-5xl mx-auto px-6">
             <div className="text-center mb-12">
               <h2 className="text-2xl sm:text-3xl font-bold text-ptxt" style={{ letterSpacing: '-0.01em' }}>
-                5 pasos para vender sin complicarte
+                Así compra tu cliente (y así llega el pedido a ti)
               </h2>
             </div>
             <div className="flex flex-col">
@@ -275,7 +285,7 @@ export function PlatformLanding() {
           <div className="max-w-4xl mx-auto px-6">
             <div className="text-center mb-12">
               <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-ptxt" style={{ letterSpacing: '-0.01em' }}>
-                Empieza simple. Crece cuando estés listo.
+                Elige cómo quieres vender: por WhatsApp o cobrando en línea
               </h2>
 
             </div>
@@ -326,6 +336,9 @@ export function PlatformLanding() {
                 </div>
               ))}
             </div>
+            <p className="text-center text-sm font-medium mt-6 text-pj">
+              Ves tu tienda funcionando antes de pagar el primer mes.
+            </p>
             <div className="mt-8 rounded-2xl p-5 border border-pborder bg-pbg">
               <p className="pl-section-label mb-4 text-pmuted2">Servicios adicionales (opcionales)</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -412,9 +425,19 @@ export function PlatformLanding() {
                   <p className="text-sm mt-1 text-pmuted2">6 años construyendo plataformas digitales en Perú</p>
                 </div>
 
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide mb-2 text-pmuted2">Experiencia previa en</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['Pacífico Seguros', 'UPC', 'UPN', 'Cibertec', 'Claro Perú'].map((empresa) => (
+                      <span key={empresa} className="px-3 py-1 rounded-full text-xs font-medium border border-pborder bg-pbg text-ptxt">
+                        {empresa}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
                 <ul className="flex flex-col gap-3">
                   {[
-                    'Trabajé en proyectos digitales para Pacífico Seguros, UPC, UPN, Cibertec y Claro Perú.',
                     'Creamos, configuramos y lanzamos tu tienda. Tú solo te enfocas en vender.',
                     'Acompañamos antes, durante y después — no desaparecemos al entregar.',
                   ].map((t) => (
@@ -431,10 +454,15 @@ export function PlatformLanding() {
                   <strong>Sin letra chica:</strong> Si los planes cambian, siempre avisamos con anticipación. Sin cobros sorpresa.
                 </div>
 
-                <div>
-                  <a href={liUrl} target="_blank" rel="noopener noreferrer"
+                <div className="flex flex-wrap gap-3">
+                  <a href={waUrl} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-opacity hover:opacity-90 text-white"
-                    style={{ backgroundColor: '#0A66C2' }}>
+                    style={{ backgroundColor: '#00A389' }}>
+                    <IconBrandWhatsapp size={16} />
+                    Escribir por WhatsApp
+                  </a>
+                  <a href={liUrl} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold border transition-colors hover:bg-pbg text-ptxt border-pborder">
                     <IconBrandLinkedin size={16} />
                     Ver LinkedIn
                   </a>
@@ -444,11 +472,33 @@ export function PlatformLanding() {
           </div>
         </section>
 
+        {/* ── PREGUNTAS FRECUENTES ── */}
+        <section id="preguntas" className="py-20 bg-pbg">
+          <div className="max-w-3xl mx-auto px-6">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-ptxt" style={{ letterSpacing: '-0.01em' }}>
+                Preguntas frecuentes
+              </h2>
+            </div>
+            <div className="flex flex-col gap-3">
+              {FAQS.map((faq) => (
+                <details key={faq.pregunta} className="group rounded-2xl border border-pborder bg-white p-5">
+                  <summary className="flex items-center justify-between gap-3 cursor-pointer font-semibold text-sm text-ptxt list-none">
+                    {faq.pregunta}
+                    <span className="shrink-0 text-pmuted2 transition-transform group-open:rotate-45">+</span>
+                  </summary>
+                  <p className="text-sm leading-relaxed mt-3 text-pmuted">{faq.respuesta}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ── CTA FINAL ── */}
         <section className="py-20 bg-pv">
           <div className="max-w-2xl mx-auto px-6 text-center">
             <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-white" style={{ letterSpacing: '-0.01em' }}>
-              Escríbenos y creamos tú demo
+              Escríbenos y creamos tu demo
             </h2>
             <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.7)' }}>
               Primero ves tu tienda funcionando. Pagas cuando estés listo.
@@ -468,9 +518,14 @@ export function PlatformLanding() {
         </section>
 
         {/* ── FOOTER ── */}
-        <footer className="px-6 py-8 flex justify-center gap-3 text-center text-xs border-t border-pborder bg-white text-pmuted2">
+        <footer className="px-6 py-8 flex flex-col items-center justify-center gap-3 text-center text-xs border-t border-pborder bg-white text-pmuted2">
           <Image src="/logo-peshoop.webp" alt="Peshoop" width={120} height={22} className="h-5 w-auto" />
-          © {new Date().getFullYear()} Peshoop · Tiendas online para negocios peruanos
+          <p>© {new Date().getFullYear()} Peshoop · Tiendas online para negocios peruanos</p>
+          <a href={waUrl} target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 font-medium hover:text-pj transition-colors">
+            <IconBrandWhatsapp size={14} />
+            Escríbenos por WhatsApp
+          </a>
         </footer>
 
         <ScrollToHeroButton />

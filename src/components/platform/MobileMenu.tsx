@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
-import { IconMenu2, IconX } from '@tabler/icons-react'
+import { IconMenu2, IconX, IconBrandWhatsapp } from '@tabler/icons-react'
 
 const NAV_LINKS = [
   { href: '#te-pasa',       label: '¿Te pasa?' },
@@ -11,13 +11,15 @@ const NAV_LINKS = [
   { href: '#planes',         label: 'Planes' },
   { href: '#proceso',        label: 'El proceso' },
   { href: '#nosotros',       label: 'Quiénes somos' },
+  { href: '#preguntas',      label: 'Preguntas' },
 ]
 
 interface Props {
   active?: string
+  waUrl?: string
 }
 
-export function MobileMenu({ active = '' }: Props) {
+export function MobileMenu({ active = '', waUrl }: Props) {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -92,6 +94,23 @@ export function MobileMenu({ active = '' }: Props) {
             )
           })}
         </nav>
+
+        {/* CTA WhatsApp */}
+        {waUrl && (
+          <div className="px-3 py-4 border-t" style={{ borderColor: '#EDE9F4' }}>
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-xl text-white transition-opacity hover:opacity-90"
+              style={{ backgroundColor: '#00A389' }}
+            >
+              <IconBrandWhatsapp size={17} />
+              Crear mi tienda
+            </a>
+          </div>
+        )}
       </div>
     </>,
     document.body
