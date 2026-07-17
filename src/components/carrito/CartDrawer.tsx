@@ -217,40 +217,43 @@ export function CartDrawer({
                   }}
                 />
 
-                {camposActivos.map((c) =>
-                  c.tipo === 'select' ? (
-                    <select
-                      key={c.id}
-                      value={respuestas[c.key] ?? ''}
-                      onChange={(e) => setRespuesta(c.key, e.target.value)}
-                      className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-colors"
-                      style={{
-                        backgroundColor: 'var(--color-surface-alt)',
-                        border: '1px solid var(--color-border)',
-                        color: respuestas[c.key] ? 'var(--color-ink)' : 'var(--color-muted)',
-                      }}
-                    >
-                      <option value="" disabled>{c.label}{c.requerido ? '' : ' (opcional)'}</option>
-                      {c.opciones.map((op) => (
-                        <option key={op} value={op}>{op}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      key={c.id}
-                      type="text"
-                      placeholder={c.placeholder || `${c.label}${c.requerido ? '' : ' (opcional)'}`}
-                      value={respuestas[c.key] ?? ''}
-                      onChange={(e) => setRespuesta(c.key, e.target.value)}
-                      className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-colors"
-                      style={{
-                        backgroundColor: 'var(--color-surface-alt)',
-                        border: '1px solid var(--color-border)',
-                        color: 'var(--color-ink)',
-                      }}
-                    />
-                  )
-                )}
+                {camposActivos.map((c) => (
+                  <div key={c.id} className="flex flex-col gap-1">
+                    <label className="text-xs font-medium px-1" style={{ color: 'var(--color-muted)' }}>
+                      {c.label}{c.requerido ? '' : ' (opcional)'}
+                    </label>
+                    {c.tipo === 'select' ? (
+                      <select
+                        value={respuestas[c.key] ?? ''}
+                        onChange={(e) => setRespuesta(c.key, e.target.value)}
+                        className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-colors"
+                        style={{
+                          backgroundColor: 'var(--color-surface-alt)',
+                          border: '1px solid var(--color-border)',
+                          color: respuestas[c.key] ? 'var(--color-ink)' : 'var(--color-muted)',
+                        }}
+                      >
+                        <option value="" disabled>Selecciona una opción</option>
+                        {c.opciones.map((op) => (
+                          <option key={op} value={op}>{op}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        placeholder={c.placeholder || undefined}
+                        value={respuestas[c.key] ?? ''}
+                        onChange={(e) => setRespuesta(c.key, e.target.value)}
+                        className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-colors"
+                        style={{
+                          backgroundColor: 'var(--color-surface-alt)',
+                          border: '1px solid var(--color-border)',
+                          color: 'var(--color-ink)',
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
 
                 {error && (
                   <p className="text-xs px-1" style={{ color: '#F87171' }}>{error}</p>
