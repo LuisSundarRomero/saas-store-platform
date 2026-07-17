@@ -86,12 +86,19 @@ export function CartDrawer({
         .map((c) => `*${c.label}:* ${respuestas[c.key]}`)
         .join('\n')
 
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
+      const trackingUrl = `${appUrl}/rastrear?order=${result.orderId}`
+
       const mensaje = template
         .replace(/{nombre}/g, nombre.trim())
         .replace(/{celular}/g, celular.trim())
         .replace(/{campos}/g, lineasCampos ? `${lineasCampos}\n` : '')
         .replace(/{items}/g, lineas)
         .replace(/{total}/g, `S/${totalSoles}`)
+        // Alias que coinciden con las variables sugeridas en Config → Mensajes
+        .replace(/{productos}/g, lineas)
+        .replace(/{orderId}/g, result.orderId)
+        .replace(/{trackingLink}/g, trackingUrl)
 
       const numero = whatsappNumero.replace(/\D/g, '')
       const url = numero

@@ -6,7 +6,7 @@ import { useConfigTab } from '@/hooks/useConfigTab'
 import { SaveSection, INPUT_CLS } from './shared'
 import type { ConfigMensajes } from '@/types'
 
-const VARIABLES = ['{orderId}', '{productos}', '{total}', '{trackingLink}']
+const VARIABLES = ['{orderId}', '{productos}', '{total}', '{trackingLink}', '{campos}']
 
 interface Props {
   mensajes: ConfigMensajes | null
@@ -26,6 +26,7 @@ export function MensajesTab({ mensajes }: Props) {
     .replace('{productos}', '• 1x Zapato Mary Jane (Rosa)\n  Talla 37 — S/ 150')
     .replace('{total}', '150')
     .replace('{trackingLink}', 'mitienda.pe/rastrear?order=ORD-001')
+    .replace('{campos}', '*DNI:* 12345678\n*Distrito:* Miraflores\n*Modo de envío:* Olva Courier')
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -51,6 +52,9 @@ export function MensajesTab({ mensajes }: Props) {
             ))}
             <span className="text-xs text-gray-400 self-center">← toca para insertar</span>
           </div>
+          <p className="text-xs text-gray-400 leading-relaxed">
+            <code className="bg-gray-100 text-gray-600 px-1 py-0.5 rounded">{'{campos}'}</code> inserta las respuestas de los campos que configuraste en <strong className="text-gray-600">Formulario</strong> (DNI, distrito, modo de envío, etc.) — solo aparecen los que el cliente completó.
+          </p>
         </div>
         <SaveSection isPending={isPending} saved={saved} error={error} onSave={handleSave} />
       </div>

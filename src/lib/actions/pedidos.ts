@@ -382,10 +382,18 @@ export async function crearPedidoWhatsApp(input: CrearPedidoWhatsAppInput): Prom
     .join('\n')
 
   const totalSoles = (total / 100).toFixed(2)
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
+  const trackingUrl = `${appUrl}/rastrear?order=${orderId}`
 
   let mensaje = msgConfig?.whatsapp_template ?? ''
   if (mensaje) {
     mensaje = mensaje
+      // Nombres "oficiales" mostrados en Config → Mensajes
+      .replace(/{orderId}/g, orderId)
+      .replace(/{productos}/g, lineasItems)
+      .replace(/{trackingLink}/g, trackingUrl)
+      .replace(/{campos}/g, '') // no aplica al checkout completo (Plan Pro)
+      // Alias en snake_case / nombres alternativos, por compatibilidad
       .replace(/{order_id}/g, orderId)
       .replace(/{nombre}/g, input.clienteNombre)
       .replace(/{direccion}/g, input.clienteDireccion)
@@ -404,9 +412,6 @@ export async function crearPedidoWhatsApp(input: CrearPedidoWhatsAppInput): Prom
   const whatsappUrl = numero
     ? `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`
     : `https://wa.me/?text=${encodeURIComponent(mensaje)}`
-
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
-  const trackingUrl = `${appUrl}/rastrear?order=${orderId}`
 
   if (config?.email_notif) {
     enviarEmailNuevoPedido({
