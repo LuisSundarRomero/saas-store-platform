@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import {
   IconBuildingStore, IconSettings, IconPhoto,
   IconLayoutBottombar, IconBrandWhatsapp, IconUsers, IconListCheck,
@@ -36,8 +37,12 @@ interface Props {
   estados:   EstadoPedidoConfig[]
 }
 
+const TAB_IDS = TABS.map((t) => t.id)
+
 export function ConfigForm({ tienda, anuncio, banner, nosotros, footer, mensajes, estados }: Props) {
-  const [tab, setTab] = useState<TabId>('tienda')
+  const searchParams = useSearchParams()
+  const tabParam = searchParams.get('tab') as TabId | null
+  const [tab, setTab] = useState<TabId>(tabParam && TAB_IDS.includes(tabParam) ? tabParam : 'tienda')
 
   return (
     <div>
