@@ -38,7 +38,7 @@ export function MensajesTab({ mensajes }: Props) {
             onChange={(e) => setTemplate(e.target.value)}
             rows={10}
             className={`${INPUT_CLS} resize-none font-mono text-xs leading-relaxed`}
-            placeholder={`Hola! Quiero hacer este pedido 🛍\n\n📦 #{orderId}\n\n{productos}\n\n💰 Total: S/ {total}\n\n🔍 Rastrear: {trackingLink}`}
+            placeholder={`Hola! Quiero hacer este pedido\n\nPedido #{orderId}\n\n{productos}\n\n{campos}\nTotal: S/ {total}\n\nRastrear: {trackingLink}`}
           />
           <div className="flex flex-wrap gap-1.5">
             {VARIABLES.map((v) => (

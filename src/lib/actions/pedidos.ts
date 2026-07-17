@@ -408,9 +408,11 @@ export async function crearPedidoWhatsApp(input: CrearPedidoWhatsAppInput): Prom
       `*Total: S/${totalSoles}*`
   }
 
+  // api.whatsapp.com en vez de wa.me — evita que apps de escritorio de WhatsApp
+  // intercepten el link y corrompan emojis/tildes al pasarlo como argumento nativo
   const whatsappUrl = numero
-    ? `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`
-    : `https://wa.me/?text=${encodeURIComponent(mensaje)}`
+    ? `https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensaje)}`
+    : `https://api.whatsapp.com/send?text=${encodeURIComponent(mensaje)}`
 
   if (config?.email_notif) {
     enviarEmailNuevoPedido({

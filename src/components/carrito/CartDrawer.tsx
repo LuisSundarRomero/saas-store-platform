@@ -10,7 +10,7 @@ import { CartItemRow } from './CartItemRow'
 import type { CampoCheckoutConfig } from '@/types'
 
 const DEFAULT_TEMPLATE =
-  'Hola! Quiero hacer un pedido 🛍️\n\n' +
+  'Hola! Quiero hacer un pedido\n\n' +
   '*Nombre:* {nombre}\n' +
   '*Celular:* {celular}\n' +
   '{campos}' +
@@ -100,9 +100,11 @@ export function CartDrawer({
         .replace(/{trackingLink}/g, trackingUrl)
 
       const numero = whatsappNumero.replace(/\D/g, '')
+      // api.whatsapp.com en vez de wa.me — evita que apps de escritorio de WhatsApp
+      // intercepten el link y corrompan emojis/tildes al pasarlo como argumento nativo
       const url = numero
-        ? `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`
-        : `https://wa.me/?text=${encodeURIComponent(mensaje)}`
+        ? `https://api.whatsapp.com/send?phone=${numero}&text=${encodeURIComponent(mensaje)}`
+        : `https://api.whatsapp.com/send?text=${encodeURIComponent(mensaje)}`
 
       clearCart()
       onClose()
