@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   IconShoppingCart, IconLayoutGrid, IconChartBar,
-  IconSettings, IconLogout, IconTag, IconBook2, IconCreditCard, IconUsers
+  IconSettings, IconLogout, IconTag, IconBook2, IconCreditCard, IconUsers, IconForms
 } from '@tabler/icons-react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -12,6 +12,7 @@ const NAV = [
   { href: '/admin/pedidos',             label: 'Pedidos',      icon: IconShoppingCart, exact: false },
   { href: '/admin/catalogo',            label: 'Catálogo',     icon: IconLayoutGrid,   exact: false },
   { href: '/admin/categorias',          label: 'Categorías',   icon: IconTag,          exact: false },
+  { href: '/admin/formulario',          label: 'Formulario',   icon: IconForms,        exact: true },
   { href: '/admin/reclamaciones',       label: 'Reclamos',     icon: IconBook2,        exact: false },
   { href: '/admin/clientes',            label: 'Clientes',     icon: IconUsers,        exact: false },
   { href: '/admin/estadisticas',        label: 'Estadísticas', icon: IconChartBar,     exact: false },

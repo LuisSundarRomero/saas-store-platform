@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { IconShoppingBag, IconPackage } from '@tabler/icons-react'
 import { useCarrito } from '@/store/carrito'
 import { CartDrawer } from '@/components/carrito/CartDrawer'
+import type { CampoCheckoutConfig } from '@/types'
 
 interface NavbarProps {
   tiendaNombre?: string
@@ -13,6 +14,7 @@ interface NavbarProps {
   planBasico?: boolean
   whatsappNumero?: string
   whatsappTemplate?: string
+  camposCheckout?: CampoCheckoutConfig[]
 }
 
 function subscribeNoop() {
@@ -23,7 +25,7 @@ function useMounted() {
   return useSyncExternalStore(subscribeNoop, () => true, () => false)
 }
 
-export function Navbar({ tiendaNombre = 'Mi Tienda', logoUrl, planBasico, whatsappNumero, whatsappTemplate }: NavbarProps) {
+export function Navbar({ tiendaNombre = 'Mi Tienda', logoUrl, planBasico, whatsappNumero, whatsappTemplate, camposCheckout }: NavbarProps) {
   const mounted = useMounted()
   const itemCount = useCarrito((s) => s.itemCount())
   const isOpen   = useCarrito((s) => s.isOpen)
@@ -104,6 +106,7 @@ export function Navbar({ tiendaNombre = 'Mi Tienda', logoUrl, planBasico, whatsa
           planBasico={planBasico}
           whatsappNumero={whatsappNumero}
           whatsappTemplate={whatsappTemplate}
+          camposCheckout={camposCheckout}
         />
       )}
     </>

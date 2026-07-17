@@ -98,6 +98,18 @@ export default async function PedidoDetalleAdmin({ params }: Props) {
                 <span className="text-sm text-gray-700 leading-snug pt-1.5">{pedido.cliente_direccion}</span>
               </div>
             )}
+
+            {pedido.campos_respuestas && Object.keys(pedido.campos_respuestas).length > 0 && (
+              <div className="flex flex-col gap-1.5 mb-3 pt-1 border-t border-gray-50">
+                {Object.entries(pedido.campos_respuestas as Record<string, { label: string; value: string }>).map(([key, r]) => (
+                  <div key={key} className="flex justify-between gap-3 text-sm pt-1.5">
+                    <span className="text-gray-400">{r.label}</span>
+                    <span className="text-gray-700 font-medium text-right">{r.value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <a href={`https://wa.me/${pedido.cliente_telefono}?text=${encodeURIComponent(`Hola! Te escribimos sobre tu pedido #${orderId}`)}`}
               target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"

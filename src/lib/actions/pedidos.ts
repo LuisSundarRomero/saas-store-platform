@@ -425,6 +425,105 @@ export async function crearPedidoWhatsApp(input: CrearPedidoWhatsAppInput): Prom
   return { success: true, orderId, whatsappUrl }
 }
 
+interface CrearPedidoWhatsAppSimpleInput {
+  items: CartItem[]
+  clienteNombre: string
+  clienteTelefono: string
+  camposRespuestas: Record<string, { label: string; value: string }>
+}
+
+type CrearPedidoWhatsAppSimpleResult =
+  | { success: true; orderId: string }
+  | { success: false; error: string }
+
+// Flujo "Plan Básico": pedido mínimo (nombre + celular) desde el drawer del
+// carrito, más las respuestas de los campos configurables del tenant
+// (DNI, distrito, modo de envío, etc.). A diferencia de crearPedidoWhatsApp,
+// no exige email/dirección fijos — esos ahora son campos dinámicos más.
+export async function crearPedidoWhatsAppSimple(input: CrearPedidoWhatsAppSimpleInput): Promise<CrearPedidoWhatsAppSimpleResult> {
+  if (!input.clienteNombre?.trim() || input.clienteNombre.length > 120) return { success: false, error: 'Nombre inválido' }
+  if (!input.clienteTelefono?.trim() || input.clienteTelefono.replace(/\D/g, '').length < 7) return { success: false, error: 'Teléfono inválido' }
+  if (!input.items?.length || input.items.length > 50) return { success: false, error: 'Carrito inválido' }
+  if (input.items.some((i) => i.cantidad < 1 || i.cantidad > 99 || i.precio < 0)) return { success: false, error: 'Item inválido' }
+
+  const admin = getAdminClient()
+  const tenant = await getTenant()
+
+  const total = input.items.reduce((sum, i) => sum + i.precio * i.cantidad, 0)
+
+  let orderId: string
+  const { data: rpcData } = await admin.rpc('next_order_id')
+  if (rpcData) {
+    orderId = rpcData as string
+  } else {
+    const ts = Date.now().toString(36).toUpperCase().slice(-5)
+    const rand = Math.random().toString(36).slice(2, 4).toUpperCase()
+    orderId = `ORD-${ts}${rand}`
+  }
+
+  const pedidoId = crypto.randomUUID()
+
+  const { error: pedidoError } = await admin.from('pedidos').insert({
+    id: pedidoId,
+    order_id: orderId,
+    tenant_id: tenant.id,
+    cliente_nombre: input.clienteNombre,
+    cliente_telefono: input.clienteTelefono.replace(/\s/g, ''),
+    cliente_email: '',
+    cliente_direccion: input.camposRespuestas['direccion']?.value ?? '',
+    campos_respuestas: input.camposRespuestas,
+    total,
+    estado: 'pendiente',
+    metodo_pago: 'whatsapp',
+  })
+
+  if (pedidoError) {
+    console.error('[crearPedidoWhatsAppSimple] error inserting pedido:', pedidoError.message)
+    return { success: false, error: 'No pudimos registrar tu pedido. Intenta nuevamente.' }
+  }
+
+  const itemsData = input.items.map((i) => ({
+    pedido_id: pedidoId,
+    tenant_id: tenant.id,
+    producto_id: i.productoId,
+    nombre: i.nombre,
+    precio: i.precio,
+    talla: i.talla || null,
+    color: i.color || null,
+    cantidad: i.cantidad,
+    subtotal: i.precio * i.cantidad,
+  }))
+
+  await admin.from('pedido_items').insert(itemsData)
+
+  descontarStockPedido(admin, tenant.id, input.items).catch((err) =>
+    console.error('[crearPedidoWhatsAppSimple] error actualizando stock:', err)
+  )
+
+  const { data: config } = await admin
+    .from('config_tienda')
+    .select('email_notif, tienda_nombre')
+    .eq('tenant_id', tenant.id)
+    .single()
+
+  if (config?.email_notif) {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
+    enviarEmailNuevoPedido({
+      to: config.email_notif,
+      orderId,
+      clienteNombre: input.clienteNombre,
+      clienteTelefono: input.clienteTelefono,
+      items: input.items,
+      total,
+      trackingUrl: `${appUrl}/rastrear?order=${orderId}`,
+      tiendaNombre: config.tienda_nombre ?? undefined,
+      tenantSlug: tenant.slug,
+    }).catch((err) => console.error('[email]', err.message))
+  }
+
+  return { success: true, orderId }
+}
+
 export async function verificarPedido(orderId: string, telefono: string) {
   // Cliente público sin manejo de sesión — la función SQL usa SECURITY DEFINER
   const supabase = createSupabaseAdmin(

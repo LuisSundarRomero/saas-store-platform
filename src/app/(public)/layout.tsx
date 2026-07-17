@@ -1,6 +1,7 @@
 import { headers } from 'next/headers'
 import { createAdminClient } from '@/lib/supabase/server'
 import { getTenant, esPlanPro } from '@/lib/tenant'
+import { getCamposCheckoutActivos } from '@/lib/actions/campos-checkout'
 import { NavbarWrapper } from '@/components/ui/NavbarWrapper'
 import { Footer } from '@/components/ui/Footer'
 import { AnnouncementBar } from '@/components/ui/AnnouncementBar'
@@ -12,19 +13,20 @@ export default async function PublicLayout({ children }: { children: React.React
 
   const tenant = await getTenant()
   const admin  = createAdminClient()
+  const planBasico = !esPlanPro(tenant)
 
-  const [{ data: ct }, { data: ca }, { data: cf }, { data: categorias }, { data: cm }] = await Promise.all([
+  const [{ data: ct }, { data: ca }, { data: cf }, { data: categorias }, { data: cm }, camposCheckout] = await Promise.all([
     admin.from('config_tienda').select('*').eq('tenant_id', tenant.id).single(),
     admin.from('config_anuncio').select('*').eq('tenant_id', tenant.id).single(),
     admin.from('config_footer').select('*').eq('tenant_id', tenant.id).single(),
     admin.from('categorias').select('nombre, slug').eq('activa', true).eq('tenant_id', tenant.id).order('orden', { ascending: true }),
     admin.from('config_mensajes').select('whatsapp_template').eq('tenant_id', tenant.id).single(),
+    planBasico ? getCamposCheckoutActivos() : Promise.resolve([]),
   ])
 
   const tiendaNombre      = ct?.tienda_nombre ?? tenant.nombre
   const whatsappNumero    = ct?.whatsapp_numero ?? ''
   const whatsappTemplate  = cm?.whatsapp_template ?? ''
-  const planBasico        = !esPlanPro(tenant)
 
   const mostrarAnuncio = ca?.visible && ca?.texto && !(ca.expira && new Date(ca.expira) < new Date())
 
@@ -43,6 +45,7 @@ export default async function PublicLayout({ children }: { children: React.React
         planBasico={planBasico}
         whatsappNumero={whatsappNumero}
         whatsappTemplate={whatsappTemplate}
+        camposCheckout={camposCheckout}
       />
       <div className="flex-1">{children}</div>
       <Footer

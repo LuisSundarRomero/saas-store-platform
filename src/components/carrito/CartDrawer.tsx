@@ -1,17 +1,20 @@
 'use client'
 
-import { useState } from 'react'
-import { IconX, IconShoppingBag, IconArrowRight, IconCreditCard, IconBrandWhatsapp } from '@tabler/icons-react'
+import { useState, useTransition } from 'react'
+import { IconX, IconShoppingBag, IconArrowRight, IconCreditCard, IconBrandWhatsapp, IconLoader2 } from '@tabler/icons-react'
 import Link from 'next/link'
 import { useCarrito } from '@/store/carrito'
 import { formatPrice } from '@/lib/utils/format'
+import { crearPedidoWhatsAppSimple } from '@/lib/actions/pedidos'
 import { CartItemRow } from './CartItemRow'
+import type { CampoCheckoutConfig } from '@/types'
 
 const DEFAULT_TEMPLATE =
   'Hola! Quiero hacer un pedido 🛍️\n\n' +
   '*Nombre:* {nombre}\n' +
-  '*Celular:* {celular}\n\n' +
-  '*Productos:*\n{items}\n\n' +
+  '*Celular:* {celular}\n' +
+  '{campos}' +
+  '\n*Productos:*\n{items}\n\n' +
   '*Total:* {total}'
 
 interface CartDrawerProps {
@@ -20,6 +23,7 @@ interface CartDrawerProps {
   planBasico?: boolean
   whatsappNumero?: string
   whatsappTemplate?: string
+  camposCheckout?: CampoCheckoutConfig[]
 }
 
 export function CartDrawer({
@@ -28,6 +32,7 @@ export function CartDrawer({
   planBasico = false,
   whatsappNumero = '',
   whatsappTemplate = '',
+  camposCheckout = [],
 }: CartDrawerProps) {
   const items     = useCarrito((s) => s.items)
   const total     = useCarrito((s) => s.total)
@@ -37,35 +42,71 @@ export function CartDrawer({
 
   const [nombre, setNombre]   = useState('')
   const [celular, setCelular] = useState('')
+  const [respuestas, setRespuestas] = useState<Record<string, string>>({})
+  const [error, setError] = useState('')
+  const [isPending, startTransition] = useTransition()
 
-  function handleWhatsApp() {
-    const template  = whatsappTemplate || DEFAULT_TEMPLATE
-    const totalSoles = (total() / 100).toFixed(2)
-
-    const lineas = items
-      .map((i) => {
-        const extras = [i.talla, i.color].filter(Boolean).join(', ')
-        return `• ${i.nombre}${extras ? ` (${extras})` : ''} x${i.cantidad} — S/${(i.precio * i.cantidad / 100).toFixed(2)}`
-      })
-      .join('\n')
-
-    const mensaje = template
-      .replace(/{nombre}/g, nombre.trim())
-      .replace(/{celular}/g, celular.trim())
-      .replace(/{items}/g, lineas)
-      .replace(/{total}/g, `S/${totalSoles}`)
-
-    const numero = whatsappNumero.replace(/\D/g, '')
-    const url = numero
-      ? `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`
-      : `https://wa.me/?text=${encodeURIComponent(mensaje)}`
-
-    clearCart()
-    onClose()
-    window.open(url, '_blank', 'noopener,noreferrer')
+  function setRespuesta(key: string, value: string) {
+    setRespuestas((r) => ({ ...r, [key]: value }))
   }
 
-  const canSubmit = nombre.trim() && celular.trim().length >= 7
+  function handleWhatsApp() {
+    setError('')
+    startTransition(async () => {
+      const camposRespuestas = Object.fromEntries(
+        camposCheckout
+          .filter((c) => c.activo && respuestas[c.key]?.trim())
+          .map((c) => [c.key, { label: c.label, value: respuestas[c.key].trim() }])
+      )
+
+      const result = await crearPedidoWhatsAppSimple({
+        items,
+        clienteNombre: nombre.trim(),
+        clienteTelefono: celular.trim(),
+        camposRespuestas,
+      })
+
+      if (!result.success) {
+        setError(result.error)
+        return
+      }
+
+      const template  = whatsappTemplate || DEFAULT_TEMPLATE
+      const totalSoles = (total() / 100).toFixed(2)
+
+      const lineas = items
+        .map((i) => {
+          const extras = [i.talla, i.color].filter(Boolean).join(', ')
+          return `• ${i.nombre}${extras ? ` (${extras})` : ''} x${i.cantidad} — S/${(i.precio * i.cantidad / 100).toFixed(2)}`
+        })
+        .join('\n')
+
+      const lineasCampos = camposCheckout
+        .filter((c) => c.activo && respuestas[c.key])
+        .map((c) => `*${c.label}:* ${respuestas[c.key]}`)
+        .join('\n')
+
+      const mensaje = template
+        .replace(/{nombre}/g, nombre.trim())
+        .replace(/{celular}/g, celular.trim())
+        .replace(/{campos}/g, lineasCampos ? `${lineasCampos}\n` : '')
+        .replace(/{items}/g, lineas)
+        .replace(/{total}/g, `S/${totalSoles}`)
+
+      const numero = whatsappNumero.replace(/\D/g, '')
+      const url = numero
+        ? `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`
+        : `https://wa.me/?text=${encodeURIComponent(mensaje)}`
+
+      clearCart()
+      onClose()
+      window.open(url, '_blank', 'noopener,noreferrer')
+    })
+  }
+
+  const camposActivos = camposCheckout.filter((c) => c.activo)
+  const camposRequeridosOk = camposActivos.every((c) => !c.requerido || respuestas[c.key]?.trim())
+  const canSubmit = nombre.trim() && celular.trim().length >= 7 && camposRequeridosOk && !isPending
 
   return (
     <>
@@ -143,7 +184,7 @@ export function CartDrawer({
 
             {planBasico ? (
               /* ── Plan Básico: mini form WhatsApp ── */
-              <div className="px-5 pb-5 flex flex-col gap-2.5">
+              <div className="px-5 pb-5 flex flex-col gap-2.5 max-h-[45vh] overflow-y-auto">
                 <input
                   type="text"
                   placeholder="Tu nombre"
@@ -168,13 +209,53 @@ export function CartDrawer({
                     color: 'var(--color-ink)',
                   }}
                 />
+
+                {camposActivos.map((c) =>
+                  c.tipo === 'select' ? (
+                    <select
+                      key={c.id}
+                      value={respuestas[c.key] ?? ''}
+                      onChange={(e) => setRespuesta(c.key, e.target.value)}
+                      className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-colors"
+                      style={{
+                        backgroundColor: 'var(--color-surface-alt)',
+                        border: '1px solid var(--color-border)',
+                        color: respuestas[c.key] ? 'var(--color-ink)' : 'var(--color-muted)',
+                      }}
+                    >
+                      <option value="" disabled>{c.label}{c.requerido ? '' : ' (opcional)'}</option>
+                      {c.opciones.map((op) => (
+                        <option key={op} value={op}>{op}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      key={c.id}
+                      type="text"
+                      placeholder={c.placeholder || `${c.label}${c.requerido ? '' : ' (opcional)'}`}
+                      value={respuestas[c.key] ?? ''}
+                      onChange={(e) => setRespuesta(c.key, e.target.value)}
+                      className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-colors"
+                      style={{
+                        backgroundColor: 'var(--color-surface-alt)',
+                        border: '1px solid var(--color-border)',
+                        color: 'var(--color-ink)',
+                      }}
+                    />
+                  )
+                )}
+
+                {error && (
+                  <p className="text-xs px-1" style={{ color: '#F87171' }}>{error}</p>
+                )}
+
                 <button
                   onClick={handleWhatsApp}
                   disabled={!canSubmit}
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-full font-semibold text-white text-sm transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
                   style={{ backgroundColor: '#25D366' }}
                 >
-                  <IconBrandWhatsapp size={18} />
+                  {isPending ? <IconLoader2 size={18} className="animate-spin" /> : <IconBrandWhatsapp size={18} />}
                   Pedir por WhatsApp
                 </button>
               </div>

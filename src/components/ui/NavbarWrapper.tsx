@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import type { CampoCheckoutConfig } from '@/types'
 
 const Navbar = dynamic(() => import('./Navbar').then((m) => m.Navbar), { ssr: false })
 
@@ -10,9 +11,10 @@ interface Props {
   planBasico?: boolean
   whatsappNumero?: string
   whatsappTemplate?: string
+  camposCheckout?: CampoCheckoutConfig[]
 }
 
-export function NavbarWrapper({ tiendaNombre, logoUrl, planBasico, whatsappNumero, whatsappTemplate }: Props) {
+export function NavbarWrapper({ tiendaNombre, logoUrl, planBasico, whatsappNumero, whatsappTemplate, camposCheckout }: Props) {
   return (
     <Navbar
       tiendaNombre={tiendaNombre}
@@ -20,6 +22,7 @@ export function NavbarWrapper({ tiendaNombre, logoUrl, planBasico, whatsappNumer
       planBasico={planBasico}
       whatsappNumero={whatsappNumero}
       whatsappTemplate={whatsappTemplate}
+      camposCheckout={camposCheckout}
     />
   )
 }

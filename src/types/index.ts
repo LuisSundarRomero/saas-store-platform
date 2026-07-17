@@ -18,6 +18,21 @@ export interface EstadoPedidoConfig {
   visible: boolean
 }
 
+export type CampoCheckoutTipo = 'texto' | 'select'
+
+export interface CampoCheckoutConfig {
+  id: string
+  tenant_id: string
+  key: string
+  label: string
+  tipo: CampoCheckoutTipo
+  placeholder: string
+  opciones: string[]
+  requerido: boolean
+  activo: boolean
+  orden: number
+}
+
 export interface Categoria {
   id: string
   nombre: string
