@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { IconListCheck } from '@tabler/icons-react'
 import { getPedidos, getPedidosCount } from '@/lib/actions/admin'
 import { PedidosTable } from '@/components/admin/PedidosTable'
 import { PedidosBuscador } from '@/components/admin/PedidosBuscador'
@@ -50,9 +51,18 @@ export default async function PedidosPage({ searchParams }: Props) {
   return (
     <div className="p-4 sm:p-6 max-w-[1400px] mx-auto">
 
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Pedidos</h1>
-        <p className="text-sm text-gray-400 mt-0.5">Gestiona y actualiza el estado de los pedidos</p>
+      <div className="flex items-start justify-between gap-3 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Pedidos</h1>
+          <p className="text-sm text-gray-400 mt-0.5">Gestiona y actualiza el estado de los pedidos</p>
+        </div>
+        <Link
+          href="/admin/configuracion?tab=estados"
+          className="shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-red-300 hover:text-red-500 transition-colors"
+        >
+          <IconListCheck size={14} />
+          Editar estados
+        </Link>
       </div>
 
       {/* Stats */}
