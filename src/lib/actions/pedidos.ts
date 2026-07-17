@@ -260,8 +260,7 @@ export async function crearPedidoConCulqi(input: CrearPedidoConCulqiInput): Prom
     .eq('tenant_id', tenant.id)
     .single()
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
-  const trackingUrl = `${appUrl}/rastrear?order=${orderId}`
+  const trackingUrl = `https://${tenant.slug}.${process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'peshoop.com'}/rastrear?order=${orderId}`
 
   // Enviar email de notificación (en background, no bloquea el checkout)
   if (config?.email_notif) {
@@ -382,8 +381,8 @@ export async function crearPedidoWhatsApp(input: CrearPedidoWhatsAppInput): Prom
     .join('\n')
 
   const totalSoles = (total / 100).toFixed(2)
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
-  const trackingUrl = `${appUrl}/rastrear?order=${orderId}`
+  const mainDomain = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'peshoop.com'
+  const trackingUrl = `https://${tenant.slug}.${mainDomain}/rastrear?order=${orderId}`
 
   let mensaje = msgConfig?.whatsapp_template ?? ''
   if (mensaje) {
@@ -398,7 +397,7 @@ export async function crearPedidoWhatsApp(input: CrearPedidoWhatsAppInput): Prom
       .replace(/{nombre}/g, input.clienteNombre)
       .replace(/{direccion}/g, input.clienteDireccion)
       .replace(/{items}/g, lineasItems)
-      .replace(/{total}/g, `S/${totalSoles}`)
+      .replace(/{total}/g, totalSoles)
   } else {
     mensaje =
       `Hola! Quiero confirmar mi pedido *${orderId}*\n\n` +
@@ -512,7 +511,6 @@ export async function crearPedidoWhatsAppSimple(input: CrearPedidoWhatsAppSimple
     .single()
 
   if (config?.email_notif) {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
     enviarEmailNuevoPedido({
       to: config.email_notif,
       orderId,
@@ -520,7 +518,7 @@ export async function crearPedidoWhatsAppSimple(input: CrearPedidoWhatsAppSimple
       clienteTelefono: input.clienteTelefono,
       items: input.items,
       total,
-      trackingUrl: `${appUrl}/rastrear?order=${orderId}`,
+      trackingUrl: `https://${tenant.slug}.${process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'peshoop.com'}/rastrear?order=${orderId}`,
       tiendaNombre: config.tienda_nombre ?? undefined,
       tenantSlug: tenant.slug,
     }).catch((err) => console.error('[email]', err.message))

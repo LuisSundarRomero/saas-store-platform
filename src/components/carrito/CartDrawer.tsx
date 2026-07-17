@@ -15,7 +15,7 @@ const DEFAULT_TEMPLATE =
   '*Celular:* {celular}\n' +
   '{campos}' +
   '\n*Productos:*\n{items}\n\n' +
-  '*Total:* {total}'
+  '*Total:* S/{total}'
 
 interface CartDrawerProps {
   open: boolean
@@ -86,15 +86,14 @@ export function CartDrawer({
         .map((c) => `*${c.label}:* ${respuestas[c.key]}`)
         .join('\n')
 
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
-      const trackingUrl = `${appUrl}/rastrear?order=${result.orderId}`
+      const trackingUrl = `${window.location.origin}/rastrear?order=${result.orderId}`
 
       const mensaje = template
         .replace(/{nombre}/g, nombre.trim())
         .replace(/{celular}/g, celular.trim())
         .replace(/{campos}/g, lineasCampos ? `${lineasCampos}\n` : '')
         .replace(/{items}/g, lineas)
-        .replace(/{total}/g, `S/${totalSoles}`)
+        .replace(/{total}/g, totalSoles)
         // Alias que coinciden con las variables sugeridas en Config → Mensajes
         .replace(/{productos}/g, lineas)
         .replace(/{orderId}/g, result.orderId)
